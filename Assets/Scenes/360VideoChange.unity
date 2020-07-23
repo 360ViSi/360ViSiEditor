@@ -547,7 +547,7 @@ VideoPlayer:
   m_AudioOutputMode: 2
   m_TargetAudioSources: []
   m_DirectAudioVolumes: []
-  m_Url: 
+  m_Url: file:///home/juha/github_projekteja/360visisimulationplatform/Assets/Art/Materials/360VideoClips/360VideoOperation.webm
   m_EnabledAudioTracks: 
   m_DirectAudioMutes: 
   m_ControlledAudioTrackCount: 0
@@ -584,7 +584,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   videos:
   - {fileID: 32900000, guid: 9710a71309185bedf9e4cb35be6e925c, type: 3}
-  - {fileID: 32900000, guid: 0da36c3d066a3127988164db261b883d, type: 3}
+  - {fileID: 32900000, guid: 9710a71309185bedf9e4cb35be6e925c, type: 3}
+  pathToVideoFolder: /Art/Materials/360VideoClips/
 --- !u!1 &843916226
 GameObject:
   m_ObjectHideFlags: 0
