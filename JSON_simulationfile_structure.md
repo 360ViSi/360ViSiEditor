@@ -1,4 +1,4 @@
-#Simulation JSON structure
+# Simulation JSON structure
 ## Class VideoFile
   **string** videoFileName  // "None" means no video only actions
   **int** videoID   // positive integers (-1 is reserved for end)
