@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.56823343, g: 0.5307031, b: 0.5050949, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -195,7 +195,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 3e-45}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -582,10 +582,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c323aa631b17bfa3b3014f7ef462c16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videos:
-  - {fileID: 32900000, guid: 9710a71309185bedf9e4cb35be6e925c, type: 3}
-  - {fileID: 32900000, guid: 9710a71309185bedf9e4cb35be6e925c, type: 3}
-  pathToVideoFolder: /Art/Materials/360VideoClips/
+  videoPointer: {fileID: 11400000, guid: 113e33bc9579247d5a1ae23e51802695, type: 2}
+  fileExtensions: []
 --- !u!1 &843916226
 GameObject:
   m_ObjectHideFlags: 0

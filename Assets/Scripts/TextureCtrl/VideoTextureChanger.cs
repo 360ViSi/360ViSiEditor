@@ -3,34 +3,28 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Video;
+using UnityEditor;
 
 public class VideoTextureChanger : MonoBehaviour
 {
+    //variables used in editor
+    [SerializeField]
+    private VideoFilePointer_OS videoPointer;
 
-    //public VideoClip [] videos;
-    public string pathToVideoFolder ="/Art/Materials/360VideoClips/";
+    //private variables
     private VideoPlayer videoPlayer360;
-    private int currentCLip = 0;
-    private string pathToRoot;
+    private int currentClip = 0;
     private List<string> videoURLs = new List<string>();
 
     // Start is called before the first frame update
     void Start()
     {
+      //initialize Video player
       videoPlayer360 = gameObject.GetComponent<VideoPlayer>();
       videoPlayer360.prepareCompleted += PrepareCompleted;
-      //pathToRoot = Application.streamingAssetsPath;
-      pathToRoot = Application.dataPath;
-      getFileNames(pathToRoot +pathToVideoFolder);
 
-      Debug.Log("Videoclip name: "+ videoPlayer360.clip.name );
-      Debug.Log("Videoclip path: "+ videoPlayer360.clip.originalPath );
-      Debug.Log("Application path: "+pathToRoot);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+      //videos
+      videoURLs = getVideoURLs(videoPointer);
 
     }
 
@@ -42,25 +36,49 @@ public class VideoTextureChanger : MonoBehaviour
 
     public void ChangeVideo()
     {
-      currentCLip = (currentCLip+1)%2;
-      //videoPlayer360.clip = video[currentCLip];
-      videoPlayer360.url = videoURLs[currentCLip];
+      currentClip = (currentClip+1)%2;
+      videoPlayer360.url = videoURLs[currentClip];
       videoPlayer360.Prepare();
-      Debug.Log("Clip: "+ currentCLip);
+      Debug.Log("Clip: "+ currentClip);
     }
 
-    private void getFileNames(string directory)
+    private string getVideoFolder(VideoFilePointer_OS pointer)
     {
+      // Get absolute path to Application
+      // and relative path to videoPointer.
+      // Both will have same "Assets" folder which need to be removed.
+      // Also videoPointer filename need to removed to get pure folder path.
+      // Pathseparator is used to make the code operationsystem independent
+      string pathToVideo = Application.dataPath;
+      char pathSeparator = Path.DirectorySeparatorChar;
+      string[] relativePathFolders = AssetDatabase.GetAssetPath(videoPointer).Split(pathSeparator);
+      for (int i=1; i<relativePathFolders.Length-1;i++)
+      {
+        pathToVideo += pathSeparator+relativePathFolders[i];
+      }
+      pathToVideo += pathSeparator;
+      return (pathToVideo);
+    }
+
+    private List<string> getVideoURLs(VideoFilePointer_OS pointer)
+    {
+      string directory = getVideoFolder(pointer);
+
+      List<string> URLs = new List<string>();
       DirectoryInfo dirInfo = new DirectoryInfo(directory);
       foreach (var file in dirInfo.GetFiles())
       {
         string fileName=file.Name;
-        string last4 = fileName.Substring(fileName.Length-4,4);
-        if(last4=="webm")
+        foreach (var extension in pointer.fileExtensions)
         {
-          videoURLs.Add(directory+file.Name);
+          string nameTail = fileName.Substring(fileName.Length-extension.Length,extension.Length);
+          if(nameTail==extension)
+          {
+            URLs.Add(directory+file.Name);
+          }
         }
-
       }
+      return URLs;
+
     }
 }
