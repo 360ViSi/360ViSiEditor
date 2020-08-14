@@ -13,7 +13,7 @@
       ]
     },
     {
-      "videoFileName":"wakeup_video.mp4",
+      "videoFileName":"wakeup_video.webm",
       "videoID":1,
       "actions":
       [
@@ -24,7 +24,7 @@
       ]
     },
     {
-      "videoFileName":"asking_video.mov",
+      "videoFileName":"asking_video.webm",
       "videoID":2,
       "actions":
       [

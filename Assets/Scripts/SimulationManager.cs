@@ -16,7 +16,7 @@ public class SimulationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+      Invoke("setStartVideo",2);
     }
 
     // Update is called once per frame
@@ -25,10 +25,16 @@ public class SimulationManager : MonoBehaviour
 
     }
 
-    public void actionSelected(int buttonID)
+    void setStartVideo()
     {
-      Debug.Log("button clicked " + buttonID);
-      getToNextPart(buttonID);
+      string startVideoFileName = videoData.getVideoPart(currentVideoID).getVideoFileName();
+      videoTextureChanger.changeVideo(startVideoFileName);
+    }
+
+    public void actionSelected(int actionID)
+    {
+      //Debug.Log("button clicked " + actionID);
+      getToNextPart(actionID);
     }
 
     public VideoPart getCurrentVideoPart()
@@ -38,12 +44,11 @@ public class SimulationManager : MonoBehaviour
 
     public void getToNextPart(int actionID)
     {
-      VideoPart currentPart = videoData.getVideoPart(currentVideoID);
-      Action action = currentPart.getAction(actionID);
-      int nextVideoID = action.getNextVideo();
+      int nextVideoID = videoData.getVideoPart(currentVideoID).getNextVideoID(actionID);
 
       if (nextVideoID == -1)
       {
+        currentVideoID=nextVideoID;
         Debug.Log("Game ended");
         return;
       }
@@ -58,11 +63,14 @@ public class SimulationManager : MonoBehaviour
 
       if (nextVideoFileName=="None")
       {
+        currentVideoID=nextVideoID;
         Debug.Log("This part is without video file.");
+        return;
       }
 
       currentVideoID=nextVideoID;
-      Debug.Log("next video is "+nextVideoFileName);
+      videoTextureChanger.changeVideo(nextVideoFileName);
+      Debug.Log("Video is "+nextVideoFileName);
     }
 
 }

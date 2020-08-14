@@ -16,8 +16,8 @@ public class ButtonHandler : MonoBehaviour
     {
       for (int i=0; i<buttons.Count; i++)
       {
-        int buttonID = i;
-        buttons[i].onClick.AddListener(delegate {whenClicked(buttonID);});
+        int actionID = i;
+        buttons[i].onClick.AddListener(delegate {whenClicked(actionID);});
       }
     }
 
@@ -27,14 +27,20 @@ public class ButtonHandler : MonoBehaviour
       setupButtons(simulationManager.getCurrentVideoPart());
     }
 
-    public void whenClicked(int buttonID)
+    public void whenClicked(int actionID)
     {
-      simulationManager.actionSelected(buttonID);
+      simulationManager.actionSelected(actionID);
     }
 
     private void setupButtons(VideoPart currentVideoPart)
     {
-      int actionCount =  currentVideoPart.getActionCount();
+      int actionCount=0;
+
+      if  (currentVideoPart!=null)
+      {
+        actionCount =  currentVideoPart.getActionCount();
+      }
+
       for (int i=0; i<buttons.Count;i++)
       {
         if (i<actionCount)
@@ -44,8 +50,8 @@ public class ButtonHandler : MonoBehaviour
           continue;
         }
         buttons[i].gameObject.SetActive(false);
-
       }
+
     }
 
 }

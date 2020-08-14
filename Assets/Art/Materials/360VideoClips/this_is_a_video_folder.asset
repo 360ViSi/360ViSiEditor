@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: this_is_a_video_folder
   m_EditorClassIdentifier: Assembly-CSharp::VideoPathPointer_OS
-  fileExtensions: []
+  fileExtensions:
+  - webm
+  - mp4
+  - mov

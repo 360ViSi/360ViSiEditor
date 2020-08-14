@@ -13,7 +13,13 @@ public class VideoData : MonoBehaviour
     private VideoStructure videoStructure;
 
     // Start is called before the first frame update
-    void Start()
+    void start()
+    {
+
+    }
+
+    //awake is called before start
+    void Awake()
     {
       videoStructure = JsonUtility.FromJson<VideoStructure>(jsonFile.text);
 

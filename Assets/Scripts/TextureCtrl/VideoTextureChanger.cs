@@ -13,8 +13,6 @@ public class VideoTextureChanger : MonoBehaviour
 
     //private variables
     private VideoPlayer videoPlayer360;
-    private int currentClip = 0;
-    private List<string> videoURLs = new List<string>();
 
     // Start is called before the first frame update
     void Start()
@@ -22,9 +20,6 @@ public class VideoTextureChanger : MonoBehaviour
       //initialize Video player
       videoPlayer360 = gameObject.GetComponent<VideoPlayer>();
       videoPlayer360.prepareCompleted += PrepareCompleted;
-
-      //videos
-      videoURLs = getVideoURLs(videoPointer);
 
     }
 
@@ -34,26 +29,26 @@ public class VideoTextureChanger : MonoBehaviour
       videoPlayer360.Play();
     }
 
-    public void ChangeVideo()
+    public void changeVideo(string videoFileName)
     {
-      currentClip = (currentClip+1)%2;
-      videoPlayer360.url = videoURLs[currentClip];
+      videoPlayer360.url=getVideoURL(videoPointer, videoFileName);
       videoPlayer360.Prepare();
-      Debug.Log("Clip: "+ currentClip);
     }
 
-
-
-    private List<string> getVideoURLs(VideoPathPointer_OS pointer)
+    private string getVideoURL(VideoPathPointer_OS pointer, string videoFileName)
     {
       string directory = getVideoFolder(pointer);
-      List<string> URLs = new List<string>();
       DirectoryInfo dirInfo = new DirectoryInfo(directory);
+      string videoURL ="";
 
       //read every file name in folder
       foreach (var file in dirInfo.GetFiles())
       {
-        string fileName=file.Name;
+        string fileName = file.Name;
+        if (videoFileName!=fileName)
+        {
+          continue;
+        }
         //compare to VideoPathPointer_OS extensions
         foreach (var extension in pointer.fileExtensions)
         {
@@ -62,11 +57,16 @@ public class VideoTextureChanger : MonoBehaviour
           //if extension matches add URL to list
           if(nameTail==extension)
           {
-            URLs.Add(directory+file.Name);
+            videoURL = (directory+fileName);
+            break;
           }
         }
       }
-      return URLs;
+      if (videoURL=="")
+      {
+        Debug.Log("Video "+videoFileName+" is not in "+directory+" folder");
+      }
+      return videoURL;
     }
 
     private string getVideoFolder(VideoPathPointer_OS pointer)
