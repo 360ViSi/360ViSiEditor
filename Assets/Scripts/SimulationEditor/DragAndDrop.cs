@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 public class DragAndDrop : MonoBehaviour,IPointerDownHandler,IBeginDragHandler,IEndDragHandler,IDragHandler,IDropHandler
 {
   private RectTransform rectTransform;
+  [SerializeField]
+  private float scaleFactor = 1f;
 
   private void Awake()
   {
@@ -20,7 +22,11 @@ public class DragAndDrop : MonoBehaviour,IPointerDownHandler,IBeginDragHandler,I
   public void OnDrag(PointerEventData eventData)
   {
     //Debug.Log("OnDrag");
-    rectTransform.anchoredPosition += eventData.delta;
+    Vector2 mouseMovement = eventData.delta;
+    float screenHeight =Screen.height;
+    rectTransform.anchoredPosition += mouseMovement*scaleFactor/screenHeight;
+    Debug.Log("screen: "+screenHeight+ ", camera pixel H: "+ Camera.main.pixelHeight);
+
   }
 
   public void OnEndDrag(PointerEventData eventData)

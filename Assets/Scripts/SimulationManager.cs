@@ -22,7 +22,7 @@ public class SimulationManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+      getCurrentVideoPart();
     }
 
     void setStartVideo()

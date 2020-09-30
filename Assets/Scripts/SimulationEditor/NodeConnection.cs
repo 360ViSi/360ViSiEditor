@@ -41,20 +41,12 @@ public class NodeConnection : MonoBehaviour,IBeginDragHandler,IEndDragHandler,ID
 
     void Update()
     {
-      //image position in canvas pixels
       Vector3 imagePosition = nodePointRectTrans.transform.position;
-      imagePosition.z = cameraDistanceToCanvas;
-      Vector3 nodepointPos = Camera.main.ScreenToWorldPoint(imagePosition);
-      //Vector3[] worldCorners = new Vector3[4];
-      //nodeRectTrans.GetWorldCorners(worldCorners);
-      //Debug.Log(nodepointPos);
-      verticesPos[0] = nodepointPos;
+      verticesPos[0] = imagePosition;
       if (nodeConnected)
       {
         imagePosition = endNodeRactTrans.transform.position;
-        imagePosition.z = cameraDistanceToCanvas;
-        nodepointPos = Camera.main.ScreenToWorldPoint(imagePosition);
-        verticesPos[1]=nodepointPos;
+        verticesPos[1]=imagePosition;
       }
       connectLine.SetPositions(verticesPos.ToArray());
     }
