@@ -5,42 +5,65 @@ using UnityEngine.EventSystems;
 
 public class DragAndDrop : MonoBehaviour,IPointerDownHandler,IBeginDragHandler,IEndDragHandler,IDragHandler,IDropHandler
 {
+  private Transform cameraTransform;
+  private RectTransform canvasRectTransform;
   private RectTransform rectTransform;
-  [SerializeField]
-  private float scaleFactor = 1f;
 
-  private void Awake()
+  void Awake()
   {
+    // get canvas RectTransform
+    Canvas mainCanvas = GetComponentInParent<Canvas>();
+    if (mainCanvas==null)
+    {
+      Debug.Log("Did not get Canvas");
+      return;
+    }
+    canvasRectTransform = mainCanvas.GetComponent<RectTransform>();
+
+    //get camera Transform
+    cameraTransform = Camera.main.GetComponent<Transform>();
+
+    //this GameObject RectTransform
     rectTransform = GetComponent<RectTransform>();
   }
 
-  public void OnBeginDrag(PointerEventData eventData)
-  {
-    Debug.Log("OnBeginDrag");
-  }
+
 
   public void OnDrag(PointerEventData eventData)
   {
-    //Debug.Log("OnDrag");
+    // canvas unit scale = how many canvas pixels is one Unity unit
+    Vector3 canvasUnitScale = bitWiseInverse(canvasRectTransform.localScale);
+
+    // Convert one screen unit to one canvas unit
+    float cameraDistanceToCanvas=Mathf.Abs(cameraTransform.position.z-canvasRectTransform.position.z);
+    Vector3 vec0=Camera.main.ScreenToWorldPoint(new Vector3(0.0f,0.0f,cameraDistanceToCanvas));
+    Vector3 vec1=Camera.main.ScreenToWorldPoint(new Vector3(1.0f,1.0f,cameraDistanceToCanvas));
+    Vector3 screenToCanvasScale = bitWiseMultiplication((vec1-vec0),canvasUnitScale);
+
+    //scale mouse movement on screen to object movement on canvas
     Vector2 mouseMovement = eventData.delta;
     float screenHeight =Screen.height;
-    rectTransform.anchoredPosition += mouseMovement*scaleFactor/screenHeight;
-    Debug.Log("screen: "+screenHeight+ ", camera pixel H: "+ Camera.main.pixelHeight);
-
+    rectTransform.anchoredPosition += mouseMovement*screenToCanvasScale;
   }
 
-  public void OnEndDrag(PointerEventData eventData)
+  public void OnBeginDrag(PointerEventData eventData){}
+
+  public void OnEndDrag(PointerEventData eventData){}
+
+  public void OnPointerDown(PointerEventData eventData){}
+
+  public void OnDrop(PointerEventData eventData){}
+
+
+  // Vector math things
+
+  private Vector3 bitWiseInverse(Vector3 vec)
   {
-//    Debug.Log("OnEndDrag");
+    return new Vector3(1.0f/vec.x, 1.0f/vec.y, 1.0f/vec.z);
   }
 
-  public void OnPointerDown(PointerEventData eventData)
+  private Vector3 bitWiseMultiplication(Vector3 vec0, Vector3 vec1)
   {
-    Debug.Log("OnPointerDown");
-  }
-
-  public void OnDrop(PointerEventData eventData)
-  {
-    Debug.Log("OnDrop");
+    return new Vector3(vec0.x*vec1.x,vec0.y*vec1.y,vec0.z*vec1.z);
   }
 }

@@ -12,21 +12,26 @@ public class NodeConnection : MonoBehaviour,IBeginDragHandler,IEndDragHandler,ID
     private Color lineColor = Color.red;
     [SerializeField]
     private Material lineMaterial;
-    [SerializeField]
-    private float cameraDistanceToCanvas = 5.0f;
+//    [SerializeField]
+//    private float cameraDistanceToCanvas = 5.0f;
 //    [SerializeField]
 //    private GameObject nodePoint;
 
     private LineRenderer connectLine;
     private List<Vector3> verticesPos = new List<Vector3>();
     private RectTransform nodePointRectTrans;
-    private RectTransform endNodeRactTrans;
+    private RectTransform endNodeRectTrans;
     private bool nodeConnected=false;
+    private RectTransform canvasRectTransform ;
+    private Transform cameraTransform;
 
 
     void Awake()
     {
+      //assign RectTransform
       nodePointRectTrans = gameObject.GetComponent<RectTransform>();
+
+      //Initialize LineRenderer
       connectLine = gameObject.AddComponent<LineRenderer>();
       connectLine.material = lineMaterial;
       verticesPos.Add(new Vector3(0,0,0));
@@ -37,23 +42,35 @@ public class NodeConnection : MonoBehaviour,IBeginDragHandler,IEndDragHandler,ID
       connectLine.endColor = lineColor;
       connectLine.SetPositions(verticesPos.ToArray());
       connectLine.useWorldSpace = true;
+      connectLine.enabled = false;
+
+      // get canvas RectTransform
+      Canvas mainCanvas = GetComponentInParent<Canvas>();
+      if (mainCanvas==null)
+      {
+        Debug.Log("Did not get Canvas");
+        return;
+      }
+      canvasRectTransform = mainCanvas.GetComponent<RectTransform>();
+
+      //get camera Transform
+      cameraTransform = Camera.main.GetComponent<Transform>();
+
     }
 
     void Update()
     {
-      Vector3 imagePosition = nodePointRectTrans.transform.position;
-      verticesPos[0] = imagePosition;
+      verticesPos[0] = nodePointRectTrans.transform.position;
       if (nodeConnected)
       {
-        imagePosition = endNodeRactTrans.transform.position;
-        verticesPos[1]=imagePosition;
+        verticesPos[1]=endNodeRectTrans.transform.position;
       }
       connectLine.SetPositions(verticesPos.ToArray());
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-      Debug.Log("OnBeginDrag");
+//      Debug.Log("OnBeginDrag");
       connectLine.enabled =true;
     }
 
@@ -61,34 +78,32 @@ public class NodeConnection : MonoBehaviour,IBeginDragHandler,IEndDragHandler,ID
     {
       //Debug.Log("OnDrag");
       Vector3 mousePosition = Input.mousePosition;
+      float cameraDistanceToCanvas=Mathf.Abs(cameraTransform.position.z-canvasRectTransform.position.z);
       mousePosition.z = cameraDistanceToCanvas;
-      Vector3 nodepointPos = Camera.main.ScreenToWorldPoint(mousePosition);
-      verticesPos[1] = nodepointPos;
+      Vector3 nodePointPos = Camera.main.ScreenToWorldPoint(mousePosition);
+      verticesPos[1] = nodePointPos;
       connectLine.SetPositions(verticesPos.ToArray());
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-      Debug.Log("OnEndDrag");
+//      Debug.Log("OnEndDrag");
       Debug.Log(eventData.pointerEnter);
       GameObject endNode = eventData.pointerEnter;
       if (endNode == null)
       {
-        endNodeRactTrans=null;
+        endNodeRectTrans=null;
         nodeConnected=false;
         connectLine.enabled=false;
       }
       else
       {
-        endNodeRactTrans = endNode.GetComponent<RectTransform>();
+        endNodeRectTrans = endNode.GetComponent<RectTransform>();
         nodeConnected=true;
         connectLine.enabled =true;
       }
 
     }
 
-    public void OnDrop(PointerEventData eventData)
-    {
-      Debug.Log("OnDrop");
-    }
+    public void OnDrop(PointerEventData eventData){}
 }
