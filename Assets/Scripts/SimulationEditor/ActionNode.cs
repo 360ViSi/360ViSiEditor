@@ -1,24 +1,19 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.EventSystems;
+using TMPro;
 
-public class NodeConnection : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHandler
+public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHandler
 {
-    [SerializeField]
-    private float lineWidth = 0.1f;
-    [SerializeField]
-    private Color lineColor = Color.red;
-    [SerializeField]
-    private Material lineMaterial;
-//    [SerializeField]
-//    private float cameraDistanceToCanvas = 5.0f;
-//    [SerializeField]
-//    private GameObject nodePoint;
+    public Color baseColor;
+    public Color notConnectedColor;
+    public Color endActionColor;
+
 
     private LineRenderer connectLine;
-    private List<Vector3> verticesPos = new List<Vector3>();
+    private Vector3[] verticesPos = new Vector3[2];
     private RectTransform nodePointRectTrans;
     private RectTransform endNodeRectTrans;
     private bool nodeConnected=false;
@@ -32,16 +27,8 @@ public class NodeConnection : MonoBehaviour,IBeginDragHandler,IEndDragHandler,ID
       nodePointRectTrans = gameObject.GetComponent<RectTransform>();
 
       //Initialize LineRenderer
-      connectLine = gameObject.AddComponent<LineRenderer>();
-      connectLine.material = lineMaterial;
-      verticesPos.Add(new Vector3(0,0,0));
-      verticesPos.Add(new Vector3(1,0,0));
-      connectLine.startWidth= lineWidth;
-      connectLine.endWidth = lineWidth;
-      connectLine.startColor = lineColor;
-      connectLine.endColor = lineColor;
-      connectLine.SetPositions(verticesPos.ToArray());
-      connectLine.useWorldSpace = true;
+      connectLine = gameObject.GetComponent<LineRenderer>();
+      connectLine.GetPositions(verticesPos);
       connectLine.enabled = false;
 
       // get canvas RectTransform
@@ -56,6 +43,9 @@ public class NodeConnection : MonoBehaviour,IBeginDragHandler,IEndDragHandler,ID
       //get camera Transform
       cameraTransform = Camera.main.GetComponent<Transform>();
 
+      //set color to notConnectedColor
+      //Image image = GetComponent<Image>();
+
     }
 
     void Update()
@@ -65,7 +55,12 @@ public class NodeConnection : MonoBehaviour,IBeginDragHandler,IEndDragHandler,ID
       {
         verticesPos[1]=endNodeRectTrans.transform.position;
       }
-      connectLine.SetPositions(verticesPos.ToArray());
+      connectLine.SetPositions(verticesPos);
+    }
+
+    public void setActionText(string newActionText)
+    {
+      GetComponentInChildren<TextMeshProUGUI>().text=newActionText;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -82,7 +77,7 @@ public class NodeConnection : MonoBehaviour,IBeginDragHandler,IEndDragHandler,ID
       mousePosition.z = cameraDistanceToCanvas;
       Vector3 nodePointPos = Camera.main.ScreenToWorldPoint(mousePosition);
       verticesPos[1] = nodePointPos;
-      connectLine.SetPositions(verticesPos.ToArray());
+      connectLine.SetPositions(verticesPos);
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -90,18 +85,17 @@ public class NodeConnection : MonoBehaviour,IBeginDragHandler,IEndDragHandler,ID
 //      Debug.Log("OnEndDrag");
       Debug.Log(eventData.pointerEnter);
       GameObject endNode = eventData.pointerEnter;
-      if (endNode == null)
+      if (endNode == null || endNode.GetComponent<VideoNode>()==null)
       {
         endNodeRectTrans=null;
         nodeConnected=false;
         connectLine.enabled=false;
+        return;
       }
-      else
-      {
-        endNodeRectTrans = endNode.GetComponent<RectTransform>();
-        nodeConnected=true;
-        connectLine.enabled =true;
-      }
+
+      endNodeRectTrans = endNode.GetComponent<RectTransform>();
+      nodeConnected=true;
+      connectLine.enabled =true;
 
     }
 
