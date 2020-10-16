@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class StructureManager : MonoBehaviour
 {
-    public GameObject videoNodePrefab;
+    [SerializeField]
+    private GameObject videoNodePrefab;
+    [SerializeField]
+    private GameObject starNode;
+
     private List<GameObject> videoNodes = new List<GameObject>();
     private int generatedVideoID = 0;
 
@@ -31,15 +35,10 @@ public class StructureManager : MonoBehaviour
     {
       while(!isVideoIDFree(newVideoID))
       {
-        Debug.Log("Video ID is used: "+newVideoID);
+        Debug.Log("Video ID is already in use: "+newVideoID);
         newVideoID++;
       }
       videoNode.GetComponent<VideoNode>().setVideoID(newVideoID);
-    }
-
-    private int getVideoID(GameObject videoNode)
-    {
-      return videoNode.GetComponent<VideoNode>().getVideoID();
     }
 
     private bool isVideoIDFree(int testVideoID)
@@ -53,13 +52,49 @@ public class StructureManager : MonoBehaviour
       //check through video nodes
       foreach (GameObject listedVideoNode in videoNodes)
       {
-        Debug.Log("video ID: "+ getVideoID(listedVideoNode));
-        if (testVideoID==getVideoID(listedVideoNode))
+        int listedVideoID = listedVideoNode.GetComponent<VideoNode>().getVideoID();
+        Debug.Log("video ID: "+ listedVideoID);
+        if (testVideoID==listedVideoID)
         {
           return false;
         }
       }
 
       return true;
+    }
+
+    public void parseVideoStructure()
+    {
+      string fileStructureJSON="";
+      //if there are no structures
+      if(videoNodes.Count<1)
+      {
+        //return fileStructureJSON;
+        return;
+      }
+      foreach (GameObject videonode in videoNodes)
+      {
+        parseActionStructure(videonode);
+      }
+
+      //return fileStructureJSON;
+
+    }
+
+    private string parseActionStructure(GameObject VideoNode)
+    {
+      string actionStructure="";
+      //List<GameObject> actionNodeList = VideoNode.GetComponent<VideoNode>().getActionNodeList();
+      foreach (GameObject actionNode in VideoNode.GetComponent<VideoNode>().getActionNodeList())
+      {
+        ActionNode currentActionNode = actionNode.GetComponent<ActionNode>();
+        actionStructure += "{";
+        actionStructure += "\"actionText\":\""+currentActionNode.getActionText()+"\"";
+        actionStructure += ", ";
+        actionStructure += "\"nextVideoID\":"+currentActionNode.getNextVideoID();
+        actionStructure += "}";
+      }
+      Debug.Log(actionStructure);
+      return actionStructure;
     }
 }

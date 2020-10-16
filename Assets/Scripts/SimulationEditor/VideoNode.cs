@@ -44,13 +44,13 @@ public class VideoNode : MonoBehaviour,IPointerDownHandler,IBeginDragHandler,IEn
     videoID = defaultVideoID;
   }
 
-  public void createNewActionNode()
+  public void createNewActionNode(string actionText)
   {
     GameObject newNodeObject = Instantiate(actionNodePrefab, rectTransform);
     actionNodes.Add(newNodeObject);
     RectTransform newNodeRectTransform=newNodeObject.GetComponent<RectTransform>();
-    newNodeRectTransform.anchoredPosition =calculatePosition(newNodeRectTransform);
-    newNodeObject.GetComponent<ActionNode>().setActionText("Action node");
+    newNodeRectTransform.anchoredPosition = calculatePosition(newNodeRectTransform);
+    newNodeObject.GetComponent<ActionNode>().setActionText(actionText);
   }
 
   public void setVideoID(int newVideoID)
@@ -66,9 +66,14 @@ public class VideoNode : MonoBehaviour,IPointerDownHandler,IBeginDragHandler,IEn
   {
     videoFileName = newVideoFileName;
   }
-  public string getVideoFilePath()
+  public string getVideoFileName()
   {
     return videoFileName;
+  }
+
+  public List<GameObject> getActionNodeList()
+  {
+    return actionNodes;
   }
 
   public void OnDrag(PointerEventData eventData)
@@ -95,7 +100,6 @@ public class VideoNode : MonoBehaviour,IPointerDownHandler,IBeginDragHandler,IEn
   public void OnPointerDown(PointerEventData eventData){}
 
   public void OnDrop(PointerEventData eventData){}
-
 
   // Vector math things
 

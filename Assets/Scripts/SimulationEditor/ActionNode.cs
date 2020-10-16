@@ -19,11 +19,11 @@ public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
     [SerializeField]
     public RectTransform portGameObject;
 
-
     private LineRenderer connectLine;
     private Vector3[] verticesPos = new Vector3[2];
     private RectTransform startPortRectTrans;
     private RectTransform endPortRectTrans;
+    private VideoNode nextVideoNode=null;
     private bool nodeConnected=false;
     private RectTransform canvasRectTransform ;
     private Transform cameraTransform;
@@ -56,8 +56,6 @@ public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
       {
         GetComponent<Image>().color=notConnectedColor;
       }
-
-
     }
 
     void Update()
@@ -75,6 +73,16 @@ public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
       GetComponentInChildren<TextMeshProUGUI>().text=newActionText;
     }
 
+    public string getActionText()
+    {
+      return GetComponentInChildren<TextMeshProUGUI>().text;
+    }
+
+    public int getNextVideoID()
+    {
+      return nextVideoNode.getVideoID();
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
 //      Debug.Log("OnBeginDrag");
@@ -84,6 +92,7 @@ public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
       {
         GetComponent<Image>().color=baseColor;
       }
+      nextVideoNode=null;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -107,6 +116,7 @@ public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
         endPortRectTrans=null;
         nodeConnected=false;
         connectLine.enabled=false;
+        nextVideoNode=null;
 
         //color change
         if(!isStartNode)
@@ -116,7 +126,8 @@ public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
         return;
       }
 
-      endPortRectTrans = endNode.GetComponent<VideoNode>().portGameObject;
+      nextVideoNode =endNode.GetComponent<VideoNode>();
+      endPortRectTrans = nextVideoNode.portGameObject;
       nodeConnected=true;
       connectLine.enabled =true;
 
@@ -133,9 +144,6 @@ public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
       }
 
       GetComponent<Image>().color=baseColor;
-
-
-
     }
 
     public void OnDrop(PointerEventData eventData){}
