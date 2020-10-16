@@ -5,15 +5,23 @@ using UnityEngine.EventSystems;
 
 public class VideoNode : MonoBehaviour,IPointerDownHandler,IBeginDragHandler,IEndDragHandler,IDragHandler,IDropHandler
 {
-  public GameObject actionNodePrefab;
+  [SerializeField]
+  private GameObject actionNodePrefab;
+  [SerializeField]
+  private int defaultVideoID = -2;
+  [SerializeField]
+  public bool isEndNode = false;
+  [SerializeField]
+  public RectTransform portGameObject;
+
   private Transform cameraTransform;
   private RectTransform canvasRectTransform;
   private RectTransform rectTransform;
   private List<GameObject> actionNodes = new List<GameObject>();
 
   // video structure parameters
-  int videoID=-1;
-  string videoFileName = "";
+  private int videoID=-2; //no ID -2 should give error when parsing
+  private string videoFileName = "None"; //no video file
 
   void Awake()
   {
@@ -31,6 +39,9 @@ public class VideoNode : MonoBehaviour,IPointerDownHandler,IBeginDragHandler,IEn
 
     //this GameObject RectTransform
     rectTransform = GetComponent<RectTransform>();
+
+    //set default videoID
+    videoID = defaultVideoID;
   }
 
   public void createNewActionNode()
