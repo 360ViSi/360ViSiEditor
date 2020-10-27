@@ -49,7 +49,7 @@ public class VideoNode : MonoBehaviour,IPointerDownHandler,IBeginDragHandler,IEn
     GameObject newNodeObject = Instantiate(actionNodePrefab, rectTransform);
     actionNodes.Add(newNodeObject);
     RectTransform newNodeRectTransform=newNodeObject.GetComponent<RectTransform>();
-    newNodeRectTransform.anchoredPosition = calculatePosition(newNodeRectTransform);
+    newNodeRectTransform.anchoredPosition = calculateActionImagePosition(newNodeRectTransform);
     newNodeObject.GetComponent<ActionNode>().setActionText(actionText);
   }
 
@@ -113,7 +113,7 @@ public class VideoNode : MonoBehaviour,IPointerDownHandler,IBeginDragHandler,IEn
     return new Vector3(vec0.x*vec1.x,vec0.y*vec1.y,vec0.z*vec1.z);
   }
 
-  private Vector2 calculatePosition(RectTransform newNodeRectTransform)
+  private Vector2 calculateActionImagePosition(RectTransform newNodeRectTransform)
   {
     Rect newNodeRect = newNodeRectTransform.rect;
     Vector3 newNodeScale = newNodeRectTransform.localScale;
