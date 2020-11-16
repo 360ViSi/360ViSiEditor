@@ -61,10 +61,11 @@ public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
     void Update()
     {
       verticesPos[0] = startPortRectTrans.transform.position;
-      if (nodeConnected)
+      if (nodeConnected && endPortRectTrans != null)
       {
         verticesPos[1]=endPortRectTrans.transform.position;
       }
+      
       connectLine.SetPositions(verticesPos);
     }
 
@@ -81,6 +82,16 @@ public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
     public int getNextVideoID()
     {
       return nextVideoNode.getVideoID();
+    }
+
+    public void Disconnect()
+    {
+      endPortRectTrans=null;
+      nodeConnected=false;
+      connectLine.enabled=false;
+      nextVideoNode.RemoveInputNode(this);
+      nextVideoNode=null;
+      if(!isStartNode) GetComponent<Image>().color=baseColor;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -127,6 +138,7 @@ public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
       }
 
       nextVideoNode =dropNode.GetComponent<VideoNode>();
+      nextVideoNode.AddInputNode(this);
       endPortRectTrans = nextVideoNode.portGameObject;
       nodeConnected=true;
       connectLine.enabled =true;
