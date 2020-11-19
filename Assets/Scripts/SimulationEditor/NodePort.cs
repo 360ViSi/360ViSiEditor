@@ -5,109 +5,157 @@ using UnityEngine.EventSystems;
 
 public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHandler
 {
+    public bool isOutPort = false;
+    public bool isInPort = false;
+
     [SerializeField]
-    private bool startPort = false;
-    [SerializeField]
-    private bool endPort = false;
+    private GameObject connectionLinePrefab;
 
-
-
-    private LineRenderer connectLine;
-    private Vector3[] verticesPos = new Vector3[2];
-    private RectTransform startPortRectTrans;
-    private RectTransform endPortRectTrans;
-    private bool nodeConnected=false;
+    private ConnectionLine connectionLine;
+    private NodePort connectedPort;
     private RectTransform canvasRectTransform ;
     private Transform cameraTransform;
+    private RectTransform nodeTransform;
+    //parrent nodes is either Video or Action node
+    private ActionNode parentActionNode;
+    private VideoNode parentVideoNode;
 
 
     void Awake()
     {
-      //assign RectTransform
-      startPortRectTrans = GetComponent<RectTransform>();
+      //Instantiate LineConnection
+      GameObject newConnectionLine = Instantiate(connectionLinePrefab, GetComponent<Transform>());
+      connectionLine = newConnectionLine.GetComponent<ConnectionLine>();
+      if (connectionLine==null)
+      {
+        Debug.Log(name +" Did not get ConnectionLine");
+        return;
+      }
 
-      //Initialize LineRenderer
-      connectLine = GetComponent<LineRenderer>();
-      connectLine.GetPositions(verticesPos);
-      connectLine.enabled = false;
+      // get parent node - can be nulls!
+      parentActionNode = GetComponentInParent<ActionNode>();;
+      parentVideoNode = GetComponentInParent<VideoNode>();;
+
+
+      //get this node's rectTransform
+      nodeTransform = GetComponent<RectTransform>();
+      if (nodeTransform==null)
+      {
+        Debug.Log(name +" Did not get nodeTransform");
+        return;
+      }
 
       // get canvas RectTransform
       Canvas mainCanvas = GetComponentInParent<Canvas>();
       if (mainCanvas==null)
       {
-        Debug.Log("Did not get Canvas");
+        Debug.Log(name +" Did not get Canvas");
         return;
       }
       canvasRectTransform = mainCanvas.GetComponent<RectTransform>();
 
       //get camera Transform
       cameraTransform = Camera.main.GetComponent<Transform>();
-
-      //set color to notConnectedColor
     }
 
     void Update()
     {
-      verticesPos[0] = startPortRectTrans.transform.position;
-      if (nodeConnected)
+      if (isNodeConnected())
       {
-        verticesPos[1]=endPortRectTrans.transform.position;
+        Vector3 lineStart = nodeTransform.transform.position;
+        Vector3 lineEnd = connectedPort.getNodeRectTransform().transform.position;
+        connectionLine.redrawLine(lineStart,lineEnd);
       }
-      connectLine.SetPositions(verticesPos);
+    }
+
+    public RectTransform getNodeRectTransform()
+    {
+      return nodeTransform;
+    }
+
+    public VideoNode getParentVideoNode()
+    {
+      return parentVideoNode;
+    }
+
+    public ActionNode getParentActionNode()
+    {
+      return parentActionNode;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-//      Debug.Log("OnBeginDrag");
-      if (!startPort)
+
+      if (!isOutPort)
       {
         return;
       }
-
-      connectLine.enabled =true;
-      nodeConnected=false;
-
+      connectedPort=null;
+      connectionLine.show();
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-      //Debug.Log("OnDrag");
-      if (!startPort)
-      {
-        return;
-      }
-
       Vector3 mousePosition = Input.mousePosition;
       float cameraDistanceToCanvas=Mathf.Abs(cameraTransform.position.z-canvasRectTransform.position.z);
       mousePosition.z = cameraDistanceToCanvas;
-      Vector3 nodePointPos = Camera.main.ScreenToWorldPoint(mousePosition);
-      verticesPos[1] = nodePointPos;
-      connectLine.SetPositions(verticesPos);
+      Vector3 lineEnd = Camera.main.ScreenToWorldPoint(mousePosition);
+      Vector3 lineStart = nodeTransform.transform.position;
+      connectionLine.redrawLine(lineStart,lineEnd);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-      if (!startPort)
+      if (!isOutPort)
       {
         return;
       }
 
 //      Debug.Log("OnEndDrag");
-      Debug.Log(eventData.pointerEnter);
+
       GameObject dropNode = eventData.pointerEnter;
-      if (dropNode == null || !(dropNode.GetComponent<NodePort>().endPort))
+      //Debug.Log(dropNode);
+
+      try
       {
-        endPortRectTrans=null;
-        nodeConnected=false;
-        connectLine.enabled=false;
-        return;
+        NodePort dropPort = dropNode.GetComponent<NodePort>();
+        if (dropPort.isInPort)
+        {
+          connectedPort = dropPort;
+          connectionLine.show();
+        }
+        else
+        {
+          connectedPort=null;
+          connectionLine.hide();
+        }
+      }
+      // did not drop on NodePort
+      catch(System.NullReferenceException e)
+      {
+        connectedPort=null;
+        connectionLine.hide();
       }
 
-      endPortRectTrans = dropNode.GetComponent<RectTransform>();
-      nodeConnected=true;
-      connectLine.enabled =true;
+      if (parentActionNode!=null)
+      {
+        parentActionNode.setMode();
+      }
+
+
 
     }
 
     public void OnDrop(PointerEventData eventData){}
+
+    public NodePort getConnectedPort()
+    {
+      return connectedPort;
+    }
+
+    private bool isNodeConnected()
+    {
+      return (connectedPort!=null);
+    }
+
 }

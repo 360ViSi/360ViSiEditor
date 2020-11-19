@@ -6,6 +6,9 @@ using UnityEngine.EventSystems;
 
 public class NodeMove : MonoBehaviour,IDragHandler
 {
+  [SerializeField]
+  private RectTransform objectToMove;
+
   private Transform cameraTransform;
   private RectTransform canvasRectTransform;
   private RectTransform rectTransform;
@@ -44,7 +47,7 @@ public class NodeMove : MonoBehaviour,IDragHandler
     //scale mouse movement on screen to object movement on canvas
     Vector2 mouseMovement = eventData.delta;
     float screenHeight =Screen.height;
-    rectTransform.anchoredPosition += mouseMovement*screenToCanvasScale;
+    objectToMove.anchoredPosition += mouseMovement*screenToCanvasScale;
   }
 
 
