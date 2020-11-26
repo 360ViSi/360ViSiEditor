@@ -1,6 +1,4 @@
-﻿using System.Text;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,15 +7,24 @@ public class StructureManager : MonoBehaviour
     [SerializeField]
     private GameObject videoNodePrefab;
     [SerializeField]
+    private GameObject actionNodePrefab;
+    [SerializeField]
     private GameObject starNode;
+    [SerializeField]
+    private GameObject endNode;
 
-    private List<GameObject> videoNodes = new List<GameObject>();
+    private List<GameObject> videoGameObjects = new List<GameObject>();
     private int generatedVideoID = 0;
+    private ConnectionManager connectionManager;
 
     // Start is called before the first frame update
     void Start()
     {
-
+      connectionManager = GetComponentInChildren<ConnectionManager>();
+      if(connectionManager==null)
+      {
+        Debug.Log("There are no ConnectionManager as a child of " + name);
+      }
     }
 
     // Update is called once per frame
@@ -27,26 +34,30 @@ public class StructureManager : MonoBehaviour
     }
     public void createNewVideoNode()
     {
+      //Initialize new Video node from prefab and add it to the list
+      //With Unique video ID (setVideoID handles testing)
       GameObject newVideoObject = Instantiate(videoNodePrefab, GetComponent<Transform>());
       setVideoID(newVideoObject,generatedVideoID);
-      newVideoObject.GetComponent<VideoNode>().SetStructureManager(this);
       generatedVideoID++;
-      videoNodes.Add(newVideoObject);
+      videoGameObjects.Add(newVideoObject);
     }
 
-    public void RemoveVideoNode(GameObject nodeObject)
+    public GameObject getActionNodePrefab()
     {
-      videoNodes.Remove(nodeObject);
+      return actionNodePrefab;
     }
 
-    private void setVideoID(GameObject videoNode, int newVideoID)
+
+    private void setVideoID(GameObject videoGameObject, int newVideoID)
     {
+      //check that the video ID is unique
+      //and asign it to video node
       while(!isVideoIDFree(newVideoID))
       {
         Debug.Log("Video ID is already in use: "+newVideoID);
         newVideoID++;
       }
-      videoNode.GetComponent<VideoNode>().setVideoID(newVideoID);
+      videoGameObject.GetComponent<VideoNode>().setVideoID(newVideoID);
     }
 
     private bool isVideoIDFree(int testVideoID)
@@ -58,9 +69,10 @@ public class StructureManager : MonoBehaviour
       }
 
       //check through video nodes
-      foreach (GameObject listedVideoNode in videoNodes)
+      List<VideoNode> videoNodes = getVideoNodeList();
+      foreach (VideoNode listedVideoNode in videoNodes)
       {
-        int listedVideoID = listedVideoNode.GetComponent<VideoNode>().getVideoID();
+        int listedVideoID = listedVideoNode.getVideoID();
         Debug.Log("video ID: "+ listedVideoID);
         if (testVideoID==listedVideoID)
         {
@@ -71,59 +83,49 @@ public class StructureManager : MonoBehaviour
       return true;
     }
 
-    [ContextMenu("Parse Video Structure to Log")]
-    public string parseVideoStructure()
+    public List<VideoNode> getVideoNodeList()
     {
-      //if there are no structures
-      if(videoNodes.Count<1)
+      List<VideoNode> videoNodes = new List<VideoNode>();
+      foreach (GameObject videoGameObject in videoGameObjects)
       {
-        //return fileStructureJSON;
-        return "null";
+        videoNodes.Add(videoGameObject.GetComponent<VideoNode>());
       }
-
-      StringBuilder sb = new StringBuilder();
-      sb.Append("{");
-      sb.Append("\"videos\":[");
-
-      var firstVideo = true;
-      foreach (GameObject videoNodeObject in videoNodes)
-      {
-        var videoNode = videoNodeObject.GetComponent<VideoNode>();
-        if(firstVideo) firstVideo = false;
-        else sb.Append(",");
-        sb.Append("{");
-        sb.Append("\"videoID\":\"" + videoNode.getVideoID() + "\", ");
-        sb.Append("\"videoFileName\":\"" + videoNode.getVideoFileName() + "\", ");
-        sb.Append("\"actions\": [");
-        sb.Append(parseActionStructure(videoNodeObject));
-        sb.Append("]");
-        sb.Append("}");
-
-      }
-      sb.Append("]");
-      sb.Append("}");
-
-      Debug.Log(sb.ToString());
-      return sb.ToString();
+      return videoNodes;
     }
 
-    private string parseActionStructure(GameObject VideoNode)
+    public void parseVideoStructure()
+    {
+      string fileStructureJSON="";
+      //if there are no structures
+      if(videoGameObjects.Count<1)
+      {
+        //return fileStructureJSON;
+        return;
+      }
+      List<VideoNode> videoNodes = getVideoNodeList();
+      foreach (VideoNode videoNode in videoNodes)
+      {
+        parseActionStructure(videoNode);
+      }
+
+      //return fileStructureJSON;
+
+    }
+
+    private string parseActionStructure(VideoNode VideoNode)
     {
       string actionStructure="";
-      var firstAction = true;
       //List<GameObject> actionNodeList = VideoNode.GetComponent<VideoNode>().getActionNodeList();
-      foreach (GameObject actionNode in VideoNode.GetComponent<VideoNode>().getActionNodeList())
+      foreach (ActionNode actionNode in VideoNode.getActionNodeList())
       {
-        ActionNode currentActionNode = actionNode.GetComponent<ActionNode>();
-        if (firstAction) firstAction = false;
-        else actionStructure += ",";
+        //ActionNode currentActionNode = actionNode.GetComponent<ActionNode>();
         actionStructure += "{";
-        actionStructure += "\"actionText\":\""+currentActionNode.getActionText()+"\"";
+        actionStructure += "\"actionText\":\""+actionNode.getActionText()+"\"";
         actionStructure += ", ";
-        actionStructure += "\"nextVideoID\":"+currentActionNode.getNextVideoID();
+        actionStructure += "\"nextVideoID\":"+actionNode.getNextVideoID();
         actionStructure += "}";
       }
-      //Debug.Log(actionStructure);
+      Debug.Log(actionStructure);
       return actionStructure;
     }
 }

@@ -6,84 +6,92 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHandler
+public class ActionNode : MonoBehaviour
 {
     [SerializeField]
-    private Color baseColor;
+    private Color connectedColor;
     [SerializeField]
     private Color notConnectedColor;
     [SerializeField]
     private Color endActionColor;
-    [SerializeField]
-    private bool isStartNode = false;
-    [SerializeField]
-    public RectTransform portGameObject;
 
-    private LineRenderer connectLine;
-    private Vector3[] verticesPos = new Vector3[2];
-    private RectTransform startPortRectTrans;
-    private RectTransform endPortRectTrans;
-    private VideoNode nextVideoNode=null;
-    private bool nodeConnected=false;
-    private RectTransform canvasRectTransform ;
-    private Transform cameraTransform;
-
+    private NodePort portGameObject;
+    private TextMeshProUGUI actionText;
+    private Image thisImage;
 
     void Awake()
     {
-      //assign RectTransform
-      startPortRectTrans = portGameObject;
+      //setup object color
+      thisImage = GetComponent<Image>();
+      thisImage.color=notConnectedColor;
 
-      //Initialize LineRenderer
-      connectLine = gameObject.GetComponent<LineRenderer>();
-      connectLine.GetPositions(verticesPos);
-      connectLine.enabled = false;
-
-      // get canvas RectTransform
-      Canvas mainCanvas = GetComponentInParent<Canvas>();
-      if (mainCanvas==null)
+      // get NodePort
+      portGameObject = GetComponentInChildren<NodePort>();
+      if (portGameObject==null)
       {
-        Debug.Log("Did not get Canvas");
-        return;
+        Debug.Log("There are no NodePort in "+ name);
       }
-      canvasRectTransform = mainCanvas.GetComponent<RectTransform>();
 
-      //get camera Transform
-      cameraTransform = Camera.main.GetComponent<Transform>();
-
-      //set color to notConnectedColor
-      if (!isStartNode)
+      // get Text object for action Text
+      actionText = GetComponentInChildren<TextMeshProUGUI>();
+      if (portGameObject==null)
       {
-        GetComponent<Image>().color=notConnectedColor;
+        Debug.Log("There are no text object in "+ name);
       }
+
     }
 
     void Update()
     {
+<<<<<<< .merge_file_a11980
       verticesPos[0] = startPortRectTrans.transform.position;
       if (nodeConnected && endPortRectTrans != null)
+=======
+    }
+
+    public void setMode()
+    {
+      // Changes the color regarding to connection status
+
+      NodePort connectedPort = portGameObject.getConnectedPort();
+      Debug.Log("Connected port: "+ connectedPort);
+      if (connectedPort==null)
       {
-        verticesPos[1]=endPortRectTrans.transform.position;
+        thisImage.color=notConnectedColor;
+        return;
       }
+      VideoNode connectedVideoNode = connectedPort.GetComponentInParent<VideoNode>();
+      if (connectedVideoNode!=null && connectedVideoNode.getVideoID()==-1)
+>>>>>>> .merge_file_a07608
+      {
+        thisImage.color=endActionColor;
+        return;
+      }
+<<<<<<< .merge_file_a11980
       
       connectLine.SetPositions(verticesPos);
+=======
+      thisImage.color=connectedColor;
+>>>>>>> .merge_file_a07608
     }
+
 
     public void setActionText(string newActionText)
     {
-      GetComponentInChildren<TextMeshProUGUI>().text=newActionText;
+      actionText.text=newActionText;
     }
 
     public string getActionText()
     {
-      return GetComponentInChildren<TextMeshProUGUI>().text;
+      return actionText.text;
     }
 
     public int getNextVideoID()
     {
-      return nextVideoNode.getVideoID();
-    }
+      // get video node from connected port
+      // and get that VideoID (-2 if not connected)
 
+<<<<<<< .merge_file_a11980
     public void Disconnect()
     {
       endPortRectTrans=null;
@@ -100,43 +108,21 @@ public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
       connectLine.enabled =true;
       nodeConnected=false;
       if(!isStartNode)
+=======
+      if (portGameObject==null)
+>>>>>>> .merge_file_a07608
       {
-        GetComponent<Image>().color=baseColor;
-      }
-      nextVideoNode=null;
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-      //Debug.Log("OnDrag");
-      Vector3 mousePosition = Input.mousePosition;
-      float cameraDistanceToCanvas=Mathf.Abs(cameraTransform.position.z-canvasRectTransform.position.z);
-      mousePosition.z = cameraDistanceToCanvas;
-      Vector3 nodePointPos = Camera.main.ScreenToWorldPoint(mousePosition);
-      verticesPos[1] = nodePointPos;
-      connectLine.SetPositions(verticesPos);
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-//      Debug.Log("OnEndDrag");
-      Debug.Log(eventData.pointerEnter);
-      GameObject dropNode = eventData.pointerEnter;
-      if (dropNode == null || dropNode.GetComponent<VideoNode>()==null)
-      {
-        endPortRectTrans=null;
-        nodeConnected=false;
-        connectLine.enabled=false;
-        nextVideoNode=null;
-
-        //color change
-        if(!isStartNode)
-        {
-          GetComponent<Image>().color=notConnectedColor;
-        }
-        return;
+        Debug.Log(this.name + "Have no port game object");
+        return -2;
       }
 
+      NodePort connectedPort = portGameObject.getConnectedPort();
+      if (connectedPort == null)
+      {
+        return -2;
+      }
+
+<<<<<<< .merge_file_a11980
       nextVideoNode =dropNode.GetComponent<VideoNode>();
       nextVideoNode.AddInputNode(this);
       endPortRectTrans = nextVideoNode.portGameObject;
@@ -146,17 +132,17 @@ public class ActionNode : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
       //color change
 
       if (isStartNode)
+=======
+      VideoNode connectedVideoNode = connectedPort.getParentVideoNode();
+      if(connectedVideoNode == null)
+>>>>>>> .merge_file_a07608
       {
-        return;
+        return -2;
       }
-      if (dropNode.GetComponent<VideoNode>().isEndNode)
+      else
       {
-          GetComponent<Image>().color=endActionColor;
-          return;
+        return connectedVideoNode.getVideoID();
       }
-
-      GetComponent<Image>().color=baseColor;
     }
 
-    public void OnDrop(PointerEventData eventData){}
 }
