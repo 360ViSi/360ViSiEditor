@@ -141,11 +141,13 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
       {
         parentActionNode.setMode();
       }
-
-
-
     }
 
+    public void disconnect()
+    {
+      connectedPort=null;
+      connectionLine.hide();
+    }
     public void OnDrop(PointerEventData eventData){}
 
     public NodePort getConnectedPort()

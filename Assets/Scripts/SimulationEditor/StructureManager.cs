@@ -93,6 +93,28 @@ public class StructureManager : MonoBehaviour
       return videoNodes;
     }
 
+    public void removeVideoNode(GameObject nodeObject)
+    {
+      videoGameObjects.Remove(nodeObject);
+      var videoId = nodeObject.GetComponent<VideoNode>().getVideoID();
+      //get all action nodes of all videonodes
+      List<ActionNode> allActionNodes = new List<ActionNode>();
+      List<VideoNode> allVideoNodes = getVideoNodeList();
+
+      allActionNodes.Add(starNode.GetComponent<ActionNode>());
+      foreach (var item in allVideoNodes)
+      {
+        allActionNodes.AddRange(item.getActionNodeList());
+      }
+      foreach (var item in allActionNodes)
+      {
+          if(item.getNextVideoID() == videoId)
+            item.disconnect();
+      }
+
+      Destroy(nodeObject);
+    }
+
     public void parseVideoStructure()
     {
       string fileStructureJSON="";

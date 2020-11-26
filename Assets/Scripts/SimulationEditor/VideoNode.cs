@@ -50,6 +50,11 @@ public class VideoNode : MonoBehaviour
     return videoFileName;
   }
 
+  public List<GameObject> getActionNodeObjects()
+  {
+    return actionGameObjects;
+  }
+
   public List<ActionNode> getActionNodeList()
   {
     List<ActionNode> actionNodes = new List<ActionNode>();
@@ -58,6 +63,21 @@ public class VideoNode : MonoBehaviour
       actionNodes.Add(actionGameObject.GetComponent<ActionNode>());
     }
     return actionNodes;
+  }
+
+  public void destoyVideoNode(){
+    StructureManager structureManager = GetComponentInParent<StructureManager>();
+    structureManager.removeVideoNode(gameObject);
+  }
+
+  public void repositionActionNodes()
+  {
+    List<GameObject> list = getActionNodeObjects();
+    for (int i = 0; i < list.Count; i++)
+    {
+      var actionNodeRectTransform = list[i].GetComponent<RectTransform>();
+      actionNodeRectTransform.anchoredPosition = calculateActionImagePosition(actionNodeRectTransform, i + 1);
+    }
   }
 
   private Vector2 calculateActionImagePosition(RectTransform newNodeRectTransform)
@@ -70,4 +90,13 @@ public class VideoNode : MonoBehaviour
     return new Vector2(realDimensions.x/2, -realDimensions.y*(actionGameObjects.Count-0.5f));
   }
 
+  private Vector2 calculateActionImagePosition(RectTransform newNodeRectTransform, int position)
+  {
+    //Calculates position for the next action GameObject
+    //Assumes that every action gameobject is in same size
+    Rect newNodeRect = newNodeRectTransform.rect;
+    Vector3 newNodeScale = newNodeRectTransform.localScale;
+    Vector2 realDimensions=new Vector2(newNodeRect.width*newNodeScale.x, newNodeRect.height*newNodeScale.y);
+    return new Vector2(realDimensions.x/2, -realDimensions.y*(position-0.5f));
+  }
 }
