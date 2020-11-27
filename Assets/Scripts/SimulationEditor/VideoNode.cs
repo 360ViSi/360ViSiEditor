@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[System.Serializable]
 public class VideoNode : MonoBehaviour
 {
   [SerializeField]
   private int defaultVideoID = -2;
-  private List<GameObject> actionGameObjects = new List<GameObject>();
+  [SerializeField]private List<GameObject> actionGameObjects = new List<GameObject>();
 
   // video structure parameters
-  private int videoID=-2; //no ID -2 should give error when parsing
-  private string videoFileName = "None"; //no video file
-
+  public int videoID=-2; //no ID -2 should give error when parsing
+  [SerializeField]private string videoFileName = "None"; //no video file
+  public string testString = "Hello Json";
   void Awake()
   {
     //set default videoID

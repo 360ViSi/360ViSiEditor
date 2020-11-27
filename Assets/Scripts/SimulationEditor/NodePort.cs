@@ -133,6 +133,7 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
       // did not drop on NodePort
       catch(System.NullReferenceException e)
       {
+        print(e);
         connectedPort=null;
         connectionLine.hide();
       }

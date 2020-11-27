@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿using System.Runtime.CompilerServices;
+using System.Data;
+using System.Runtime.Serialization.Json;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -115,23 +118,20 @@ public class StructureManager : MonoBehaviour
       Destroy(nodeObject);
     }
 
+    [ContextMenu("Parse video structure to log")]
     public void parseVideoStructure()
     {
-      string fileStructureJSON="";
+      string fileStructureJSON = "";
       //if there are no structures
       if(videoGameObjects.Count<1)
       {
-        //return fileStructureJSON;
-        return;
+        print("Empty");
       }
       List<VideoNode> videoNodes = getVideoNodeList();
-      foreach (VideoNode videoNode in videoNodes)
-      {
-        parseActionStructure(videoNode);
-      }
-
-      //return fileStructureJSON;
-
+      
+      var videoJSONWrapper = new VideoJSONWrapper(VideoJSONWrapper.ConvertVideoNodeListToJSONFormat(videoNodes));
+      fileStructureJSON = JsonUtility.ToJson(videoJSONWrapper);
+      print(fileStructureJSON);
     }
 
     private string parseActionStructure(VideoNode VideoNode)

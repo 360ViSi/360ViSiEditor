@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
+[System.Serializable]
 public class ActionNode : MonoBehaviour
 {
   [SerializeField]
