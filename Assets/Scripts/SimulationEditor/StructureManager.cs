@@ -20,7 +20,7 @@ public class StructureManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-      connectionManager = GetComponentInChildren<ConnectionManager>();
+      connectionManager = GetComponent<ConnectionManager>();
       if(connectionManager==null)
       {
         Debug.Log("There are no ConnectionManager as a child of " + name);

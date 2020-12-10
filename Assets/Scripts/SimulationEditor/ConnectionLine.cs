@@ -26,7 +26,7 @@ public class ConnectionLine : MonoBehaviour
 
   public void redrawLine(Vector3 startPos, Vector3 endPos)
   {
-    //calculates and sets kurve vertex positions
+    //calculates and sets curve vertex positions
     verticesPos = bezierize(bezierCurvature, lineVertexCount,startPos, endPos);
     connectLine.SetPositions(verticesPos);
   }

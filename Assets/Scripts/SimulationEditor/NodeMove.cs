@@ -9,6 +9,7 @@ public class NodeMove : MonoBehaviour,IDragHandler
   [SerializeField]
   private RectTransform objectToMove;
 
+  private ConnectionManager connectionManager;
   private Transform cameraTransform;
   private RectTransform canvasRectTransform;
   private RectTransform rectTransform;
@@ -30,6 +31,14 @@ public class NodeMove : MonoBehaviour,IDragHandler
 
     //this GameObject RectTransform
     rectTransform = GetComponent<RectTransform>();
+
+    //get connectionManager
+    connectionManager = GetComponentInParent<ConnectionManager>();
+    if (connectionManager==null)
+    {
+      Debug.Log(name +" Did not get ConnectionManager");
+      return;
+    }
 
   }
 

@@ -8,11 +8,12 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
     public bool isOutPort = false;
     public bool isInPort = false;
 
-    [SerializeField]
-    private GameObject connectionLinePrefab;
+//    [SerializeField]
+//    private GameObject connectionLinePrefab;
 
-    private ConnectionLine connectionLine;
-    private NodePort connectedPort;
+    private ConnectionManager connectionManager;
+//    private ConnectionLine connectionLine;
+//    private NodePort connectedPort;
     private RectTransform canvasRectTransform ;
     private Transform cameraTransform;
     private RectTransform nodeTransform;
@@ -21,14 +22,23 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
     private VideoNode parentVideoNode;
 
 
+
     void Awake()
     {
       //Instantiate LineConnection
-      GameObject newConnectionLine = Instantiate(connectionLinePrefab, GetComponent<Transform>());
-      connectionLine = newConnectionLine.GetComponent<ConnectionLine>();
-      if (connectionLine==null)
+//      GameObject newConnectionLine = Instantiate(connectionLinePrefab, GetComponent<Transform>());
+//      connectionLine = newConnectionLine.GetComponent<ConnectionLine>();
+//      if (connectionLine==null)
+//      {
+//        Debug.Log(name +" Did not get ConnectionLine");
+//        return;
+//      }
+
+      //get connectionManager
+      connectionManager = GetComponentInParent<ConnectionManager>();
+      if (connectionManager==null)
       {
-        Debug.Log(name +" Did not get ConnectionLine");
+        Debug.Log(name +" Did not get ConnectionManager");
         return;
       }
 
@@ -62,9 +72,9 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
     {
       if (isNodeConnected())
       {
-        Vector3 lineStart = nodeTransform.transform.position;
-        Vector3 lineEnd = connectedPort.getNodeRectTransform().transform.position;
-        connectionLine.redrawLine(lineStart,lineEnd);
+//        Vector3 lineStart = nodeTransform.transform.position;
+//        Vector3 lineEnd = connectedPort.getNodeRectTransform().transform.position;
+//        connectionLine.redrawLine(lineStart,lineEnd);
       }
     }
 
@@ -85,23 +95,25 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-
+      //
       if (!isOutPort)
       {
         return;
       }
-      connectedPort=null;
-      connectionLine.show();
+//      connectedPort=null;
+      //connectionLine.show();
+      connectionManager.showConnectionLine(this, true);
+//      connectionManager.deleteConnection(this);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-      Vector3 mousePosition = Input.mousePosition;
-      float cameraDistanceToCanvas=Mathf.Abs(cameraTransform.position.z-canvasRectTransform.position.z);
-      mousePosition.z = cameraDistanceToCanvas;
-      Vector3 lineEnd = Camera.main.ScreenToWorldPoint(mousePosition);
-      Vector3 lineStart = nodeTransform.transform.position;
-      connectionLine.redrawLine(lineStart,lineEnd);
+//      Vector3 mousePosition = Input.mousePosition;
+//      float cameraDistanceToCanvas=Mathf.Abs(cameraTransform.position.z-canvasRectTransform.position.z);
+//      mousePosition.z = cameraDistanceToCanvas;
+//      Vector3 lineEnd = Camera.main.ScreenToWorldPoint(mousePosition);
+//      Vector3 lineStart = nodeTransform.transform.position;
+//      connectionLine.redrawLine(lineStart,lineEnd);
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -121,41 +133,57 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
         NodePort dropPort = dropNode.GetComponent<NodePort>();
         if (dropPort.isInPort)
         {
-          connectedPort = dropPort;
-          connectionLine.show();
+//          connectedPort = dropPort;
+//          connectionLine.show();
+
+          connectionManager.createConnection(this, dropPort);
+          connectionManager.redrawConnection(this);
+          connectionManager.showConnectionLine(this, true);
         }
         else
         {
-          connectedPort=null;
-          connectionLine.hide();
+//          connectedPort=null;
+          Debug.Log("DragEnd: not inPort");
+          connectionManager.deleteConnection(this);
+          //connectionLine.hide();
+
         }
       }
       // did not drop on NodePort
       catch(System.NullReferenceException e)
       {
-        connectedPort=null;
-        connectionLine.hide();
+//        connectedPort=null;
+//        connectionLine.hide();
+          Debug.Log("DragEnd: null");
+          connectionManager.deleteConnection(this);
       }
 
       if (parentActionNode!=null)
       {
         parentActionNode.setMode();
       }
-
-
-
     }
 
     public void OnDrop(PointerEventData eventData){}
 
     public NodePort getConnectedPort()
     {
-      return connectedPort;
+      Connection thisConnection = connectionManager.getConnection(this);
+      if(thisConnection==null)
+      {
+        return null;
+      }
+      return thisConnection.getToNode();
     }
 
     private bool isNodeConnected()
     {
-      return (connectedPort!=null);
+      return (connectionManager.getConnection(this)!=null);
+    }
+
+    public Vector3 getPosition()
+    {
+      return nodeTransform.transform.position;
     }
 
 }
