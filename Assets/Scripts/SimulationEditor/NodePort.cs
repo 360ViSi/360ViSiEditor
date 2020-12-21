@@ -70,12 +70,12 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
     void Update()
     {
-      if (isNodeConnected())
-      {
+//      if (isNodeConnected())
+//      {
 //        Vector3 lineStart = nodeTransform.transform.position;
 //        Vector3 lineEnd = connectedPort.getNodeRectTransform().transform.position;
 //        connectionLine.redrawLine(lineStart,lineEnd);
-      }
+//      }
     }
 
     public RectTransform getNodeRectTransform()
@@ -102,18 +102,19 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
       }
 //      connectedPort=null;
       //connectionLine.show();
-      connectionManager.showConnectionLine(this, true);
+      connectionManager.createConnection(this, null);
+      //connectionManager.showConnectionLine(this, null, true);
 //      connectionManager.deleteConnection(this);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-//      Vector3 mousePosition = Input.mousePosition;
-//      float cameraDistanceToCanvas=Mathf.Abs(cameraTransform.position.z-canvasRectTransform.position.z);
-//      mousePosition.z = cameraDistanceToCanvas;
-//      Vector3 lineEnd = Camera.main.ScreenToWorldPoint(mousePosition);
+      Vector3 mousePosition = Input.mousePosition;
+      float cameraDistanceToCanvas=Mathf.Abs(cameraTransform.position.z-canvasRectTransform.position.z);
+      mousePosition.z = cameraDistanceToCanvas;
+      Vector3 lineEnd = Camera.main.ScreenToWorldPoint(mousePosition);
 //      Vector3 lineStart = nodeTransform.transform.position;
-//      connectionLine.redrawLine(lineStart,lineEnd);
+      connectionManager.getConnections(this,null)[0].drawDragLine(lineEnd);
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -126,25 +127,24 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 //      Debug.Log("OnEndDrag");
 
       GameObject dropNode = eventData.pointerEnter;
-      //Debug.Log(dropNode);
 
       try
       {
         NodePort dropPort = dropNode.GetComponent<NodePort>();
+        Debug.Log("DropPort: "+dropPort);
         if (dropPort.isInPort)
         {
 //          connectedPort = dropPort;
 //          connectionLine.show();
-
           connectionManager.createConnection(this, dropPort);
-          connectionManager.redrawConnection(this);
-          connectionManager.showConnectionLine(this, true);
+          connectionManager.redrawConnection(this,dropPort);
+          connectionManager.showConnectionLine(this, null, true);
         }
         else
         {
 //          connectedPort=null;
           Debug.Log("DragEnd: not inPort");
-          connectionManager.deleteConnection(this);
+          connectionManager.deleteConnection(this,null);
           //connectionLine.hide();
 
         }
@@ -155,7 +155,7 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 //        connectedPort=null;
 //        connectionLine.hide();
           Debug.Log("DragEnd: null");
-          connectionManager.deleteConnection(this);
+          connectionManager.deleteConnection(this,null);
       }
 
       if (parentActionNode!=null)
@@ -166,19 +166,19 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
     public void OnDrop(PointerEventData eventData){}
 
-    public NodePort getConnectedPort()
-    {
-      Connection thisConnection = connectionManager.getConnection(this);
-      if(thisConnection==null)
-      {
-        return null;
-      }
-      return thisConnection.getToNode();
-    }
+//    public NodePort getConnectedPort()
+//    {
+//      List<Connection> thisConnection = connectionManager.getConnection(this,null);
+//      if(thisConnection.Count!=1)
+//      {
+//        return null;
+//      }
+//      return thisConnection[0].getToNode();
+//    }
 
     private bool isNodeConnected()
     {
-      return (connectionManager.getConnection(this)!=null);
+      return (connectionManager.getConnections(this,null).Count!=0);
     }
 
     public Vector3 getPosition()

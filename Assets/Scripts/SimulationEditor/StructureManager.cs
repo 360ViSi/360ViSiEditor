@@ -118,11 +118,16 @@ public class StructureManager : MonoBehaviour
       //List<GameObject> actionNodeList = VideoNode.GetComponent<VideoNode>().getActionNodeList();
       foreach (ActionNode actionNode in VideoNode.getActionNodeList())
       {
-        //ActionNode currentActionNode = actionNode.GetComponent<ActionNode>();
+        int nextVideoID=-2;
+        List<Connection> actionConnection = connectionManager.getConnections(actionNode.getNodePort(),null);
+        if (actionConnection.Count > 0)
+        {
+          nextVideoID=actionConnection[0].getToNode().getParentVideoNode().getVideoID();
+        }
         actionStructure += "{";
         actionStructure += "\"actionText\":\""+actionNode.getActionText()+"\"";
         actionStructure += ", ";
-        actionStructure += "\"nextVideoID\":"+actionNode.getNextVideoID();
+        actionStructure += "\"nextVideoID\":"+nextVideoID;
         actionStructure += "}";
       }
       Debug.Log(actionStructure);

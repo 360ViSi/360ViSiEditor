@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-public class NodeMove : MonoBehaviour,IDragHandler
+public class NodeMove : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHandler
 {
   [SerializeField]
   private RectTransform objectToMove;
@@ -13,6 +13,7 @@ public class NodeMove : MonoBehaviour,IDragHandler
   private Transform cameraTransform;
   private RectTransform canvasRectTransform;
   private RectTransform rectTransform;
+  private List<Connection> everyConnection;
 
 
   void Awake()
@@ -39,7 +40,12 @@ public class NodeMove : MonoBehaviour,IDragHandler
       Debug.Log(name +" Did not get ConnectionManager");
       return;
     }
+  }
 
+  public void OnBeginDrag(PointerEventData eventData)
+  {
+    everyConnection = getEveryConnection();
+    return;
   }
 
   public void OnDrag(PointerEventData eventData)
@@ -57,8 +63,42 @@ public class NodeMove : MonoBehaviour,IDragHandler
     Vector2 mouseMovement = eventData.delta;
     float screenHeight =Screen.height;
     objectToMove.anchoredPosition += mouseMovement*screenToCanvasScale;
+    foreach(Connection connection in everyConnection)
+    {
+      connection.redrawConnectionLine();
+    }
+
   }
 
+  public void OnEndDrag(PointerEventData eventData)
+  {
+
+  }
+
+  //private List<NodePort> getEveryConnectioPort()
+  private List<Connection> getEveryConnection()
+  {
+    List<Connection> nodeConnections = new List<Connection>();
+    //connections to video node
+    VideoNode thisVideoNode = this.GetComponentInParent<VideoNode>();
+
+    //if videoNode is null movenode is attached to Start which is ActionNode
+    if(thisVideoNode==null)
+    {
+      NodePort startNodePort = this.GetComponentInParent<ActionNode>().getNodePort();
+      return connectionManager.getConnections(startNodePort,null);
+    }
+
+    // moveNode is in videoNode
+    nodeConnections.AddRange(connectionManager.getConnections(null,thisVideoNode.getNodePort()));
+    //connections from action nodes
+    List<ActionNode> actionNodes = thisVideoNode.getActionNodeList();
+    foreach(ActionNode actionNode in actionNodes)
+    {
+      nodeConnections.AddRange(connectionManager.getConnections(actionNode.getNodePort(),null));
+    }
+    return nodeConnections;
+  }
 
   // Vector math things
 

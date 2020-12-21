@@ -15,7 +15,8 @@ public class ActionNode : MonoBehaviour
     [SerializeField]
     private Color endActionColor;
 
-    private NodePort portGameObject;
+    private NodePort nodePort;
+    private ConnectionManager connectionManager;
     private TextMeshProUGUI actionText;
     private Image thisImage;
 
@@ -26,19 +27,26 @@ public class ActionNode : MonoBehaviour
       thisImage.color=notConnectedColor;
 
       // get NodePort
-      portGameObject = GetComponentInChildren<NodePort>();
-      if (portGameObject==null)
+      nodePort = GetComponentInChildren<NodePort>();
+      if (nodePort==null)
       {
         Debug.Log("There are no NodePort in "+ name);
       }
 
       // get Text object for action Text
       actionText = GetComponentInChildren<TextMeshProUGUI>();
-      if (portGameObject==null)
+      if (actionText==null)
       {
         Debug.Log("There are no text object in "+ name);
       }
 
+      //get connectionManager
+      connectionManager = GetComponentInParent<ConnectionManager>();
+      if (connectionManager==null)
+      {
+        Debug.Log(name +" Did not get ConnectionManager");
+        return;
+      }
     }
 
     void Update()
@@ -49,14 +57,16 @@ public class ActionNode : MonoBehaviour
     {
       // Changes the color regarding to connection status
 
-      NodePort connectedPort = portGameObject.getConnectedPort();
-      Debug.Log("Connected port: "+ connectedPort);
-      if (connectedPort==null)
+      List<Connection> portConnections = connectionManager.getConnections(this.nodePort,null);
+
+      //empty connection list == not connected
+      if (portConnections.Count==0)
       {
         thisImage.color=notConnectedColor;
         return;
       }
-      VideoNode connectedVideoNode = connectedPort.GetComponentInParent<VideoNode>();
+      // get connection "to" node and its VideoNode
+      VideoNode connectedVideoNode = portConnections[0].getToNode().getParentVideoNode();
       if (connectedVideoNode!=null && connectedVideoNode.getVideoID()==-1)
       {
         thisImage.color=endActionColor;
@@ -76,32 +86,30 @@ public class ActionNode : MonoBehaviour
       return actionText.text;
     }
 
-    public int getNextVideoID()
+    public NodePort getNodePort()
     {
+      return nodePort;
+    }
+
+//    public int getNextVideoID()
+//    {
       // get video node from connected port
       // and get that VideoID (-2 if not connected)
 
-      if (portGameObject==null)
-      {
-        Debug.Log(this.name + "Have no port game object");
-        return -2;
-      }
+//      List<Connection> portConnections = connectionManager.getConnections(this.nodePort,null);
+      //empty connection list == not connected
+//      if (portConnections.Count==0)
+//      {
+//        return -2;
+//      }
 
-      NodePort connectedPort = portGameObject.getConnectedPort();
-      if (connectedPort == null)
-      {
-        return -2;
-      }
+      // get connection "to" node and its VideoNode
+//      VideoNode connectedVideoNode = portConnections[0].getToNode().getParentVideoNode();
+//      if (connectedVideoNode==null)
+//      {
+//        return -2;
+//      }
 
-      VideoNode connectedVideoNode = connectedPort.getParentVideoNode();
-      if(connectedVideoNode == null)
-      {
-        return -2;
-      }
-      else
-      {
-        return connectedVideoNode.getVideoID();
-      }
-    }
-
+//      return connectedVideoNode.getVideoID();
+//    }
 }

@@ -12,11 +12,19 @@ public class VideoNode : MonoBehaviour
   // video structure parameters
   private int videoID=-2; //no ID -2 should give error when parsing
   private string videoFileName = "None"; //no video file
+  private NodePort nodePort;
 
   void Awake()
   {
     //set default videoID
     videoID = defaultVideoID;
+
+    // get NodePort
+    nodePort = GetComponentInChildren<NodePort>();
+    if (nodePort==null)
+    {
+      Debug.Log("There are no NodePort in "+ name);
+    }
   }
 
   public void createNewActionNode(string actionText)
@@ -48,6 +56,11 @@ public class VideoNode : MonoBehaviour
   public string getVideoFileName()
   {
     return videoFileName;
+  }
+
+  public NodePort getNodePort()
+  {
+    return nodePort;
   }
 
   public List<ActionNode> getActionNodeList()
