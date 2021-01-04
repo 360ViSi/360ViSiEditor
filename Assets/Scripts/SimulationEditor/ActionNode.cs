@@ -22,9 +22,6 @@ public class ActionNode : MonoBehaviour
 
     void Awake()
     {
-      //setup object color
-      thisImage = GetComponent<Image>();
-      thisImage.color=notConnectedColor;
 
       // get NodePort
       nodePort = GetComponentInChildren<NodePort>();
@@ -47,6 +44,11 @@ public class ActionNode : MonoBehaviour
         Debug.Log(name +" Did not get ConnectionManager");
         return;
       }
+
+      //setup ActionNode GameObject color
+      thisImage = GetComponent<Image>();
+      this.setMode();
+
     }
 
     void Update()
@@ -56,6 +58,7 @@ public class ActionNode : MonoBehaviour
     public void setMode()
     {
       // Changes the color regarding to connection status
+      // Colors are predefined in Prefab (Unity Inspector)
 
       List<Connection> portConnections = connectionManager.getConnections(this.nodePort,null);
 
@@ -91,25 +94,4 @@ public class ActionNode : MonoBehaviour
       return nodePort;
     }
 
-//    public int getNextVideoID()
-//    {
-      // get video node from connected port
-      // and get that VideoID (-2 if not connected)
-
-//      List<Connection> portConnections = connectionManager.getConnections(this.nodePort,null);
-      //empty connection list == not connected
-//      if (portConnections.Count==0)
-//      {
-//        return -2;
-//      }
-
-      // get connection "to" node and its VideoNode
-//      VideoNode connectedVideoNode = portConnections[0].getToNode().getParentVideoNode();
-//      if (connectedVideoNode==null)
-//      {
-//        return -2;
-//      }
-
-//      return connectedVideoNode.getVideoID();
-//    }
 }

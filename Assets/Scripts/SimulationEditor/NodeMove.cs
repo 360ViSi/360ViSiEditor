@@ -13,7 +13,7 @@ public class NodeMove : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
   private Transform cameraTransform;
   private RectTransform canvasRectTransform;
   private RectTransform rectTransform;
-  private List<Connection> everyConnection;
+  private List<Connection> involvedConnections;
 
 
   void Awake()
@@ -44,8 +44,7 @@ public class NodeMove : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
   public void OnBeginDrag(PointerEventData eventData)
   {
-    everyConnection = getEveryConnection();
-    return;
+    involvedConnections = getInvolvedConnections();
   }
 
   public void OnDrag(PointerEventData eventData)
@@ -63,7 +62,7 @@ public class NodeMove : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
     Vector2 mouseMovement = eventData.delta;
     float screenHeight =Screen.height;
     objectToMove.anchoredPosition += mouseMovement*screenToCanvasScale;
-    foreach(Connection connection in everyConnection)
+    foreach(Connection connection in involvedConnections)
     {
       connection.redrawConnectionLine();
     }
@@ -75,23 +74,29 @@ public class NodeMove : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
   }
 
-  //private List<NodePort> getEveryConnectioPort()
-  private List<Connection> getEveryConnection()
+  private List<Connection> getInvolvedConnections()
   {
+    // get every connection that is connected to this movable nodes
+    // Move option is only available in VideoNodes or for "StartNode" which is ActionNode
+
     List<Connection> nodeConnections = new List<Connection>();
+
     //connections to video node
     VideoNode thisVideoNode = this.GetComponentInParent<VideoNode>();
 
-    //if videoNode is null movenode is attached to Start which is ActionNode
+    //if "Startnode"
     if(thisVideoNode==null)
     {
       NodePort startNodePort = this.GetComponentInParent<ActionNode>().getNodePort();
       return connectionManager.getConnections(startNodePort,null);
     }
 
-    // moveNode is in videoNode
+    // if VideoNode
+
+    //add connections that are connected to this video node
     nodeConnections.AddRange(connectionManager.getConnections(null,thisVideoNode.getNodePort()));
-    //connections from action nodes
+
+    //add connections that are connected from children actionNodes
     List<ActionNode> actionNodes = thisVideoNode.getActionNodeList();
     foreach(ActionNode actionNode in actionNodes)
     {

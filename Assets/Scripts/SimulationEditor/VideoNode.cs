@@ -35,7 +35,7 @@ public class VideoNode : MonoBehaviour
     GameObject newActionGameObject = Instantiate(structureManager.getActionNodePrefab(), GetComponent<RectTransform>());
     actionGameObjects.Add(newActionGameObject);
     RectTransform newRectTransform=newActionGameObject.GetComponent<RectTransform>();
-    newRectTransform.anchoredPosition = calculateActionImagePosition(newRectTransform);
+    newRectTransform.anchoredPosition = calculateActionNodePosition(newRectTransform);
     newActionGameObject.GetComponent<ActionNode>().setActionText(actionText);
   }
 
@@ -73,10 +73,11 @@ public class VideoNode : MonoBehaviour
     return actionNodes;
   }
 
-  private Vector2 calculateActionImagePosition(RectTransform newNodeRectTransform)
+  private Vector2 calculateActionNodePosition(RectTransform newNodeRectTransform)
   {
-    //Calculates position for the next action GameObject
+    //Calculates position for the next actionNode GameObject
     //Assumes that every action gameobject is in same size
+    //Uses rectTransforms scale and rect to calculate the actual size
     Rect newNodeRect = newNodeRectTransform.rect;
     Vector3 newNodeScale = newNodeRectTransform.localScale;
     Vector2 realDimensions=new Vector2(newNodeRect.width*newNodeScale.x, newNodeRect.height*newNodeScale.y);
