@@ -104,6 +104,7 @@ public class StructureManager : MonoBehaviour
     public void parseVideoStructure()
     {
       //parse video structure as JSON list
+      //**REPLACE WITH JSON PARSER**
 
       string fileStructureJSON="";
       //if there are no structures
