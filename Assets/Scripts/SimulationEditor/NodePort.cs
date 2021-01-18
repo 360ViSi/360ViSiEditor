@@ -144,10 +144,14 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
       }
     }
 
+
+    ///<summary>
+    ///Deletes connections from connectionManager
+    ///</summary>
     public void disconnect()
     {
-      // connectedPort=null;
-      // connectionLine.hide();
+      connectionManager.deleteConnection(this,null);
+      connectionManager.deleteConnection(null, this);
     }
     public void OnDrop(PointerEventData eventData){}
 
@@ -160,6 +164,12 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
     public Vector3 getPosition()
     {
       return nodeTransform.transform.position;
+    }
+
+    public void redraw() 
+    {
+      connectionManager.redrawConnection(this,null);
+      connectionManager.redrawConnection(null,this);
     }
 
 }

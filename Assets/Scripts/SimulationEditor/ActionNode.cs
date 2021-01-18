@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using UnityEngine.UIElements;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-//using TMPro;
+using TMPro;
 
 [System.Serializable]
 public class ActionNode : MonoBehaviour
@@ -18,7 +17,7 @@ public class ActionNode : MonoBehaviour
 
     private NodePort nodePort;
     private ConnectionManager connectionManager;
-  //  private TextMeshProUGUI actionText;
+    private TextMeshProUGUI actionText;
     private Image thisImage;
 
     void Awake()
@@ -31,12 +30,12 @@ public class ActionNode : MonoBehaviour
         Debug.Log("There are no NodePort in "+ name);
       }
 
-      // get Text object for action Text
-    //   actionText = GetComponentInChildren<TextMeshProUGUI>();
-    //   if (actionText==null)
-    //   {
-    //     Debug.Log("There are no text object in "+ name);
-    //   }
+      //get Text object for action Text
+      actionText = GetComponentInChildren<TextMeshProUGUI>();
+      if (actionText==null)
+      {
+        Debug.Log("There are no text object in "+ name);
+      }
 
       //get connectionManager
       connectionManager = GetComponentInParent<ConnectionManager>();
@@ -95,12 +94,12 @@ public class ActionNode : MonoBehaviour
 
   public void setActionText(string newActionText)
   {
-    //actionText.text=newActionText;
+    actionText.text=newActionText;
   }
 
   public string getActionText()
   {
-    return ""; //actionText.text;
+    return actionText.text;
   }
 
   public int getNextVideoID()
@@ -132,15 +131,8 @@ public class ActionNode : MonoBehaviour
 
   public void removeActionNode()
   {
-    // disconnect();
-    // VideoNode videoNode = GetComponentInParent<VideoNode>();
-    // videoNode.getActionNodeObjects().Remove(gameObject);
-    // videoNode.repositionActionNodes();
-    // Destroy(gameObject);
-  }
-  
-  public void disconnect()
-  {
     nodePort.disconnect();
+    VideoNode videoNode = GetComponentInParent<VideoNode>();
+    videoNode.removeActionNode(gameObject);
   }
 }

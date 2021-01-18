@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
 
 [System.Serializable]
 public class VideoNode : MonoBehaviour
@@ -14,6 +15,8 @@ public class VideoNode : MonoBehaviour
   private int videoID=-2; //no ID -2 should give error when parsing
   private string videoFileName = "None"; //no video file
   private NodePort nodePort;
+  private StructureManager structureManager;
+  private TMP_Dropdown videoSelectionDropdown;
 
   void Awake()
   {
@@ -22,9 +25,18 @@ public class VideoNode : MonoBehaviour
 
     // get NodePort
     nodePort = GetComponentInChildren<NodePort>();
-    if (nodePort==null)
+    structureManager = GetComponentInParent<StructureManager>();
+    videoSelectionDropdown = GetComponentInChildren<TMP_Dropdown>();
+
+    if (nodePort==null) Debug.Log("There are no NodePort in "+ name);
+    if (structureManager == null) Debug.LogError("There is no StructureManager in parent");
+    if (videoSelectionDropdown == null) Debug.LogError("There is no dropdown in children");
+
+    var options = structureManager.GetVideoFilenames();
+    foreach (var item in options)
     {
-      Debug.Log("There are no NodePort in "+ name);
+      var option = new TMP_Dropdown.OptionData(item);
+      videoSelectionDropdown.options.Add(option);
     }
   }
 
@@ -74,6 +86,26 @@ public class VideoNode : MonoBehaviour
     return actionNodes;
   }
 
+  public void removeActionNode(GameObject actionGameObject)
+  {
+    if(actionGameObjects.Contains(actionGameObject))
+      actionGameObjects.Remove(actionGameObject);
+
+    Destroy(actionGameObject);
+
+    repositionActionNodes();
+  }
+  public void repositionActionNodes()
+  {
+    for (int i = 0; i < actionGameObjects.Count; i++)
+    {
+      var actionNodeRectTransform = actionGameObjects[i].GetComponent<RectTransform>();
+      actionNodeRectTransform.anchoredPosition = calculateActionImagePosition(actionNodeRectTransform, i + 1);
+      actionGameObjects[i].GetComponent<ActionNode>().getNodePort().redraw();
+    }
+    
+  }
+
   private Vector2 calculateActionNodePosition(RectTransform newNodeRectTransform)
   {
     //Calculates position for the next actionNode GameObject
@@ -93,5 +125,22 @@ public class VideoNode : MonoBehaviour
     Vector3 newNodeScale = newNodeRectTransform.localScale;
     Vector2 realDimensions=new Vector2(newNodeRect.width*newNodeScale.x, newNodeRect.height*newNodeScale.y);
     return new Vector2(realDimensions.x/2, -realDimensions.y*(position-0.5f));
+  }
+
+  public void deleteNode(){
+    //delete connections to this video node & remove from simulation structure
+    nodePort.disconnect();
+    structureManager.removeVideoNode(gameObject);
+
+    //go through all the actions and remove them (disconnect first)
+    foreach (var item in actionGameObjects)
+    {
+        item.GetComponent<ActionNode>().getNodePort().disconnect();
+        Destroy(item);
+        //S TODO: REMEMBER TO REFRESH ACTIONNODE INDEXING?
+    }    
+
+    //delete this node only when it's not connected to anything
+    Destroy(gameObject);
   }
 }
