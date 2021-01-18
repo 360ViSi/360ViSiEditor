@@ -4,14 +4,16 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-public class NodeMove : MonoBehaviour,IDragHandler
+public class NodeMove : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHandler
 {
   [SerializeField]
   private RectTransform objectToMove;
 
+  private ConnectionManager connectionManager;
   private Transform cameraTransform;
   private RectTransform canvasRectTransform;
   private RectTransform rectTransform;
+  private List<Connection> involvedConnections;
 
 
   void Awake()
@@ -31,6 +33,18 @@ public class NodeMove : MonoBehaviour,IDragHandler
     //this GameObject RectTransform
     rectTransform = GetComponent<RectTransform>();
 
+    //get connectionManager
+    connectionManager = GetComponentInParent<ConnectionManager>();
+    if (connectionManager==null)
+    {
+      Debug.Log(name +" Did not get ConnectionManager");
+      return;
+    }
+  }
+
+  public void OnBeginDrag(PointerEventData eventData)
+  {
+    involvedConnections = getInvolvedConnections();
   }
 
   public void OnDrag(PointerEventData eventData)
@@ -48,8 +62,48 @@ public class NodeMove : MonoBehaviour,IDragHandler
     Vector2 mouseMovement = eventData.delta;
     float screenHeight =Screen.height;
     objectToMove.anchoredPosition += mouseMovement*screenToCanvasScale;
+    foreach(Connection connection in involvedConnections)
+    {
+      connection.redrawConnectionLine();
+    }
+
   }
 
+  public void OnEndDrag(PointerEventData eventData)
+  {
+
+  }
+
+  private List<Connection> getInvolvedConnections()
+  {
+    // get every connection that is connected to this movable nodes
+    // Move option is only available in VideoNodes or for "StartNode" which is ActionNode
+
+    List<Connection> nodeConnections = new List<Connection>();
+
+    //connections to video node
+    VideoNode thisVideoNode = this.GetComponentInParent<VideoNode>();
+
+    //if "Startnode"
+    if(thisVideoNode==null)
+    {
+      NodePort startNodePort = this.GetComponentInParent<ActionNode>().getNodePort();
+      return connectionManager.getConnections(startNodePort,null);
+    }
+
+    // if VideoNode
+
+    //add connections that are connected to this video node
+    nodeConnections.AddRange(connectionManager.getConnections(null,thisVideoNode.getNodePort()));
+
+    //add connections that are connected from children actionNodes
+    List<ActionNode> actionNodes = thisVideoNode.getActionNodeList();
+    foreach(ActionNode actionNode in actionNodes)
+    {
+      nodeConnections.AddRange(connectionManager.getConnections(actionNode.getNodePort(),null));
+    }
+    return nodeConnections;
+  }
 
   // Vector math things
 

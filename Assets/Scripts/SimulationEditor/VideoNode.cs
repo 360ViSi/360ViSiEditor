@@ -11,13 +11,21 @@ public class VideoNode : MonoBehaviour
   [SerializeField]private List<GameObject> actionGameObjects = new List<GameObject>();
 
   // video structure parameters
-  public int videoID=-2; //no ID -2 should give error when parsing
-  [SerializeField]private string videoFileName = "None"; //no video file
-  public string testString = "Hello Json";
+  private int videoID=-2; //no ID -2 should give error when parsing
+  private string videoFileName = "None"; //no video file
+  private NodePort nodePort;
+
   void Awake()
   {
     //set default videoID
     videoID = defaultVideoID;
+
+    // get NodePort
+    nodePort = GetComponentInChildren<NodePort>();
+    if (nodePort==null)
+    {
+      Debug.Log("There are no NodePort in "+ name);
+    }
   }
 
   public void createNewActionNode(string actionText)
@@ -28,7 +36,7 @@ public class VideoNode : MonoBehaviour
     GameObject newActionGameObject = Instantiate(structureManager.getActionNodePrefab(), GetComponent<RectTransform>());
     actionGameObjects.Add(newActionGameObject);
     RectTransform newRectTransform=newActionGameObject.GetComponent<RectTransform>();
-    newRectTransform.anchoredPosition = calculateActionImagePosition(newRectTransform);
+    newRectTransform.anchoredPosition = calculateActionNodePosition(newRectTransform);
     newActionGameObject.GetComponent<ActionNode>().setActionText(actionText);
   }
 
@@ -51,9 +59,9 @@ public class VideoNode : MonoBehaviour
     return videoFileName;
   }
 
-  public List<GameObject> getActionNodeObjects()
+  public NodePort getNodePort()
   {
-    return actionGameObjects;
+    return nodePort;
   }
 
   public List<ActionNode> getActionNodeList()
@@ -66,25 +74,11 @@ public class VideoNode : MonoBehaviour
     return actionNodes;
   }
 
-  public void destoyVideoNode(){
-    StructureManager structureManager = GetComponentInParent<StructureManager>();
-    structureManager.removeVideoNode(gameObject);
-  }
-
-  public void repositionActionNodes()
+  private Vector2 calculateActionNodePosition(RectTransform newNodeRectTransform)
   {
-    List<GameObject> list = getActionNodeObjects();
-    for (int i = 0; i < list.Count; i++)
-    {
-      var actionNodeRectTransform = list[i].GetComponent<RectTransform>();
-      actionNodeRectTransform.anchoredPosition = calculateActionImagePosition(actionNodeRectTransform, i + 1);
-    }
-  }
-
-  private Vector2 calculateActionImagePosition(RectTransform newNodeRectTransform)
-  {
-    //Calculates position for the next action GameObject
+    //Calculates position for the next actionNode GameObject
     //Assumes that every action gameobject is in same size
+    //Uses rectTransforms scale and rect to calculate the actual size
     Rect newNodeRect = newNodeRectTransform.rect;
     Vector3 newNodeScale = newNodeRectTransform.localScale;
     Vector2 realDimensions=new Vector2(newNodeRect.width*newNodeScale.x, newNodeRect.height*newNodeScale.y);

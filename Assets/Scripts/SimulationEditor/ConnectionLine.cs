@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,17 +16,11 @@ public class ConnectionLine : MonoBehaviour
     connectLine = GetComponent<LineRenderer>();
     setPositionCount(connectLine, lineVertexCount);
     hide();
-    //Debug.Log("line renderer initialized");
-  }
-
-  void Update()
-  {
-
   }
 
   public void redrawLine(Vector3 startPos, Vector3 endPos)
   {
-    //calculates and sets kurve vertex positions
+    //calculates and sets curve vertex positions
     verticesPos = bezierize(bezierCurvature, lineVertexCount,startPos, endPos);
     connectLine.SetPositions(verticesPos);
   }
@@ -44,7 +38,7 @@ public class ConnectionLine : MonoBehaviour
   private Vector3[] bezierize(float curvature, int vertexCount, Vector3 startPoint, Vector3 endPoint)
   {
     // Calculates BezierCurve positions
-    // curvature: control point's percentage distance from end controlPointStart
+    // curvature: control point's distance from start/endpoint measured in percentace of the length in xz-plane
     // vertexcount: number of vetices on line = resolution
 
     Vector3[] points = new Vector3[vertexCount];

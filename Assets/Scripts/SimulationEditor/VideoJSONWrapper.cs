@@ -15,7 +15,7 @@ public class VideoJSONWrapper
     {
         public VideoJSONObject(VideoNode videoNode, List<ActionJSONObject> actionJSONObjects = null)
         {
-            videoID = videoNode.videoID;
+            videoID = videoNode.getVideoID();
 
             if (actionJSONObjects != null)
                 actions = actionJSONObjects;

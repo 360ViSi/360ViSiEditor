@@ -4,54 +4,62 @@ using UnityEngine;
 //using UnityEngine.UIElements;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using TMPro;
+//using TMPro;
 
 [System.Serializable]
 public class ActionNode : MonoBehaviour
 {
-  [SerializeField]
-  private Color connectedColor;
-  [SerializeField]
-  private Color notConnectedColor;
-  [SerializeField]
-  private Color endActionColor;
+    [SerializeField]
+    private Color connectedColor;
+    [SerializeField]
+    private Color notConnectedColor;
+    [SerializeField]
+    private Color endActionColor;
 
-  private NodePort portGameObject;
-  private TextMeshProUGUI actionText;
-  private Image thisImage;
+    private NodePort nodePort;
+    private ConnectionManager connectionManager;
+  //  private TextMeshProUGUI actionText;
+    private Image thisImage;
 
-  void Awake()
-  {
-    //setup object color
-    thisImage = GetComponent<Image>();
-    thisImage.color=notConnectedColor;
-
-    // get NodePort
-    portGameObject = GetComponentInChildren<NodePort>();
-    if (portGameObject==null)
+    void Awake()
     {
-      Debug.Log("There are no NodePort in "+ name);
+
+      // get NodePort
+      nodePort = GetComponentInChildren<NodePort>();
+      if (nodePort==null)
+      {
+        Debug.Log("There are no NodePort in "+ name);
+      }
+
+      // get Text object for action Text
+    //   actionText = GetComponentInChildren<TextMeshProUGUI>();
+    //   if (actionText==null)
+    //   {
+    //     Debug.Log("There are no text object in "+ name);
+    //   }
+
+      //get connectionManager
+      connectionManager = GetComponentInParent<ConnectionManager>();
+      if (connectionManager==null)
+      {
+        Debug.Log(name +" Did not get ConnectionManager");
+        return;
+      }
+
+      //setup ActionNode GameObject color
+      thisImage = GetComponent<Image>();
+      this.setMode();
+
     }
 
-    // get Text object for action Text
-    actionText = GetComponentInChildren<TextMeshProUGUI>();
-    if (portGameObject==null)
+  public void setMode(){
+    var connections = connectionManager.getEveryPortConnection(nodePort);
+    if(connections.Count == 0) 
     {
-      Debug.Log("There are no text object in "+ name);
+      thisImage.color=notConnectedColor;
+      return;
     }
-
-  }
-
-  void Update()
-  {
-    
-  }
-
-  public void setMode()
-  {
-    // Changes the color regarding to connection status
-
-    NodePort connectedPort = portGameObject.getConnectedPort();
+    NodePort connectedPort = connections[0].getToNode();
     Debug.Log("Connected port: "+ connectedPort);
     if (connectedPort==null)
     {
@@ -61,8 +69,25 @@ public class ActionNode : MonoBehaviour
     VideoNode connectedVideoNode = connectedPort.GetComponentInParent<VideoNode>();
     if (connectedVideoNode!=null && connectedVideoNode.getVideoID()==-1)
     {
-      thisImage.color=endActionColor;
-      return;
+      // Changes the color regarding to connection status
+      // Colors are predefined in Prefab (Unity Inspector)
+
+      List<Connection> portConnections = connectionManager.getConnections(this.nodePort,null);
+
+      //empty connection list == not connected
+      if (portConnections.Count==0)
+      {
+        thisImage.color=notConnectedColor;
+        return;
+      }
+      // get connection "to" node and its VideoNode
+      //VideoNode connectedVideoNode = portConnections[0].getToNode().getParentVideoNode();
+      if (connectedVideoNode!=null && connectedVideoNode.getVideoID()==-1)
+      {
+        thisImage.color=endActionColor;
+        return;
+      }
+      thisImage.color=connectedColor;
     }
     thisImage.color=connectedColor;
   }
@@ -70,12 +95,12 @@ public class ActionNode : MonoBehaviour
 
   public void setActionText(string newActionText)
   {
-    actionText.text=newActionText;
+    //actionText.text=newActionText;
   }
 
   public string getActionText()
   {
-    return actionText.text;
+    return ""; //actionText.text;
   }
 
   public int getNextVideoID()
@@ -83,39 +108,39 @@ public class ActionNode : MonoBehaviour
     // get video node from connected port
     // and get that VideoID (-2 if not connected)
 
-    if (portGameObject==null)
+    if (nodePort==null)
     {
       Debug.Log(this.name + "Have no port game object");
       return -2;
     }
 
-    NodePort connectedPort = portGameObject.getConnectedPort();
-    if (connectedPort == null)
-    {
-      return -2;
-    }
-
-    VideoNode connectedVideoNode = connectedPort.getParentVideoNode();
-    if(connectedVideoNode == null)
+    //NodePort connectedPort = nodePort.getConnectedPort(this, null);
+    if (nodePort == null)
     {
       return -2;
     }
     else
     {
-      return connectedVideoNode.getVideoID();
+      return nodePort.getNextVideoID();
     }
   }
   
+  public NodePort getNodePort()
+  {
+    return nodePort;
+  }
+
   public void removeActionNode()
   {
-    disconnect();
-    VideoNode videoNode = GetComponentInParent<VideoNode>();
-    videoNode.getActionNodeObjects().Remove(gameObject);
-    videoNode.repositionActionNodes();
-    Destroy(gameObject);
+    // disconnect();
+    // VideoNode videoNode = GetComponentInParent<VideoNode>();
+    // videoNode.getActionNodeObjects().Remove(gameObject);
+    // videoNode.repositionActionNodes();
+    // Destroy(gameObject);
   }
+  
   public void disconnect()
   {
-    portGameObject.disconnect();
+    nodePort.disconnect();
   }
 }
