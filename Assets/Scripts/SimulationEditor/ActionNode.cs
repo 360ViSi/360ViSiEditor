@@ -135,4 +135,9 @@ public class ActionNode : MonoBehaviour
     VideoNode videoNode = GetComponentInParent<VideoNode>();
     videoNode.removeActionNode(gameObject);
   }
+
+  public void InspectorOpen()
+  {
+    NodeInspector.instance.CreateFields(this);
+  }
 }

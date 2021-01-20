@@ -11,7 +11,6 @@ public class VideoData : MonoBehaviour
 
     //private variables
     private VideoStructure videoStructure;
-
     // Start is called before the first frame update
     void start()
     {
@@ -44,6 +43,10 @@ public class VideoData : MonoBehaviour
     public VideoPart getVideoPart(int askedVideoID)
     {
       return videoStructure.getVideoPart(askedVideoID);
+    }
+
+    public VideoPart getStartPart(){
+      return videoStructure.getStartPart();
     }
 
     //private functions
@@ -111,7 +114,7 @@ public class VideoData : MonoBehaviour
 public class VideoStructure
 {
   public VideoPart[] videos;
-
+  public int startId;
   public VideoPart getVideoPart(int askedVideoID)
   {
     foreach (VideoPart vPart in videos)
@@ -124,6 +127,10 @@ public class VideoStructure
     }
     Debug.Log("There is not a videoID "+askedVideoID);
     return null;
+  }
+
+  public VideoPart getStartPart(){
+    return getVideoPart(startId);
   }
 }
 

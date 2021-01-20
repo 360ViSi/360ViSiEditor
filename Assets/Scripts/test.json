@@ -1,0 +1,33 @@
+{
+    "videos": [
+        {
+            "videoID": 1,
+            "videoFileName": "crying_video.webm",
+            "actions": [
+                {
+                    "actionName": "action",
+                    "nextVideoID": -1
+                },
+                {
+                    "actionName": "action",
+                    "nextVideoID": 2
+                }
+            ]
+        },
+        {
+            "videoID": 2,
+            "videoFileName": "wakeup_video.webm",
+            "actions": [
+                {
+                    "actionName": "action",
+                    "nextVideoID": -1
+                },
+                {
+                    "actionName": "action",
+                    "nextVideoID": 1
+                }
+            ]
+        }
+    ],
+    "startId": 2
+}

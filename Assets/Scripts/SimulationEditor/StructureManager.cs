@@ -105,7 +105,7 @@ public class StructureManager : MonoBehaviour
     [ContextMenu("Test SimToJson")]
     public string SimulationToJson()
     {
-      VideoJSONWrapper wrapper = new VideoJSONWrapper(getVideoNodeList(), 0); //S TODO get the id of the video that start goes to
+      VideoJSONWrapper wrapper = new VideoJSONWrapper(getVideoNodeList(), startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID()); //S TODO get the id of the video that start goes to
       var json = JsonUtility.ToJson(wrapper);
       
       Debug.Log(json.ToString());

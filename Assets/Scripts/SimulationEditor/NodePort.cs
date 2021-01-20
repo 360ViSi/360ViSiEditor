@@ -66,10 +66,11 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
     }
 
     public int getNextVideoID(){
-      var indexList = connectionManager.getConnectionIndex(this, null);
+      var indexList = connectionManager.getConnections(this, null);
       
-      if(indexList.Length > 0)
-        return indexList[0];
+
+      if(indexList.Count > 0)
+        return indexList[0].getToNode().getParentVideoNode().getVideoID();
 
       return -2;
     }
@@ -134,7 +135,7 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
       // did not drop on NodePort
       catch(System.NullReferenceException e)
       {
-          Debug.Log("DragEnd: null");
+//          Debug.Log(e + " - DragEnd: null");
           connectionManager.deleteConnection(this,null);
       }
 

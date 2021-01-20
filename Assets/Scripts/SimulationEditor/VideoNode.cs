@@ -16,7 +16,7 @@ public class VideoNode : MonoBehaviour
   private string videoFileName = "None"; //no video file
   private NodePort nodePort;
   private StructureManager structureManager;
-  private TMP_Dropdown videoSelectionDropdown;
+  [SerializeField] private TMP_Text videoFilenameText;
 
   void Awake()
   {
@@ -26,18 +26,8 @@ public class VideoNode : MonoBehaviour
     // get NodePort
     nodePort = GetComponentInChildren<NodePort>();
     structureManager = GetComponentInParent<StructureManager>();
-    videoSelectionDropdown = GetComponentInChildren<TMP_Dropdown>();
-
     if (nodePort==null) Debug.Log("There are no NodePort in "+ name);
     if (structureManager == null) Debug.LogError("There is no StructureManager in parent");
-    if (videoSelectionDropdown == null) Debug.LogError("There is no dropdown in children");
-
-    var options = structureManager.GetVideoFilenames();
-    foreach (var item in options)
-    {
-      var option = new TMP_Dropdown.OptionData(item);
-      videoSelectionDropdown.options.Add(option);
-    }
   }
 
   public void createNewActionNode(string actionText)
@@ -65,6 +55,7 @@ public class VideoNode : MonoBehaviour
   public void setVideoFileName(string newVideoFileName)
   {
     videoFileName = newVideoFileName;
+    videoFilenameText.text = videoFileName;
   }
   public string getVideoFileName()
   {
@@ -142,5 +133,10 @@ public class VideoNode : MonoBehaviour
 
     //delete this node only when it's not connected to anything
     Destroy(gameObject);
+  }
+
+  public void InspectorOpen()
+  {
+    NodeInspector.instance.CreateFields(this);
   }
 }

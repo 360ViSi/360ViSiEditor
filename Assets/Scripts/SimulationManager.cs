@@ -27,7 +27,8 @@ public class SimulationManager : MonoBehaviour
 
     void setStartVideo()
     {
-      string startVideoFileName = videoData.getVideoPart(currentVideoID).getVideoFileName();
+      string startVideoFileName = videoData.getStartPart().getVideoFileName();
+      currentVideoID = videoData.getStartPart().videoID;
       videoTextureChanger.changeVideo(startVideoFileName);
     }
 

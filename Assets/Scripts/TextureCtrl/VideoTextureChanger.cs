@@ -31,21 +31,21 @@ public class VideoTextureChanger : MonoBehaviour
 
     public void changeVideo(string videoFileName)
     {
-      videoPlayer360.url=getVideoURL(videoPointer, videoFileName);
+      videoPlayer360.url = getVideoURL(videoPointer, videoFileName);
       videoPlayer360.Prepare();
     }
 
     private string getVideoURL(VideoPathPointer_OS pointer, string videoFileName)
     {
-      string directory = getVideoFolder(pointer);
+      string directory = @"C:\Unity\"; //getVideoFolder(pointer);
       DirectoryInfo dirInfo = new DirectoryInfo(directory);
-      string videoURL ="";
+      string videoURL = "";
 
       //read every file name in folder
       foreach (var file in dirInfo.GetFiles())
       {
         string fileName = file.Name;
-        if (videoFileName!=fileName)
+        if (videoFileName != fileName)
         {
           continue;
         }
@@ -55,9 +55,9 @@ public class VideoTextureChanger : MonoBehaviour
           string nameTail = fileName.Substring(fileName.Length-extension.Length,extension.Length);
 
           //if extension matches add URL to list
-          if(nameTail==extension)
+          if(nameTail == extension)
           {
-            videoURL = (directory+fileName);
+            videoURL = directory + fileName;
             break;
           }
         }
@@ -80,11 +80,11 @@ public class VideoTextureChanger : MonoBehaviour
       char pathSeparator = Path.DirectorySeparatorChar;
       string[] relativePathFolders = AssetDatabase.GetAssetPath(videoPointer).Split(pathSeparator);
       //drop first and last part (i=1 and Length-1)
-      for (int i=1; i<relativePathFolders.Length-1;i++)
+      for (int i = 1; i < relativePathFolders.Length - 1 ; i++)
       {
         pathToVideo += pathSeparator+relativePathFolders[i];
       }
       pathToVideo += pathSeparator;
-      return (pathToVideo);
+      return pathToVideo;
     }
 }

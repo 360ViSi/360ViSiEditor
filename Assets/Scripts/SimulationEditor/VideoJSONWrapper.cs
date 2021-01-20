@@ -20,13 +20,13 @@ public class VideoJSONWrapper
         public VideoJSONObject(VideoNode videoNode, List<ActionJSONObject> actionJSONObjects = null)
         {
             videoID = videoNode.getVideoID();
-            videoName = videoNode.getVideoFileName();
+            videoFileName = videoNode.getVideoFileName();
 
             if (actionJSONObjects != null)
                 actions = actionJSONObjects;
         }
         public int videoID = -2;
-        public string videoName = "";
+        public string videoFileName = "";
         public List<ActionJSONObject> actions;
     }
 
