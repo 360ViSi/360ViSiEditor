@@ -5,12 +5,12 @@
             "videoFileName": "crying_video.webm",
             "actions": [
                 {
-                    "actionName": "action",
-                    "nextVideoID": -1
+                    "actionText": "end this",
+                    "nextVideo": -1
                 },
                 {
-                    "actionName": "action",
-                    "nextVideoID": 2
+                    "actionText": "go next",
+                    "nextVideo": 2
                 }
             ]
         },
@@ -19,12 +19,12 @@
             "videoFileName": "wakeup_video.webm",
             "actions": [
                 {
-                    "actionName": "action",
-                    "nextVideoID": -1
+                    "actionText": "end this",
+                    "nextVideo": -1
                 },
                 {
-                    "actionName": "action",
-                    "nextVideoID": 1
+                    "actionText": "go next",
+                    "nextVideo": 1
                 }
             ]
         }

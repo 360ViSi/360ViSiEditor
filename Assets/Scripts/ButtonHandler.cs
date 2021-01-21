@@ -24,7 +24,10 @@ public class ButtonHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      setupButtons(simulationManager.getCurrentVideoPart());
+      var videoPart = simulationManager.getCurrentVideoPart();
+      if(videoPart == null) 
+        return;
+      setupButtons(videoPart);
     }
 
     public void whenClicked(int actionID)

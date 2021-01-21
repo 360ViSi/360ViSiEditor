@@ -11,11 +11,6 @@ public class VideoData : MonoBehaviour
 
     //private variables
     private VideoStructure videoStructure;
-    // Start is called before the first frame update
-    void start()
-    {
-
-    }
 
     //awake is called before start
     void Awake()
@@ -28,14 +23,6 @@ public class VideoData : MonoBehaviour
         Debug.Log(video.getVideoFileName());
       }
       print (isVideoIDsValid(videoStructure));
-
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     //public functions
@@ -45,7 +32,8 @@ public class VideoData : MonoBehaviour
       return videoStructure.getVideoPart(askedVideoID);
     }
 
-    public VideoPart getStartPart(){
+    public VideoPart getStartPart()
+    {
       return videoStructure.getStartPart();
     }
 
@@ -125,11 +113,12 @@ public class VideoStructure
         return vPart;
       }
     }
-    Debug.Log("There is not a videoID "+askedVideoID);
+    //Debug.Log("There is not a videoID "+askedVideoID);
     return null;
   }
 
   public VideoPart getStartPart(){
+    Debug.Log("Start Id: " + startId);
     return getVideoPart(startId);
   }
 }

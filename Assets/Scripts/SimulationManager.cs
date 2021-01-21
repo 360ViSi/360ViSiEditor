@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class SimulationManager : MonoBehaviour
 {
@@ -9,9 +10,10 @@ public class SimulationManager : MonoBehaviour
     VideoData videoData;
     [SerializeField]
     VideoTextureChanger videoTextureChanger;
-
+    [SerializeField] GameObject endPanel; 
+    [SerializeField] VideoPlayer videoPlayer;
     //private parameters
-    private int currentVideoID=0;
+    private int currentVideoID=-2;
 
     // Start is called before the first frame update
     void Start()
@@ -28,8 +30,10 @@ public class SimulationManager : MonoBehaviour
     void setStartVideo()
     {
       string startVideoFileName = videoData.getStartPart().getVideoFileName();
+      Debug.Log(videoData.getStartPart().videoID);
       currentVideoID = videoData.getStartPart().videoID;
       videoTextureChanger.changeVideo(startVideoFileName);
+      videoPlayer.Play();
     }
 
     public void actionSelected(int actionID)
@@ -40,6 +44,11 @@ public class SimulationManager : MonoBehaviour
 
     public VideoPart getCurrentVideoPart()
     {
+      //end
+      if(currentVideoID == -1){
+        endPanel.SetActive(true);
+        videoPlayer.Stop();
+      } 
       return videoData.getVideoPart(currentVideoID);
     }
 
@@ -74,4 +83,8 @@ public class SimulationManager : MonoBehaviour
       Debug.Log("Video is "+nextVideoFileName);
     }
 
+  public void ResetSimulation(){
+    endPanel.SetActive(false);
+    setStartVideo();    
+  }
 }
