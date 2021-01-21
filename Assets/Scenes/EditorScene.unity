@@ -568,6 +568,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _textElementPrefab: {fileID: 4252406531029555589, guid: ddee4292ac6db4e4a8d57ce3ba3b2bca,
     type: 3}
+  _toggleElementPrefab: {fileID: 5345425060366363121, guid: 0e8214351026de642b0f2e35a1935ea8,
+    type: 3}
 --- !u!114 &592401125
 MonoBehaviour:
   m_ObjectHideFlags: 0

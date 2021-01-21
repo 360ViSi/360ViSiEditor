@@ -35,12 +35,12 @@ public class VideoJSONWrapper
     {
         public ActionJSONObject(ActionNode actionNode)
         {
-            actionName = actionNode.getActionText();
-            nextVideoID = actionNode.getNextVideoID();
+            actionText = actionNode.getActionText();
+            nextVideo = actionNode.getNextVideoID();
         }
 
-        public string actionName = "";
-        public int nextVideoID = -2;
+        public string actionText = "";
+        public int nextVideo = -2;
     }
     #endregion
 

@@ -18,6 +18,8 @@ public class VideoNode : MonoBehaviour
   private StructureManager structureManager;
   [SerializeField] private TMP_Text videoFilenameText;
 
+  private bool loopingVideo;
+
   void Awake()
   {
     //set default videoID
@@ -65,6 +67,16 @@ public class VideoNode : MonoBehaviour
   public NodePort getNodePort()
   {
     return nodePort;
+  }
+
+  public bool getLoop()
+  {
+    return loopingVideo;
+  }
+
+  public void setLoop(bool value)
+  {
+    loopingVideo = value;
   }
 
   public List<ActionNode> getActionNodeList()

@@ -145,7 +145,7 @@ GameObject:
   - component: {fileID: 4252406531029555585}
   - component: {fileID: 4252406531029555586}
   - component: {fileID: 4252406531029555587}
-  - component: {fileID: 4252406531029555584}
+  - component: {fileID: 8470717459624530611}
   m_Layer: 5
   m_Name: prefab_Text Element
   m_TagString: Untagged
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
---- !u!114 &4252406531029555584
+--- !u!114 &8470717459624530611
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -245,9 +245,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4252406531029555589}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8294c83649931474fa3d4c2c09115ab8, type: 3}
+  m_Script: {fileID: 11500000, guid: 97fd7ee921a009646a4eebc053587b00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inspector: {fileID: 0}
+  elementKey: 0
   elementName: {fileID: 4252406531480143533}
   elementValue: {fileID: 4252406531540269297}
 --- !u!1 &4252406531480143535
@@ -343,7 +345,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.3
+  m_fontSize: 18
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -574,7 +576,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4252406531029555584}
+      - m_Target: {fileID: 0}
         m_MethodName: UpdateValues
         m_Mode: 0
         m_Arguments:

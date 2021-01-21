@@ -18,7 +18,7 @@ public class SimulationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-      Invoke("setStartVideo",2);
+      setStartVideo(); //changed from invoke sith 2s delay
     }
 
     // Update is called once per frame

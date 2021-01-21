@@ -127,7 +127,7 @@ public class StructureManager : MonoBehaviour
       
       foreach (var file in fileInfo) 
       {
-        if(file.Extension == ".txt"){
+        if(file.Extension == ".webm"){
           print (file.Name.Split('.')[0]);
           videoFiles.Add(file);
         }

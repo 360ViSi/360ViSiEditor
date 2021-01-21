@@ -118,7 +118,6 @@ public class VideoStructure
   }
 
   public VideoPart getStartPart(){
-    Debug.Log("Start Id: " + startId);
     return getVideoPart(startId);
   }
 }

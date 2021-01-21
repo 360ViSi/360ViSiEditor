@@ -12,13 +12,13 @@ public class VideoTextureChanger : MonoBehaviour
     private VideoPathPointer_OS videoPointer;
 
     //private variables
-    private VideoPlayer videoPlayer360;
+    [SerializeField] private VideoPlayer videoPlayer360;
 
     // Start is called before the first frame update
     void Start()
     {
       //initialize Video player
-      videoPlayer360 = gameObject.GetComponent<VideoPlayer>();
+      //videoPlayer360 = gameObject.GetComponent<VideoPlayer>();
       videoPlayer360.prepareCompleted += PrepareCompleted;
 
     }

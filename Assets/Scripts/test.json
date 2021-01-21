@@ -1,33 +1,39 @@
 {
     "videos": [
         {
-            "videoID": 1,
-            "videoFileName": "crying_video.webm",
+            "videoID": 2,
+            "videoFileName": "helping_nurse.webm",
             "actions": [
                 {
-                    "actionText": "end this",
+                    "actionText": "Comforting patient",
                     "nextVideo": -1
-                },
-                {
-                    "actionText": "go next",
-                    "nextVideo": 2
                 }
             ]
         },
         {
-            "videoID": 2,
-            "videoFileName": "wakeup_video.webm",
+            "videoID": 3,
+            "videoFileName": "crying_video.webm",
             "actions": [
                 {
-                    "actionText": "end this",
+                    "actionText": "Leave",
                     "nextVideo": -1
                 },
                 {
-                    "actionText": "go next",
-                    "nextVideo": 1
+                    "actionText": "Ask for help",
+                    "nextVideo": 4
+                }
+            ]
+        },
+        {
+            "videoID": 4,
+            "videoFileName": "asking_video.webm",
+            "actions": [
+                {
+                    "actionText": "nurse comes in",
+                    "nextVideo": 2
                 }
             ]
         }
     ],
-    "startId": 2
+    "startId": 3
 }
