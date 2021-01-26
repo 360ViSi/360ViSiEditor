@@ -135,7 +135,7 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
       // did not drop on NodePort
       catch(System.NullReferenceException e)
       {
-//          Debug.Log(e + " - DragEnd: null");
+          Debug.Log(e + " - DragEnd: null");
           connectionManager.deleteConnection(this,null);
       }
 

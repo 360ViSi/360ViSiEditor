@@ -12,7 +12,9 @@ public class CanvasCameraControls : MonoBehaviour
     [SerializeField] float _scrollSpeed = 1f;
     [SerializeField] float _maxZoom = 15;
     [SerializeField] float _minZoom = 2;
+    [SerializeField] RectTransform canvasRectTransform;
     private void Start() => cameraTransform = Camera.main.transform;
+
     // Update is called once per frame
     void Update()
     {
@@ -43,10 +45,19 @@ public class CanvasCameraControls : MonoBehaviour
 
     void DragCamera()
     {
-        var camDistance = Mathf.Abs(cameraTransform.position.z);
         var newMousePosition = Input.mousePosition;
-        var mouseDelta = Input.mousePosition - _oldMousePosition;
-        cameraTransform.Translate(-mouseDelta / (1000 / camDistance));
+        var mouseDelta = newMousePosition - _oldMousePosition;
+
+        // Convert one screen unit to one canvas unit
+        float cameraDistanceToCanvas = Mathf.Abs(cameraTransform.position.z - canvasRectTransform.position.z);
+        Vector3 vec0 = Camera.main.ScreenToWorldPoint(new Vector3(0.0f, 0.0f, cameraDistanceToCanvas));
+        Vector3 vec1 = Camera.main.ScreenToWorldPoint(new Vector3(1.0f, 1.0f, cameraDistanceToCanvas));
+
+        //scale mouse movement on screen to object movement on canvas
+        Vector2 mouseMovement = mouseDelta;
+        Vector3 newPos = mouseMovement * (vec1 - vec0);
+        transform.position -= newPos * _scrollSpeed;   
+
         _oldMousePosition = newMousePosition;
     }
 }
