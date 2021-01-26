@@ -877,6 +877,7 @@ MonoBehaviour:
   _scrollSpeed: 1
   _maxZoom: 15
   _minZoom: 2
+  canvasRectTransform: {fileID: 452938063}
 --- !u!224 &870752977 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2672551613437694363, guid: f0b86ad3d130d9848b058a7fff6a5729,
@@ -1299,7 +1300,7 @@ PrefabInstance:
     - target: {fileID: 6791179902262900887, guid: c51b143aeb1ea55b6989fdd996dfa339,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 187
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 6791179902262900887, guid: c51b143aeb1ea55b6989fdd996dfa339,
         type: 3}
@@ -1996,7 +1997,7 @@ PrefabInstance:
     - target: {fileID: 2672551613437694363, guid: f0b86ad3d130d9848b058a7fff6a5729,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -250
       objectReference: {fileID: 0}
     - target: {fileID: 2672551613437694363, guid: f0b86ad3d130d9848b058a7fff6a5729,
         type: 3}
