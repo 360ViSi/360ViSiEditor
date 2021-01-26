@@ -297,8 +297,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.5900002, y: 0.29999924}
-  m_SizeDelta: {x: -9.823853, y: -81.2794}
+  m_AnchoredPosition: {x: 0.0009498596, y: 0.29999924}
+  m_SizeDelta: {x: -15.001892, y: -81.2794}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3322096947429276581
 CanvasRenderer:
@@ -621,6 +621,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultVideoID: -2
   actionGameObjects: []
+  inNodePort: {fileID: 4856997813869950588}
+  autoOutNodePort: {fileID: 0}
   videoFilenameText: {fileID: 2900937291644111888}
 --- !u!114 &8322836149867565093
 MonoBehaviour:
@@ -1058,6 +1060,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc7c64c77bbc528af8c3907bef56c7fb, type: 3}
+--- !u!114 &4856997813869950588 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 120083218395967290, guid: fc7c64c77bbc528af8c3907bef56c7fb,
+    type: 3}
+  m_PrefabInstance: {fileID: 4813533032645073222}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caa293f0287be51dabf6c78cc239dff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5867471036206019143 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1414248050051312385, guid: fc7c64c77bbc528af8c3907bef56c7fb,

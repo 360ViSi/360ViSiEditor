@@ -26,6 +26,7 @@ public class VideoJSONWrapper
                 actions = actionJSONObjects;
         }
         public int videoID = -2;
+        public bool loop = true;
         public string videoFileName = "";
         public List<ActionJSONObject> actions;
     }

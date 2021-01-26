@@ -11,6 +11,7 @@ public class NodeInspector : MonoBehaviour
     VideoNode _currentVideoNode = null;
     ActionNode _currentActionNode = null;
     [SerializeField] GameObject _textElementPrefab = null;
+    [SerializeField] GameObject _filenameElementPrefab = null;
     [SerializeField] GameObject _toggleElementPrefab = null;
 
 
@@ -36,7 +37,7 @@ public class NodeInspector : MonoBehaviour
         _currentVideoNode = node;
         //Create new ones
         //Video file name
-        var textElementObj = Instantiate(_textElementPrefab, transform);
+        var textElementObj = Instantiate(_filenameElementPrefab, transform);
         var textElement = textElementObj.GetComponent<NodeInspectorTextElement>();
         textElement.InitializeElement("Video filename", ElementKey.VideoFileName, node.getVideoFileName());
 

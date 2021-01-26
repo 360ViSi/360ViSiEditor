@@ -12,7 +12,13 @@ public class NodeInspectorTextElement : NodeInspectorElement
         elementValue.text = value;
     }
 
-    public void UpdateValues(string value)
+    public void UpdateValueFromFileBrowser(string value)
+    {
+        elementValue.text = value;
+        UpdateValue(value);
+    }
+
+    public void UpdateValue(string value)
     {
         inspector.UpdateValue(elementKey, value);
     }

@@ -12,10 +12,10 @@ public class DragCameraControls : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(2))
+        if (Input.GetMouseButtonDown(0))
             BeginCameraDrag();
 
-        if (Input.GetMouseButton(2))
+        if (Input.GetMouseButton(0))
             DragCamera();
     }
 

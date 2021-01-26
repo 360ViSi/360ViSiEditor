@@ -9,7 +9,7 @@ public class VideoTextureChanger : MonoBehaviour
 {
     //variables used in editor
     [SerializeField]
-    private VideoPathPointer_OS videoPointer;
+    private VideoPathPointer_SO videoPointer;
 
     //private variables
     [SerializeField] private VideoPlayer videoPlayer360;
@@ -35,7 +35,7 @@ public class VideoTextureChanger : MonoBehaviour
       videoPlayer360.Prepare();
     }
 
-    private string getVideoURL(VideoPathPointer_OS pointer, string videoFileName)
+    private string getVideoURL(VideoPathPointer_SO pointer, string videoFileName)
     {
       string directory = @"C:\Unity\"; //getVideoFolder(pointer);
       DirectoryInfo dirInfo = new DirectoryInfo(directory);
@@ -69,7 +69,7 @@ public class VideoTextureChanger : MonoBehaviour
       return videoURL;
     }
 
-    private string getVideoFolder(VideoPathPointer_OS pointer)
+    private string getVideoFolder(VideoPathPointer_SO pointer)
     {
       // Get absolute path to Application
       // and relative path to videoPointer.

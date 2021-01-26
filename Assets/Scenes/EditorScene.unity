@@ -568,6 +568,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _textElementPrefab: {fileID: 4252406531029555589, guid: ddee4292ac6db4e4a8d57ce3ba3b2bca,
     type: 3}
+  _filenameElementPrefab: {fileID: 4252406531029555589, guid: 85b40b77041f62d4db9de48b1dac54aa,
+    type: 3}
   _toggleElementPrefab: {fileID: 5345425060366363121, guid: 0e8214351026de642b0f2e35a1935ea8,
     type: 3}
 --- !u!114 &592401125
@@ -583,7 +585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 1}
+  m_Color: {r: 0.20754719, g: 0.20754719, b: 0.20754719, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -752,7 +754,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.20784315, g: 0.20784315, b: 0.20784315, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1055,7 +1057,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1067042502}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 129534970}
+        m_MethodName: SimulationToJson
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1067042502
 MonoBehaviour:
   m_ObjectHideFlags: 0

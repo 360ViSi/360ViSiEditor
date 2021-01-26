@@ -19,6 +19,7 @@ public class VideoNode : MonoBehaviour
   [SerializeField] private TMP_Text videoFilenameText;
 
   private bool loopingVideo;
+  private GameObject autoEndAction = null;
 
   void Awake()
   {
@@ -32,7 +33,7 @@ public class VideoNode : MonoBehaviour
     if (structureManager == null) Debug.LogError("There is no StructureManager in parent");
   }
 
-  public void createNewActionNode(string actionText)
+  public GameObject createNewActionNode(string actionText)
   {
     //get prefab from structureManager and initilize that
     //add action node to the list and position it in UI
@@ -42,6 +43,7 @@ public class VideoNode : MonoBehaviour
     RectTransform newRectTransform=newActionGameObject.GetComponent<RectTransform>();
     newRectTransform.anchoredPosition = calculateActionNodePosition(newRectTransform);
     newActionGameObject.GetComponent<ActionNode>().setActionText(actionText);
+    return newActionGameObject;
   }
 
   public void setVideoID(int newVideoID)
@@ -77,6 +79,13 @@ public class VideoNode : MonoBehaviour
   public void setLoop(bool value)
   {
     loopingVideo = value;
+    if(value){
+      autoEndAction = createNewActionNode("AUTOEND");
+      return;
+    }
+
+    if(autoEndAction != null)
+      removeActionNode(autoEndAction);
   }
 
   public List<ActionNode> getActionNodeList()

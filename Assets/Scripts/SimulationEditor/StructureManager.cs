@@ -29,119 +29,127 @@ public class StructureManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-      // get ConnectionManager
-      connectionManager = GetComponent<ConnectionManager>();
-      if(connectionManager==null)
-      {
-        Debug.Log("There are no ConnectionManager as a child of " + name);
-      }
-      GetFilesInFolder();
+        // get ConnectionManager
+        connectionManager = GetComponent<ConnectionManager>();
+        if (connectionManager == null)
+        {
+            Debug.Log("There are no ConnectionManager as a child of " + name);
+        }
+        GetFilesInFolder();
     }
     public void createNewVideoNode()
     {
-      //Initialize new Video node from prefab and add it to the list
-      //With Unique video ID (setVideoID handles testing)
+        //Initialize new Video node from prefab and add it to the list
+        //With Unique video ID (setVideoID handles testing)
 
-      GameObject newVideoObject = Instantiate(videoNodePrefab, transform);
-      generatedVideoID++;//initialized to zero so first used will be 1
-      setVideoID(newVideoObject,generatedVideoID);
-      videoGameObjects.Add(newVideoObject);
+        GameObject newVideoObject = Instantiate(videoNodePrefab, transform);
+        generatedVideoID++;//initialized to zero so first used will be 1
+        setVideoID(newVideoObject, generatedVideoID);
+        videoGameObjects.Add(newVideoObject);
     }
 
     public GameObject getActionNodePrefab()
     {
-      //Used when creating new action inside VideoNode Class
-      return actionNodePrefab;
+        //Used when creating new action inside VideoNode Class
+        return actionNodePrefab;
     }
 
 
     private void setVideoID(GameObject videoGameObject, int newVideoID)
     {
-      //check that the video ID is unique
-      //and asign it to video node
+        //check that the video ID is unique
+        //and asign it to video node
 
-      while(!isVideoIDFree(newVideoID))
-      {
-        Debug.Log("Video ID is already in use: "+newVideoID);
-        newVideoID++;
-      }
-      videoGameObject.GetComponent<VideoNode>().setVideoID(newVideoID);
+        while (!isVideoIDFree(newVideoID))
+        {
+            Debug.Log("Video ID is already in use: " + newVideoID);
+            newVideoID++;
+        }
+        videoGameObject.GetComponent<VideoNode>().setVideoID(newVideoID);
     }
 
     private bool isVideoIDFree(int testVideoID)
     {
-      //-1 reserved for "end"
-      if (testVideoID==-1)
-      {
-        return false;
-      }
-
-      //check through video nodes
-      List<VideoNode> videoNodes = getVideoNodeList();
-      foreach (VideoNode listedVideoNode in videoNodes)
-      {
-        int listedVideoID = listedVideoNode.getVideoID();
-        //Debug.Log("video ID: "+ listedVideoID);
-        if (testVideoID==listedVideoID)
+        //-1 reserved for "end"
+        if (testVideoID == -1)
         {
-          return false;
+            return false;
         }
-      }
 
-      return true;
+        //check through video nodes
+        List<VideoNode> videoNodes = getVideoNodeList();
+        foreach (VideoNode listedVideoNode in videoNodes)
+        {
+            int listedVideoID = listedVideoNode.getVideoID();
+            //Debug.Log("video ID: "+ listedVideoID);
+            if (testVideoID == listedVideoID)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public List<VideoNode> getVideoNodeList()
     {
-      //"Converts" GameObject list to VideoNode List
-      List<VideoNode> videoNodes = new List<VideoNode>();
-      foreach (GameObject videoGameObject in videoGameObjects)
-      {
-        videoNodes.Add(videoGameObject.GetComponent<VideoNode>());
-      }
-      return videoNodes;
+        //"Converts" GameObject list to VideoNode List
+        List<VideoNode> videoNodes = new List<VideoNode>();
+        foreach (GameObject videoGameObject in videoGameObjects)
+        {
+            videoNodes.Add(videoGameObject.GetComponent<VideoNode>());
+        }
+        return videoNodes;
     }
 
-    [ContextMenu("Test SimToJson")]
-    public string SimulationToJson()
+    public void SimulationToJson()
     {
-      VideoJSONWrapper wrapper = new VideoJSONWrapper(getVideoNodeList(), startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID()); //S TODO get the id of the video that start goes to
-      var json = JsonUtility.ToJson(wrapper);
-      
-      Debug.Log(json.ToString());
-      return json.ToString();
+        VideoJSONWrapper wrapper = new VideoJSONWrapper(getVideoNodeList(), startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID()); //S TODO get the id of the video that start goes to
+        var json = JsonUtility.ToJson(wrapper);
+
+        Debug.Log(json.ToString());
+        var defaultFileName = "test";
+        var counter = 0;
+
+        while (File.Exists(@"C:\Unity\" + defaultFileName + counter))
+            counter++;
+            
+        var file = File.Create(@"C:\Unity\" + defaultFileName + counter + ".json");
+        file.Close();
+        File.WriteAllText(@"C:\Unity\" + defaultFileName + counter + ".json", json);
     }
 
     public void removeVideoNode(GameObject nodeObject)
     {
-      videoGameObjects.Remove(nodeObject);
+        videoGameObjects.Remove(nodeObject);
     }
 
     [ContextMenu("Test Folder")]
     public void GetFilesInFolder()
     {
-      videoFiles.Clear();
-      string path = @"C:\Unity";
-      var info = new DirectoryInfo(path);
-      var fileInfo = info.GetFiles();
-      
-      foreach (var file in fileInfo) 
-      {
-        if(file.Extension == ".webm"){
-          print (file.Name.Split('.')[0]);
-          videoFiles.Add(file);
+        videoFiles.Clear();
+        string path = @"C:\Unity";
+        var info = new DirectoryInfo(path);
+        var fileInfo = info.GetFiles();
+
+        foreach (var file in fileInfo)
+        {
+            if (file.Extension == ".webm")
+            {
+                print(file.Name.Split('.')[0]);
+                videoFiles.Add(file);
+            }
+            else
+                print(file.Extension + " not supported");
         }
-        else
-          print(file.Extension + " not supported");
-      }
     }
 
     public List<string> GetVideoFilenames()
     {
-      var output = new List<string>();
+        var output = new List<string>();
 
-      foreach (var item in videoFiles)
-          output.Add(item.Name.Split('.')[0]);
-      return output;
+        foreach (var item in videoFiles)
+            output.Add(item.Name.Split('.')[0]);
+        return output;
     }
 }
