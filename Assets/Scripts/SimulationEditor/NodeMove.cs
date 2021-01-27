@@ -49,6 +49,8 @@ public class NodeMove : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
   public void OnDrag(PointerEventData eventData)
   {
+    if(eventData.button != PointerEventData.InputButton.Left)
+      return;
     // canvas unit scale = how many canvas pixels is one Unity unit
     Vector3 canvasUnitScale = bitWiseInverse(canvasRectTransform.localScale);
 

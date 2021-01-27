@@ -136,11 +136,11 @@ public class StructureManager : MonoBehaviour
         {
             if (file.Extension == ".webm")
             {
-                print(file.Name.Split('.')[0]);
+//                print(file.Name.Split('.')[0]);
                 videoFiles.Add(file);
             }
-            else
-                print(file.Extension + " not supported");
+   //         else
+  //              print(file.Extension + " not supported");
         }
     }
 

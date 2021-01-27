@@ -1,3 +1,4 @@
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -166,6 +167,7 @@ public class VideoNode : MonoBehaviour
 
     public void InspectorOpen()
     {
+        //Open this video to the videoplayer
         NodeInspector.instance.CreateFields(this);
     }
 }
