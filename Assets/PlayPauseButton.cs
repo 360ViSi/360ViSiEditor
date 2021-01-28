@@ -1,18 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class PlayPauseButton : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] VideoPlayer _videoPlayer;
+
+    [SerializeField] Image _playPauseImage;
+    [SerializeField] Sprite _playSprite;
+    [SerializeField] Sprite _pauseSprite;
+
+    private void Update()
     {
-        
+        //S TODO change to function with events
+        if (_videoPlayer.isPaused)
+            _playPauseImage.sprite = _playSprite;
+        else _playPauseImage.sprite = _pauseSprite;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TogglePause()
     {
-        
+        if (_videoPlayer.isPaused)
+            _videoPlayer.Play();
+        else _videoPlayer.Pause();
     }
 }
