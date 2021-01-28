@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEngine;
 
 ///<summary>
@@ -10,6 +11,8 @@ public class NodeInspector : MonoBehaviour
     public static NodeInspector instance;
     VideoNode _currentVideoNode = null;
     ActionNode _currentActionNode = null;
+    [SerializeField] EditorVideoPlayer _editorVideoPlayer = null;
+    [Header("UI Elements")]
     [SerializeField] GameObject _textElementPrefab = null;
     [SerializeField] GameObject _filenameElementPrefab = null;
     [SerializeField] GameObject _toggleElementPrefab = null;
@@ -29,6 +32,9 @@ public class NodeInspector : MonoBehaviour
 
         if (node == _currentVideoNode)
             return;
+
+        //Put bg to video
+        _editorVideoPlayer.ChangeVideo(node.getVideoFileName());
 
         //Clean old children first
         for (int i = transform.childCount - 1; i > -1; i--)
@@ -70,7 +76,11 @@ public class NodeInspector : MonoBehaviour
 
     public void UpdateValue(ElementKey key, string value)
     {
-        if (key == ElementKey.VideoFileName) _currentVideoNode.setVideoFileName(value);
+        if (key == ElementKey.VideoFileName)
+        {
+            _editorVideoPlayer.ChangeVideo(value);
+            _currentVideoNode.setVideoFileName(value);
+        }
         if (key == ElementKey.ActionName) _currentActionNode.setActionText(value);
     }
 

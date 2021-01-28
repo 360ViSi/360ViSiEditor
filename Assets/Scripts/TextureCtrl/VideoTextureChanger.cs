@@ -18,9 +18,7 @@ public class VideoTextureChanger : MonoBehaviour
     void Start()
     {
       //initialize Video player
-      //videoPlayer360 = gameObject.GetComponent<VideoPlayer>();
       videoPlayer360.prepareCompleted += PrepareCompleted;
-
     }
 
     void PrepareCompleted(VideoPlayer videoPlayer360)

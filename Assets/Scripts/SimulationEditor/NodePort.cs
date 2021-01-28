@@ -9,6 +9,7 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
     public bool isInPort = false;
 
     private ConnectionManager connectionManager;
+    private StructureManager structureManager;
     private RectTransform canvasRectTransform ;
     private Transform cameraTransform;
     private RectTransform nodeTransform;
@@ -22,6 +23,12 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
       if (connectionManager==null)
       {
         Debug.Log(name +" Did not get ConnectionManager");
+        return;
+      }
+      structureManager = GetComponentInParent<StructureManager>();
+      if (structureManager==null)
+      {
+        Debug.Log(name +" Did not get StructureManager");
         return;
       }
 
@@ -145,7 +152,13 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
       }
     }
 
-
+    public void CreateConnection(int nextVideoId)
+    {
+      var targetVideoNode = structureManager.GetVideoNodeWithId(nextVideoId);
+      var targetPort = targetVideoNode.getNodePort();
+      connectionManager.createConnection(this, targetPort);
+      connectionManager.showConnectionLine(this, targetPort, true);
+    }
     ///<summary>
     ///Deletes connections from connectionManager
     ///</summary>
@@ -159,7 +172,7 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
     private bool isNodeConnected()
     {
-      return (connectionManager.getConnections(this,null).Count!=0);
+      return connectionManager.getConnections(this,null).Count != 0;
     }
 
     public Vector3 getPosition()

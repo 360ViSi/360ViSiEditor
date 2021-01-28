@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using TMPro;
 
 [System.Serializable]
@@ -38,18 +36,25 @@ public class VideoNode : MonoBehaviour
         createNewActionNode("action", false);
     }
 
-    private void createNewActionNode(string actionText, bool isAutoEnd)
+    public void createNewActionNode(string actionText, bool isAutoEnd, int nextVideoId = -2)
     {
         //get prefab from structureManager and initilize that
         //add action node to the list and position it in UI
         StructureManager structureManager = GetComponentInParent<StructureManager>();
         GameObject newActionGameObject = Instantiate(structureManager.getActionNodePrefab(), GetComponent<RectTransform>());
-        if(isAutoEnd) actionGameObjects.Insert(0, newActionGameObject);
-        else actionGameObjects.Add(newActionGameObject);
-        RectTransform newRectTransform = newActionGameObject.GetComponent<RectTransform>();
+        
+        if(isAutoEnd)
+         actionGameObjects.Insert(0, newActionGameObject);
+        else
+         actionGameObjects.Add(newActionGameObject);
+
         repositionActionNodes();
-        newActionGameObject.GetComponent<ActionNode>().setActionText(actionText);
-        if (isAutoEnd) autoEndAction = newActionGameObject;
+        var actionNode = newActionGameObject.GetComponent<ActionNode>();
+        actionNode.setActionText(actionText);
+        actionNode.setLoadedVideoID(nextVideoId);
+
+        if (isAutoEnd) 
+            autoEndAction = newActionGameObject;
     }
 
     public void setVideoID(int newVideoID)
@@ -166,6 +171,7 @@ public class VideoNode : MonoBehaviour
 
     public void InspectorOpen()
     {
+        //Open this video to the videoplayer
         NodeInspector.instance.CreateFields(this);
     }
 }

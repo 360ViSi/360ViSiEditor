@@ -1,5 +1,9 @@
 using System.Collections.Generic;
+using UnityEngine;
 
+///<summary>
+///This class handles the conversion between structuremanager's video and action nodes and a json format
+///</summary>
 [System.Serializable]
 public class VideoJSONWrapper
 {
@@ -21,13 +25,15 @@ public class VideoJSONWrapper
         {
             videoID = videoNode.getVideoID();
             videoFileName = videoNode.getVideoFileName();
+            position = videoNode.GetComponent<RectTransform>().anchoredPosition;
 
             if (actionJSONObjects != null)
                 actions = actionJSONObjects;
         }
         public int videoID = -2;
-        public bool loop = true;
+        public bool loop = false;
         public string videoFileName = "";
+        public Vector2 position = Vector2.zero;
         public List<ActionJSONObject> actions;
     }
 
@@ -38,10 +44,12 @@ public class VideoJSONWrapper
         {
             actionText = actionNode.getActionText();
             nextVideo = actionNode.getNextVideoID();
+            //S TODO get if this is autoend node
         }
 
         public string actionText = "";
         public int nextVideo = -2;
+        public bool autoEnd = false;
     }
     #endregion
 
