@@ -43,7 +43,7 @@ public class ConnectionManager : MonoBehaviour
     {
       // there is connection -> change "toNode"
       fromConnections[0].setToNode(toNode);
-      Debug.Log("Connection endPort chanced: "+connections.Count);
+      Debug.Log("Connection endPort changed: "+connections.Count);
       return;
     }
 
@@ -160,6 +160,7 @@ public class ConnectionManager : MonoBehaviour
   }
 }
 
+[System.Serializable]
 public class Connection
 {
   // Simple data structure for Connection

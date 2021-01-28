@@ -19,6 +19,7 @@ public class ActionNode : MonoBehaviour
     private ConnectionManager connectionManager;
     private TextMeshProUGUI actionText;
     private Image thisImage;
+    private int loadedNextVideoID = -2;
 
     void Awake()
     {
@@ -122,6 +123,25 @@ public class ActionNode : MonoBehaviour
     {
       return nodePort.getNextVideoID();
     }
+  }
+
+  ///<summary>
+  /// Need to create connections when loading a structure from a file
+  ///</summary>
+  public void setLoadedVideoID(int id)
+  {
+    if (nodePort==null)
+    {
+      Debug.Log(this.name + "Have no port game object");
+    }
+    loadedNextVideoID = id;
+  }
+
+  public void CreateLoadedConnection()
+  {
+    if(loadedNextVideoID != -2)
+      nodePort.CreateConnection(loadedNextVideoID);
+    else Debug.LogError("loadedNextVideoID was -2 and that's illegal");
   }
   
   public NodePort getNodePort()

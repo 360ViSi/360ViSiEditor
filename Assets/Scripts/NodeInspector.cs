@@ -76,7 +76,11 @@ public class NodeInspector : MonoBehaviour
 
     public void UpdateValue(ElementKey key, string value)
     {
-        if (key == ElementKey.VideoFileName) _currentVideoNode.setVideoFileName(value);
+        if (key == ElementKey.VideoFileName)
+        {
+            _editorVideoPlayer.ChangeVideo(value);
+            _currentVideoNode.setVideoFileName(value);
+        }
         if (key == ElementKey.ActionName) _currentActionNode.setActionText(value);
     }
 

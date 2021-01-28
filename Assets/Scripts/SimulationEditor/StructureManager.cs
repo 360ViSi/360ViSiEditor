@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -10,7 +11,7 @@ public class StructureManager : MonoBehaviour
     //(VideoNodes keep track of their own action nodes)
     //2. Creates Simulation JSON-fileStructureJSON
     //3. Hold prefabs for VideoNodes and ActionNode gameobjects
-    //(and special nodes: start[=actioNode], end[=VideoNode])
+    //(and special nodes: start[=actionNode], end[=VideoNode])
 
     [SerializeField]
     private GameObject videoNodePrefab;
@@ -24,7 +25,6 @@ public class StructureManager : MonoBehaviour
     private List<GameObject> videoGameObjects = new List<GameObject>();
     private int generatedVideoID = 0;
     private ConnectionManager connectionManager;
-    private List<FileInfo> videoFiles = new List<FileInfo>();
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +35,9 @@ public class StructureManager : MonoBehaviour
         {
             Debug.Log("There are no ConnectionManager as a child of " + name);
         }
-        GetFilesInFolder();
+
+        //S TODO remove
+        JsonToSimulation();
     }
     public void createNewVideoNode()
     {
@@ -46,6 +48,7 @@ public class StructureManager : MonoBehaviour
         generatedVideoID++;//initialized to zero so first used will be 1
         setVideoID(newVideoObject, generatedVideoID);
         videoGameObjects.Add(newVideoObject);
+        newVideoObject.GetComponent<VideoNode>().InspectorOpen();
     }
 
     public GameObject getActionNodePrefab()
@@ -101,10 +104,23 @@ public class StructureManager : MonoBehaviour
         }
         return videoNodes;
     }
+    public VideoNode GetVideoNodeWithId(int videoID)
+    {
+        Debug.Log($"Trying to get video with id: {videoID}");
+        if(videoID == -1)
+            return endNode.GetComponent<VideoNode>();
+            
+        return getVideoNodeList().Where(e => e.getVideoID() == videoID).First();;
+    }
 
     public void SimulationToJson()
     {
-        VideoJSONWrapper wrapper = new VideoJSONWrapper(getVideoNodeList(), startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID()); //S TODO get the id of the video that start goes to
+        //S TODO: replace all lines with @"C:\Unity\ with an actual folder that the user can set,
+        //this is just used so it's faster to develop
+        VideoJSONWrapper wrapper = new VideoJSONWrapper(
+            getVideoNodeList(),
+            startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID()
+        ); //S TODO get the id of the video that start goes to
         var json = JsonUtility.ToJson(wrapper);
 
         Debug.Log(json.ToString());
@@ -113,43 +129,70 @@ public class StructureManager : MonoBehaviour
 
         while (File.Exists(@"C:\Unity\" + defaultFileName + counter))
             counter++;
-            
+
         var file = File.Create(@"C:\Unity\" + defaultFileName + counter + ".json");
         file.Close();
         File.WriteAllText(@"C:\Unity\" + defaultFileName + counter + ".json", json);
     }
 
+    [ContextMenu("Test Json to sim")]
+    public void JsonToSimulation()
+    {
+        //S TODO Filebrowser
+        if (File.Exists(@"C:\Unity\simu.json") == false) return;
+
+        var fileText = File.ReadAllText(@"C:\Unity\simu.json");
+        var wrapper = JsonUtility.FromJson<VideoJSONWrapper>(fileText);
+        Debug.Log(JsonUtility.ToJson(wrapper));
+
+        //To ease the loading process and make sure all the id's match up etc.
+        //clearing the whole structure while loading new one.
+        //could possibly generate a method to just apped loaded structure, but
+        //not sure if that is realistic use case at this point
+        ClearStructure();
+
+        //Create nodes
+        foreach (var item in wrapper.videos)
+            LoadVideoNode(item);
+
+        //Create connections
+        foreach (var item in getVideoNodeList())
+            foreach (var action in item.getActionNodeList())
+                action.CreateLoadedConnection();
+
+        connectionManager.redrawConnection(null, null);
+
+        var startNodePort = startNode.GetComponent<ActionNode>().getNodePort();
+        var firstVideoPort = GetVideoNodeWithId(wrapper.startId).getNodePort();
+        connectionManager.createConnection(startNodePort, firstVideoPort);
+        connectionManager.redrawConnection(startNodePort, firstVideoPort);
+        connectionManager.showConnectionLine(startNodePort, firstVideoPort, true);
+    }
+
+    public void LoadVideoNode(VideoJSONWrapper.VideoJSONObject videoJSONObject)
+    {
+        var newVideoObject = Instantiate(videoNodePrefab, transform);
+        //generatedVideoID++;//initialized to zero so first used will be 1
+        //setVideoID(newVideoObject, generatedVideoID);
+        var node = newVideoObject.GetComponent<VideoNode>();
+        node.setVideoID(videoJSONObject.videoID);
+        node.setVideoFileName(videoJSONObject.videoFileName);
+        node.setLoop(videoJSONObject.loop);
+        newVideoObject.GetComponent<RectTransform>().anchoredPosition = videoJSONObject.position;
+        videoGameObjects.Add(newVideoObject);
+
+        foreach (var item in videoJSONObject.actions)
+            node.createNewActionNode(item.actionText, item.autoEnd, item.nextVideo);
+    }
+
+    public void ClearStructure()
+    {
+        //S TODO
+        Debug.LogError("Clearing is not yet implemented");
+    }
+
     public void removeVideoNode(GameObject nodeObject)
     {
         videoGameObjects.Remove(nodeObject);
-    }
-
-    [ContextMenu("Test Folder")]
-    public void GetFilesInFolder()
-    {
-        videoFiles.Clear();
-        string path = @"C:\Unity";
-        var info = new DirectoryInfo(path);
-        var fileInfo = info.GetFiles();
-
-        foreach (var file in fileInfo)
-        {
-            if (file.Extension == ".webm")
-            {
-//                print(file.Name.Split('.')[0]);
-                videoFiles.Add(file);
-            }
-   //         else
-  //              print(file.Extension + " not supported");
-        }
-    }
-
-    public List<string> GetVideoFilenames()
-    {
-        var output = new List<string>();
-
-        foreach (var item in videoFiles)
-            output.Add(item.Name.Split('.')[0]);
-        return output;
     }
 }

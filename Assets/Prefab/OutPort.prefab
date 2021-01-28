@@ -90,8 +90,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isOutPort: 1
   isInPort: 0
-  connectionLinePrefab: {fileID: 7364462528716453485, guid: e5a655df5c8765c33a0bf156b6656c74,
-    type: 3}
 --- !u!120 &7461319977568973406
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -130,7 +128,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -5
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
