@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -106,7 +106,6 @@ public class StructureManager : MonoBehaviour
     }
     public VideoNode GetVideoNodeWithId(int videoID)
     {
-        Debug.Log($"Trying to get video with id: {videoID}");
         if(videoID == -1)
             return endNode.GetComponent<VideoNode>();
             
@@ -177,7 +176,8 @@ public class StructureManager : MonoBehaviour
         var node = newVideoObject.GetComponent<VideoNode>();
         node.setVideoID(videoJSONObject.videoID);
         node.setVideoFileName(videoJSONObject.videoFileName);
-        node.setLoop(videoJSONObject.loop);
+        node.setLoop(videoJSONObject.loop, true);
+        node.setLoopTime(videoJSONObject.loopTime);
         newVideoObject.GetComponent<RectTransform>().anchoredPosition = videoJSONObject.position;
         videoGameObjects.Add(newVideoObject);
 
@@ -188,7 +188,7 @@ public class StructureManager : MonoBehaviour
     public void ClearStructure()
     {
         //S TODO
-        Debug.LogError("Clearing is not yet implemented");
+        Debug.LogError("Clearing is not yet implemented! If you had no nodes, you're fine");
     }
 
     public void removeVideoNode(GameObject nodeObject)

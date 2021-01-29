@@ -21,6 +21,8 @@ public class ActionNode : MonoBehaviour
     private Image thisImage;
     private int loadedNextVideoID = -2;
 
+    [SerializeField] GameObject removeButton = null;
+
     void Awake()
     {
 
@@ -141,7 +143,7 @@ public class ActionNode : MonoBehaviour
   {
     if(loadedNextVideoID != -2)
       nodePort.CreateConnection(loadedNextVideoID);
-    else Debug.LogError("loadedNextVideoID was -2 and that's illegal");
+    else Debug.LogError("loadedNextVideoID was -2 and that's illegal (probably autoEnd node?)");
   }
   
   public NodePort getNodePort()
@@ -159,5 +161,14 @@ public class ActionNode : MonoBehaviour
   public void InspectorOpen()
   {
     NodeInspector.instance.CreateFields(this);
+  }
+
+  ///<summary>
+  /// When autoEnd actionNode is created, need to disable
+  /// the ability to remove that node (is automatic if loop is enabled)
+  ///</summary>
+  public void DisableRemoveButton()
+  {
+    removeButton.SetActive(false);
   }
 }

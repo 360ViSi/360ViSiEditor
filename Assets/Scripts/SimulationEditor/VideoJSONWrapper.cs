@@ -26,6 +26,7 @@ public class VideoJSONWrapper
             videoID = videoNode.getVideoID();
             videoFileName = videoNode.getVideoFileName();
             position = videoNode.GetComponent<RectTransform>().anchoredPosition;
+            loopTime = videoNode.getLoopTime();
 
             if (actionJSONObjects != null)
                 actions = actionJSONObjects;
@@ -33,6 +34,7 @@ public class VideoJSONWrapper
         public int videoID = -2;
         public bool loop = false;
         public string videoFileName = "";
+        public float loopTime = 0;
         public Vector2 position = Vector2.zero;
         public List<ActionJSONObject> actions;
     }

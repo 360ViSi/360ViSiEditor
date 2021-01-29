@@ -4,13 +4,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
-public class PlayPauseButton : MonoBehaviour
+public class EditorVideoControls : MonoBehaviour
 {
     [SerializeField] VideoPlayer _videoPlayer;
+    [SerializeField] EditorVideoPlayer _editorVideoPlayer;
 
+    [Header("Play/Pause")]
     [SerializeField] Image _playPauseImage;
     [SerializeField] Sprite _playSprite;
     [SerializeField] Sprite _pauseSprite;
+
+    [Header("Loop")]
+    [SerializeField] RectTransform _loopPointImageRect;
+    [SerializeField] RectTransform _sliderHandleRect;
+
 
     private void Update()
     {
@@ -25,5 +32,12 @@ public class PlayPauseButton : MonoBehaviour
         if (_videoPlayer.isPaused)
             _videoPlayer.Play();
         else _videoPlayer.Pause();
+    }
+
+    public void SetLoopPoint()
+    {
+        _loopPointImageRect.anchorMin = _sliderHandleRect.anchorMin;
+        _loopPointImageRect.anchorMax = _sliderHandleRect.anchorMax;
+        _editorVideoPlayer.SetLoopTimeToVideo();
     }
 }

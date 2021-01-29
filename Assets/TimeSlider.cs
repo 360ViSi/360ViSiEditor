@@ -13,7 +13,7 @@ public class TimeSlider : Slider
     }
     public override void OnPointerUp(PointerEventData eventData)
     {
-        base.OnPointerDown(eventData);
+        base.OnPointerUp(eventData);
         OnRelease?.Invoke();
     }
 }

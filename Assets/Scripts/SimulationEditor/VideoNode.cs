@@ -16,7 +16,8 @@ public class VideoNode : MonoBehaviour
     private StructureManager structureManager;
     [SerializeField] private TMP_Text videoFilenameText;
 
-    private bool loopingVideo;
+    private bool loopingVideo = true;
+    private float loopTime; //loopTime is 0-1 of the video length
     private GameObject autoEndAction = null;
 
     void Awake()
@@ -53,8 +54,10 @@ public class VideoNode : MonoBehaviour
         actionNode.setActionText(actionText);
         actionNode.setLoadedVideoID(nextVideoId);
 
-        if (isAutoEnd) 
+        if (isAutoEnd) {
             autoEndAction = newActionGameObject;
+            actionNode.DisableRemoveButton();
+        }
     }
 
     public void setVideoID(int newVideoID)
@@ -87,10 +90,13 @@ public class VideoNode : MonoBehaviour
         return loopingVideo;
     }
 
-    public void setLoop(bool value)
+    public void setLoop(bool value, bool onLoad = false)
     {
+        if(loopingVideo == value && !onLoad)
+            return;
+
         loopingVideo = value;
-        if (value)
+        if (value == false)
         {
             createNewActionNode("AUTOEND", true);
             return;
@@ -98,6 +104,16 @@ public class VideoNode : MonoBehaviour
 
         if (autoEndAction != null)
             removeActionNode(autoEndAction);
+    }
+
+    public float getLoopTime()
+    {
+        return loopTime;
+    }
+
+    public void setLoopTime(float value)
+    {
+        loopTime = value;
     }
 
     public List<ActionNode> getActionNodeList()

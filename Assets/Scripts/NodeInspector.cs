@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 ///<summary>
 /// Controls and manages the functions of the IN-APP-INSPECTOR (not Unity inspector)
@@ -17,6 +18,17 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] GameObject _filenameElementPrefab = null;
     [SerializeField] GameObject _toggleElementPrefab = null;
 
+    public VideoNode CurrentVideoNode
+    {
+        get
+        {
+            if (_currentVideoNode == null)
+                Debug.LogError("NodeInspectors' currentVideoNode == null");
+            return _currentVideoNode;
+        }
+    }
+
+    public ActionNode CurrentActionNode { get => _currentActionNode; }
 
     private void Awake()
     {
@@ -28,19 +40,20 @@ public class NodeInspector : MonoBehaviour
     ///</summary>
     public void CreateFields(VideoNode node)
     {
-        _currentActionNode = null;
+        NullCurrentNodes();
 
         if (node == _currentVideoNode)
             return;
 
-        //Put bg to video
-        _editorVideoPlayer.ChangeVideo(node.getVideoFileName());
+        _currentVideoNode = node;
+        _currentVideoNode.GetComponent<Outline>().enabled = true;
 
         //Clean old children first
         for (int i = transform.childCount - 1; i > -1; i--)
             Destroy(transform.GetChild(i).gameObject);
 
-        _currentVideoNode = node;
+        //Put bg to video
+        _editorVideoPlayer.ChangeVideo(node.getVideoFileName());
         //Create new ones
         //Video file name
         var textElementObj = Instantiate(_filenameElementPrefab, transform);
@@ -51,6 +64,7 @@ public class NodeInspector : MonoBehaviour
         var toggleElementObj = Instantiate(_toggleElementPrefab, transform);
         var toggleElement = toggleElementObj.GetComponent<NodeInspectorToggleElement>();
         toggleElement.InitializeElement("Loop video", ElementKey.VideoLoop, node.getLoop());
+
     }
 
     ///<summary>
@@ -58,20 +72,35 @@ public class NodeInspector : MonoBehaviour
     ///</summary>
     public void CreateFields(ActionNode node)
     {
-        _currentVideoNode = null;
-
+        NullCurrentNodes();
         if (node == _currentActionNode)
             return;
+
+        _currentActionNode = node;
+        _currentActionNode.GetComponent<Outline>().enabled = true;
 
         //Clean old children first
         for (int i = transform.childCount - 1; i > -1; i--)
             Destroy(transform.GetChild(i).gameObject);
 
-        _currentActionNode = node;
         //Create new ones
         var elementObj = Instantiate(_textElementPrefab, transform);
         var element = elementObj.GetComponent<NodeInspectorTextElement>();
         element.InitializeElement("Action name", ElementKey.ActionName, node.getActionText());
+    }
+
+    void NullCurrentNodes()
+    {
+        if (_currentVideoNode != null)
+        {
+            _currentVideoNode.GetComponent<Outline>().enabled = false;
+            _currentVideoNode = null;
+        }
+        if (_currentActionNode != null)
+        {
+            _currentActionNode.GetComponent<Outline>().enabled = false;
+            _currentActionNode = null;
+        }
     }
 
     public void UpdateValue(ElementKey key, string value)

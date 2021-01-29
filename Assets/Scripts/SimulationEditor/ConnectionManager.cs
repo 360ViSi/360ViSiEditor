@@ -35,7 +35,7 @@ public class ConnectionManager : MonoBehaviour
       connection.setFromNode(fromNode);
       connection.setToNode(toNode);
       connection.setConnectionLine(createConnectionLine(fromNode));
-      Debug.Log("new connection created: "+connections.Count);
+      //Debug.Log("new connection created: "+connections.Count);
       return;
     }
 
