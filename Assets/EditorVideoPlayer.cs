@@ -52,7 +52,7 @@ public class EditorVideoPlayer : MonoBehaviour
         var fullpath = @"C:\Unity\" + filename;
         if (!File.Exists(fullpath))
         {
-            Debug.Log($"No file with path {fullpath} found");
+            Debug.LogError($"No file with path {fullpath} found");
             return;
         }
         _videoPlayer.url = fullpath;
@@ -101,12 +101,6 @@ public class EditorVideoPlayer : MonoBehaviour
         //S NOTE - Skip On Drop needs to be disabled in the videoplayer loop points are used
         //Having it enabled causes the videoplayer to go to frame 0 to wait for the skip 
         //to the actual loop point
-
-        //S TODO - This is very weird, but loopPointReached gets called twice when 
-        //time is scrolled backwards. Could be framerate dependant?
-
-        Debug.Log("Looping");
-        Debug.Log(_videoPlayer.frame);
         if(_realLoop)
             player.time = (double)(player.length * _currentVideoLoopTime);
     }

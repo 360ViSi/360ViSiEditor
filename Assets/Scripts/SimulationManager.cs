@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -39,25 +40,28 @@ public class SimulationManager : MonoBehaviour
     public void actionSelected(int actionID)
     {
       //Debug.Log("button clicked " + actionID);
-      getToNextPart(actionID);
+      goToNextPart(actionID);
     }
 
     public VideoPart getCurrentVideoPart()
     {
-      //end
-      if(currentVideoID == -1){
-        endPanel.SetActive(true);
-        videoPlayer.Stop();
-      } 
+
       return videoData.getVideoPart(currentVideoID);
     }
 
-    public void getToNextPart(int actionID)
+    public void goToNextPart(int actionID)
     {
       int nextVideoID = videoData.getVideoPart(currentVideoID).getNextVideoID(actionID);
+      goToVideo(nextVideoID);
+    }
 
+    public void goToVideo(int nextVideoID)
+    {
+      
       if (nextVideoID == -1)
       {
+        endPanel.SetActive(true);
+        videoPlayer.Stop();
         currentVideoID=nextVideoID;
         Debug.Log("Game ended");
         return;
@@ -83,8 +87,20 @@ public class SimulationManager : MonoBehaviour
       Debug.Log("Video is "+nextVideoFileName);
     }
 
-  public void ResetSimulation(){
-    endPanel.SetActive(false);
-    setStartVideo();    
-  }
+    public void AutoEnd()
+    {
+      var videoPart = getCurrentVideoPart();
+      if(videoPart.getLoop())
+      {
+        Debug.LogError("Trying to call autoend action for a video with loop.");
+        return;
+      }
+      goToVideo(videoPart.actions.Where(e => e.autoEnd).FirstOrDefault().nextVideo);
+    }
+
+    public void ResetSimulation()
+    {
+      endPanel.SetActive(false);
+      setStartVideo();    
+    }
 }

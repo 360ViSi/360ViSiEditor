@@ -63,6 +63,7 @@ public class NodeInspector : MonoBehaviour
         //loop toggle
         var toggleElementObj = Instantiate(_toggleElementPrefab, transform);
         var toggleElement = toggleElementObj.GetComponent<NodeInspectorToggleElement>();
+        Debug.Log($"Video loop: {node.getLoop()}");
         toggleElement.InitializeElement("Loop video", ElementKey.VideoLoop, node.getLoop());
 
     }

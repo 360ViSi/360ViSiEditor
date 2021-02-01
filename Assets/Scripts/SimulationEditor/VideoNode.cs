@@ -54,8 +54,10 @@ public class VideoNode : MonoBehaviour
         actionNode.setActionText(actionText);
         actionNode.setLoadedVideoID(nextVideoId);
 
-        if (isAutoEnd) {
+        if (isAutoEnd) 
+        {
             autoEndAction = newActionGameObject;
+            actionNode.setAsAutoEnd();
             actionNode.DisableRemoveButton();
         }
     }
@@ -92,10 +94,14 @@ public class VideoNode : MonoBehaviour
 
     public void setLoop(bool value, bool onLoad = false)
     {
-        if(loopingVideo == value && !onLoad)
+        if (loopingVideo == value)
             return;
 
         loopingVideo = value;
+
+        if (onLoad)
+            return;
+
         if (value == false)
         {
             createNewActionNode("AUTOEND", true);

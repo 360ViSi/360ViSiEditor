@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,14 +16,18 @@ public class VideoData : MonoBehaviour
     //awake is called before start
     void Awake()
     {
-      videoStructure = JsonUtility.FromJson<VideoStructure>(jsonFile.text);
+      
+      //S TODO - placeholder for dev
+      var fileString = File.ReadAllText(@"C:\Unity\simu.json");
+      videoStructure = JsonUtility.FromJson<VideoStructure>(fileString);
+      //videoStructure = JsonUtility.FromJson<VideoStructure>(jsonFile.text);
 
       //debuging print video filenames
       foreach (VideoPart video in videoStructure.videos)
       {
         Debug.Log(video.getVideoFileName());
       }
-      print (isVideoIDsValid(videoStructure));
+      print ($"Is valid structure: {isVideoIDsValid(videoStructure)}");
     }
 
     //public functions
@@ -129,6 +134,8 @@ public class VideoPart
   public int videoID;
   public List<Action> actions;
 
+  public bool loop;
+  public float loopTime;
   public string getVideoFileName()
   {
     return videoFileName;
@@ -156,6 +163,10 @@ public class VideoPart
       return "";
     }
   }
+
+  public bool getLoop() => loop;
+
+  public float getLoopTime() => loopTime;
 
   public int getNextVideoID(int askedActionID)
   {
@@ -190,6 +201,7 @@ public class Action
 {
   public string actionText;
   public int nextVideo;
+  public bool autoEnd;
 
   public string getActionText()
   {
@@ -199,4 +211,6 @@ public class Action
   {
     return nextVideo;
   }
+
+  public bool getAutoEnd() => autoEnd;
 }

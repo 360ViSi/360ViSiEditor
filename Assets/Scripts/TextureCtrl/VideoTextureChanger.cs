@@ -10,6 +10,7 @@ public class VideoTextureChanger : MonoBehaviour
     //variables used in editor
     [SerializeField]
     private VideoPathPointer_SO videoPointer;
+    [SerializeField] private SimulationManager simulationManager;
 
     //private variables
     [SerializeField] private VideoPlayer videoPlayer360;
@@ -19,6 +20,21 @@ public class VideoTextureChanger : MonoBehaviour
     {
       //initialize Video player
       videoPlayer360.prepareCompleted += PrepareCompleted;
+      videoPlayer360.loopPointReached += VideoEnd;
+    }
+
+    private void VideoEnd(VideoPlayer player)
+    {
+      Debug.Log("Loop");
+      var videoPart = simulationManager.getCurrentVideoPart();
+
+      if(videoPart.getLoop())
+      {
+        player.time = player.length * videoPart.getLoopTime();
+        return;
+      }
+
+      simulationManager.AutoEnd();
     }
 
     void PrepareCompleted(VideoPlayer videoPlayer360)
@@ -35,6 +51,7 @@ public class VideoTextureChanger : MonoBehaviour
 
     private string getVideoURL(VideoPathPointer_SO pointer, string videoFileName)
     {
+      //S TODO: placeholder folder for easier dev
       string directory = @"C:\Unity\"; //getVideoFolder(pointer);
       DirectoryInfo dirInfo = new DirectoryInfo(directory);
       string videoURL = "";

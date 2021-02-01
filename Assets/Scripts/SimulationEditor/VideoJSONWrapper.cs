@@ -26,6 +26,7 @@ public class VideoJSONWrapper
             videoID = videoNode.getVideoID();
             videoFileName = videoNode.getVideoFileName();
             position = videoNode.GetComponent<RectTransform>().anchoredPosition;
+            loop = videoNode.getLoop();
             loopTime = videoNode.getLoopTime();
 
             if (actionJSONObjects != null)
@@ -46,7 +47,7 @@ public class VideoJSONWrapper
         {
             actionText = actionNode.getActionText();
             nextVideo = actionNode.getNextVideoID();
-            //S TODO get if this is autoend node
+            autoEnd = actionNode.getAutoEnd();
         }
 
         public string actionText = "";

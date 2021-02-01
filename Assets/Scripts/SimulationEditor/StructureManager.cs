@@ -36,7 +36,7 @@ public class StructureManager : MonoBehaviour
             Debug.Log("There are no ConnectionManager as a child of " + name);
         }
 
-        //S TODO remove
+        //S TODO remove when startup loadin is not great anymore
         JsonToSimulation();
     }
     public void createNewVideoNode()
@@ -109,7 +109,7 @@ public class StructureManager : MonoBehaviour
         if(videoID == -1)
             return endNode.GetComponent<VideoNode>();
             
-        return getVideoNodeList().Where(e => e.getVideoID() == videoID).First();;
+        return getVideoNodeList().Where(e => e.getVideoID() == videoID).First();
     }
 
     public void SimulationToJson()
@@ -123,18 +123,13 @@ public class StructureManager : MonoBehaviour
         var json = JsonUtility.ToJson(wrapper);
 
         Debug.Log(json.ToString());
-        var defaultFileName = "test";
-        var counter = 0;
 
-        while (File.Exists(@"C:\Unity\" + defaultFileName + counter))
-            counter++;
+        if (File.Exists(@"C:\Unity\simu.json"))
+            File.Delete(@"C:\Unity\simu.json");
 
-        var file = File.Create(@"C:\Unity\" + defaultFileName + counter + ".json");
-        file.Close();
-        File.WriteAllText(@"C:\Unity\" + defaultFileName + counter + ".json", json);
+        File.WriteAllText(@"C:\Unity\simu.json", json);
     }
 
-    [ContextMenu("Test Json to sim")]
     public void JsonToSimulation()
     {
         //S TODO Filebrowser

@@ -38,11 +38,11 @@ public class ButtonHandler : MonoBehaviour
     private void setupButtons(VideoPart currentVideoPart)
     {
       int actionCount=0;
-
       if  (currentVideoPart!=null)
       {
         actionCount =  currentVideoPart.getActionCount();
       }
+      var listOfEnabledActions = new List<Action>();
 
       for (int i=0; i<buttons.Count;i++)
       {

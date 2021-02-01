@@ -20,6 +20,7 @@ public class ActionNode : MonoBehaviour
     private TextMeshProUGUI actionText;
     private Image thisImage;
     private int loadedNextVideoID = -2;
+    private bool autoEnd;
 
     [SerializeField] GameObject removeButton = null;
 
@@ -37,7 +38,7 @@ public class ActionNode : MonoBehaviour
       actionText = GetComponentInChildren<TextMeshProUGUI>();
       if (actionText==null)
       {
-        Debug.Log("There are no text object in "+ name);
+        Debug.Log("There are no text object in "+ name); 
       }
 
       //get connectionManager
@@ -93,7 +94,8 @@ public class ActionNode : MonoBehaviour
     }
     thisImage.color=connectedColor;
   }
-
+  public void setAsAutoEnd() => autoEnd = true;
+  public bool getAutoEnd() => autoEnd;
 
   public void setActionText(string newActionText)
   {
@@ -158,17 +160,11 @@ public class ActionNode : MonoBehaviour
     videoNode.removeActionNode(gameObject);
   }
 
-  public void InspectorOpen()
-  {
-    NodeInspector.instance.CreateFields(this);
-  }
+    public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 
-  ///<summary>
-  /// When autoEnd actionNode is created, need to disable
-  /// the ability to remove that node (is automatic if loop is enabled)
-  ///</summary>
-  public void DisableRemoveButton()
-  {
-    removeButton.SetActive(false);
-  }
+    ///<summary>
+    /// When autoEnd actionNode is created, need to disable
+    /// the ability to remove that node (is automatic if loop is enabled)
+    ///</summary>
+    public void DisableRemoveButton() => removeButton.SetActive(false);
 }
