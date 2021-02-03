@@ -27,7 +27,7 @@ public class EditorVideoPlayer : MonoBehaviour
     void Start()
     {
         _videoPlayer = GetComponent<VideoPlayer>();
-        _videoPlayer.loopPointReached += LoopVideo;
+        //_videoPlayer.loopPointReached += LoopVideo;
         _timeSlider.OnHold.AddListener(StartHold);
         _timeSlider.OnRelease.AddListener(EndHold);
         //S TODO perhaps move this to when video is paused and revert when playing?
@@ -47,13 +47,14 @@ public class EditorVideoPlayer : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space)) TogglePause();
         UpdateVideoStatus();
 
-        if (_videoPlayer.time > _videoPlayer.length * _currentVideoEndTime)
-        {
-            Debug.Log("Time loop");
-            _realLoop = true;
-            LoopVideo(_videoPlayer);
-        }
+        if (_videoPlayer.length == 0 || !_videoPlayer.isPlaying) 
+            return;
+        if ((float)_videoPlayer.frame < (float)_videoPlayer.frameCount * _currentVideoEndTime - 1) 
+            return;
 
+        Debug.Log("Time loop");
+        _realLoop = true;
+        LoopVideo(_videoPlayer);
     }
 
     public void ChangeVideo(string filename)
@@ -130,7 +131,7 @@ public class EditorVideoPlayer : MonoBehaviour
 
     private VideoPlayer.EventHandler PrepareVideo(VideoPlayer player, bool pause)
     {
-        player.time = (double)_nodeInspector.CurrentVideoNode.getStartTime();
+        //player.time = (double)_nodeInspector.CurrentVideoNode.getStartTime();
 
         if (pause)
             player.Pause();
@@ -145,9 +146,13 @@ public class EditorVideoPlayer : MonoBehaviour
         //Having it enabled causes the videoplayer to go to frame 0 to wait for the skip 
         //to the actual loop point
         if (_realLoop && _nodeInspector.CurrentVideoNode.getLoop())
-            player.time = (double)(player.length * _currentVideoLoopTime);
-        else if (_realLoop)
-            player.time = (double)(player.length * _nodeInspector.CurrentVideoNode.getStartTime());
+        {
+            StartCoroutine(LoopRoutine((float)(player.length * _nodeInspector.CurrentVideoNode.getLoopTime())));
+        }
+        else if (_realLoop){
+            StartCoroutine(LoopRoutine((float)(player.length * _nodeInspector.CurrentVideoNode.getStartTime())));
+        }
+        else player.time = _timeSlider.value;
     }
 
     private void TogglePause()
@@ -188,5 +193,11 @@ public class EditorVideoPlayer : MonoBehaviour
         if (_playAfterHold)
             _videoPlayer.Play();
 
+    }
+    IEnumerator LoopRoutine(float time){
+        _videoPlayer.time = time;
+        _videoPlayer.Pause();
+        yield return new WaitForSeconds(.25f); // it takes some time for the VideoPlayer to seek
+        _videoPlayer.Play();
     }
 }

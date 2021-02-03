@@ -24,16 +24,16 @@ public class EditorVideoControls : MonoBehaviour
     private void Update()
     {
         //S TODO change to function with events
-        if (_videoPlayer.isPaused)
-            _playPauseImage.sprite = _playSprite;
-        else _playPauseImage.sprite = _pauseSprite;
+        if (_videoPlayer.isPlaying)
+            _playPauseImage.sprite = _pauseSprite;
+        else _playPauseImage.sprite = _playSprite;
     }
 
     public void TogglePause()
     {
-        if (_videoPlayer.isPaused)
-            _videoPlayer.Play();
-        else _videoPlayer.Pause();
+        if (_videoPlayer.isPlaying)
+            _videoPlayer.Pause();
+        else _videoPlayer.Play();
     }
 
     public void SetLoopPoint()
