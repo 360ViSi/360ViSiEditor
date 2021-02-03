@@ -1,10 +1,11 @@
+using System.Globalization;
+using System;
 using UnityEngine;
 using TMPro;
 
 public class NodeInspectorTextElement : NodeInspectorElement
 {
     [SerializeField] TMP_InputField elementValue;
-
     public void InitializeElement(string header, ElementKey key, string value)
     {
         elementKey = key;
@@ -22,4 +23,6 @@ public class NodeInspectorTextElement : NodeInspectorElement
     {
         inspector.UpdateValue(elementKey, value);
     }
+
+
 }

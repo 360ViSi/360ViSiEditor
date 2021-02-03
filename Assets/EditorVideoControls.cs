@@ -16,6 +16,8 @@ public class EditorVideoControls : MonoBehaviour
 
     [Header("Loop")]
     [SerializeField] RectTransform _loopPointImageRect;
+    [SerializeField] RectTransform _startPointImageRect;
+    [SerializeField] RectTransform _endPointImageRect;
     [SerializeField] RectTransform _sliderHandleRect;
 
 
@@ -39,5 +41,17 @@ public class EditorVideoControls : MonoBehaviour
         _loopPointImageRect.anchorMin = _sliderHandleRect.anchorMin;
         _loopPointImageRect.anchorMax = _sliderHandleRect.anchorMax;
         _editorVideoPlayer.SetLoopTimeToVideo();
+    }
+    public void SetVideoStartPoint()
+    {
+        _startPointImageRect.anchorMin = _sliderHandleRect.anchorMin;
+        _startPointImageRect.anchorMax = _sliderHandleRect.anchorMax;
+        _editorVideoPlayer.SetStartTimeToVideo();
+    }
+    public void SetVideoEndPoint()
+    {
+        _endPointImageRect.anchorMin = _sliderHandleRect.anchorMin;
+        _endPointImageRect.anchorMax = _sliderHandleRect.anchorMax;
+        _editorVideoPlayer.SetEndTimeToVideo();
     }
 }

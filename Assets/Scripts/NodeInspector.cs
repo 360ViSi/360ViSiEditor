@@ -15,6 +15,7 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] EditorVideoPlayer _editorVideoPlayer = null;
     [Header("UI Elements")]
     [SerializeField] GameObject _textElementPrefab = null;
+    [SerializeField] GameObject _statsElementPrefab = null;
     [SerializeField] GameObject _filenameElementPrefab = null;
     [SerializeField] GameObject _toggleElementPrefab = null;
 
@@ -42,9 +43,6 @@ public class NodeInspector : MonoBehaviour
     {
         NullCurrentNodes();
 
-        if (node == _currentVideoNode)
-            return;
-
         _currentVideoNode = node;
         _currentVideoNode.GetComponent<Outline>().enabled = true;
 
@@ -54,19 +52,43 @@ public class NodeInspector : MonoBehaviour
 
         //Put bg to video
         _editorVideoPlayer.ChangeVideo(node.getVideoFileName());
+        Debug.Log(node.getEndTime());
+        Debug.Log((float)GetVideoLenght());
+        Debug.Log(Utilities.FloatToTime(node.getEndTime(), (float)GetVideoLenght()));
         //Create new ones
         //Video file name
         var textElementObj = Instantiate(_filenameElementPrefab, transform);
         var textElement = textElementObj.GetComponent<NodeInspectorTextElement>();
-        textElement.InitializeElement("Video filename", ElementKey.VideoFileName, node.getVideoFileName());
+        textElement.InitializeElement(
+            "Video filename",
+            ElementKey.VideoFileName,
+            node.getVideoFileName());
 
         //loop toggle
         var toggleElementObj = Instantiate(_toggleElementPrefab, transform);
         var toggleElement = toggleElementObj.GetComponent<NodeInspectorToggleElement>();
-        Debug.Log($"Video loop: {node.getLoop()}");
-        toggleElement.InitializeElement("Loop video", ElementKey.VideoLoop, node.getLoop());
+        toggleElement.InitializeElement(
+            "Loop video",
+            ElementKey.VideoLoop,
+            node.getLoop());
 
+        //Video start time
+        var startTimeTextElementObj = Instantiate(_statsElementPrefab, transform);
+        var startTimeTextElement = startTimeTextElementObj.GetComponent<NodeInspectorStatsElement>();
+        startTimeTextElement.InitializeElement(
+            "Video start time ",
+            ElementKey.VideoStartTime,
+            Utilities.FloatToTime(node.getStartTime(), (float)GetVideoLenght()));
+
+        //Video end time
+        var endTimeTextElementObj = Instantiate(_statsElementPrefab, transform);
+        var endTimeTextElement = endTimeTextElementObj.GetComponent<NodeInspectorStatsElement>();
+        endTimeTextElement.InitializeElement(
+            "Video end time ",
+            ElementKey.VideoEndTime,
+            Utilities.FloatToTime(node.getEndTime(), (float)GetVideoLenght()));
     }
+
 
     ///<summary>
     /// Overload for CreateFields that takes in an action node instead
@@ -74,10 +96,10 @@ public class NodeInspector : MonoBehaviour
     public void CreateFields(ActionNode node)
     {
         NullCurrentNodes();
-        if (node == _currentActionNode)
-            return;
 
         _currentActionNode = node;
+        _currentVideoNode = node.GetComponentInParent<VideoNode>();
+        _editorVideoPlayer.ChangeVideo(_currentVideoNode.getVideoFileName());
         _currentActionNode.GetComponent<Outline>().enabled = true;
 
         //Clean old children first
@@ -118,11 +140,24 @@ public class NodeInspector : MonoBehaviour
     {
         if (key == ElementKey.VideoLoop) _currentVideoNode.setLoop(value);
     }
+
+    public void UpdateValue(ElementKey key, float value)
+    {
+        Debug.Log(key.ToString() + " - " + value);
+        if (key == ElementKey.VideoStartTime) _currentVideoNode.setStartTime(value);
+        if (key == ElementKey.VideoEndTime) _currentVideoNode.setEndTime(value);
+    }
+
+    public double GetVideoLenght() => _editorVideoPlayer.VideoPlayer.length;
 }
 
 public enum ElementKey
 {
     VideoFileName,
     ActionName,
-    VideoLoop
+    ActionStartTime,
+    ActionEndTime,
+    VideoLoop,
+    VideoStartTime,
+    VideoEndTime
 }

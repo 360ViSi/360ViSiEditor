@@ -12,13 +12,18 @@ public class EditorVideoPlayer : MonoBehaviour
     VideoPlayer _videoPlayer;
     [SerializeField] NodeInspector _nodeInspector;
     [SerializeField] TimeSlider _timeSlider;
+    [SerializeField] TMPro.TMP_Text _currentTime;
     [SerializeField] Material _renderMat;
     [SerializeField] EditorVideoControls _editorVideoControls;
     bool _isSliderHeld = false;
     bool _playAfterHold = false;
     float _currentVideoLoopTime = 0;
+    float _currentVideoStartTime = 0;
+    float _currentVideoEndTime = 1;
     bool _realLoop; //Determines if video actually looped OR was just rewound
-    
+
+    public VideoPlayer VideoPlayer { get => _videoPlayer; }
+
     void Start()
     {
         _videoPlayer = GetComponent<VideoPlayer>();
@@ -38,11 +43,17 @@ public class EditorVideoPlayer : MonoBehaviour
 
     private void Update()
     {
+
         if (Input.GetKeyDown(KeyCode.Space)) TogglePause();
         UpdateVideoStatus();
 
-        if(_videoPlayer.frame > (long)_videoPlayer.frameCount - 5)
+        if (_videoPlayer.time > _videoPlayer.length * _currentVideoEndTime)
+        {
+            Debug.Log("Time loop");
             _realLoop = true;
+            LoopVideo(_videoPlayer);
+        }
+
     }
 
     public void ChangeVideo(string filename)
@@ -66,6 +77,8 @@ public class EditorVideoPlayer : MonoBehaviour
             _videoPlayer.prepareCompleted += PrepareVideo(_videoPlayer, false);
 
         GetLoopTimeFromVideo();
+        GetStartTimeFromVideo();
+        GetEndTimeFromVideo();
         _videoPlayer.Prepare();
     }
 
@@ -80,7 +93,7 @@ public class EditorVideoPlayer : MonoBehaviour
         _currentVideoLoopTime = _timeSlider.value;
     }
 
-    public void GetLoopTimeFromVideo()
+    void GetLoopTimeFromVideo()
     {
         var loopTime = _nodeInspector.CurrentVideoNode.getLoopTime();
         _timeSlider.value = loopTime;
@@ -88,11 +101,41 @@ public class EditorVideoPlayer : MonoBehaviour
         _editorVideoControls.SetLoopPoint();
     }
 
+
+    public void SetStartTimeToVideo()
+    {
+        _nodeInspector.CurrentVideoNode.setStartTime(_timeSlider.value);
+        _currentVideoStartTime = _timeSlider.value;
+    }
+
+    void GetStartTimeFromVideo()
+    {
+        var startTime = _nodeInspector.CurrentVideoNode.getStartTime();
+        _timeSlider.value = startTime;
+        _currentVideoStartTime = startTime;
+        _editorVideoControls.SetVideoStartPoint();
+    }
+    public void SetEndTimeToVideo()
+    {
+        _nodeInspector.CurrentVideoNode.setEndTime(_timeSlider.value);
+        _currentVideoEndTime = _timeSlider.value;
+    }
+    void GetEndTimeFromVideo()
+    {
+        var endTime = _nodeInspector.CurrentVideoNode.getEndTime();
+        _timeSlider.value = endTime;
+        _currentVideoEndTime = endTime;
+        _editorVideoControls.SetVideoEndPoint();
+    }
+
     private VideoPlayer.EventHandler PrepareVideo(VideoPlayer player, bool pause)
     {
+        player.time = (double)_nodeInspector.CurrentVideoNode.getStartTime();
+
         if (pause)
             player.Pause();
         else player.Play();
+
         return null;
     }
 
@@ -101,8 +144,10 @@ public class EditorVideoPlayer : MonoBehaviour
         //S NOTE - Skip On Drop needs to be disabled in the videoplayer loop points are used
         //Having it enabled causes the videoplayer to go to frame 0 to wait for the skip 
         //to the actual loop point
-        if(_realLoop)
+        if (_realLoop && _nodeInspector.CurrentVideoNode.getLoop())
             player.time = (double)(player.length * _currentVideoLoopTime);
+        else if (_realLoop)
+            player.time = (double)(player.length * _nodeInspector.CurrentVideoNode.getStartTime());
     }
 
     private void TogglePause()
@@ -115,9 +160,17 @@ public class EditorVideoPlayer : MonoBehaviour
 
     private void UpdateVideoStatus()
     {
-        if (_videoPlayer.length == 0 || _isSliderHeld) return;
+        if (_isSliderHeld)
+        {
+            _currentTime.text = Utilities.FloatToTime(_timeSlider.value, (float)_videoPlayer.length, true);
+            return;
+        }
+
+        if (_videoPlayer.length == 0) return;
+
         var videoTime = (float)(_videoPlayer.time / _videoPlayer.length);
         _timeSlider.value = videoTime;
+        _currentTime.text = Utilities.FloatToTime(videoTime, (float)_videoPlayer.length, true);
     }
 
     private void StartHold()
@@ -131,9 +184,9 @@ public class EditorVideoPlayer : MonoBehaviour
     {
         _isSliderHeld = false;
         _videoPlayer.frame = (long)(_videoPlayer.frameCount * _timeSlider.value);
-        
+
         if (_playAfterHold)
             _videoPlayer.Play();
-        
+
     }
 }

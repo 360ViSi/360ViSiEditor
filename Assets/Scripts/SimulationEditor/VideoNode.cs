@@ -15,7 +15,8 @@ public class VideoNode : MonoBehaviour
     private NodePort nodePort;
     private StructureManager structureManager;
     [SerializeField] private TMP_Text videoFilenameText;
-
+    private float endTime = 1;
+    private float startTime = 0;
     private bool loopingVideo = true;
     private float loopTime; //loopTime is 0-1 of the video length
     private GameObject autoEndAction = null;
@@ -112,15 +113,12 @@ public class VideoNode : MonoBehaviour
             removeActionNode(autoEndAction);
     }
 
-    public float getLoopTime()
-    {
-        return loopTime;
-    }
-
-    public void setLoopTime(float value)
-    {
-        loopTime = value;
-    }
+    public float getLoopTime() => loopTime;
+    public void setLoopTime(float value) => loopTime = value;
+    public float getEndTime() => endTime;
+    public void setEndTime(float value) => endTime = value;
+    public float getStartTime() => startTime;
+    public void setStartTime(float value) => startTime = value;
 
     public List<ActionNode> getActionNodeList()
     {

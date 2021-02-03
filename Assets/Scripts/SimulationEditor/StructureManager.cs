@@ -173,6 +173,8 @@ public class StructureManager : MonoBehaviour
         node.setVideoFileName(videoJSONObject.videoFileName);
         node.setLoop(videoJSONObject.loop, true);
         node.setLoopTime(videoJSONObject.loopTime);
+        node.setStartTime(0); //S TODO load these and save
+        node.setEndTime(1);
         newVideoObject.GetComponent<RectTransform>().anchoredPosition = videoJSONObject.position;
         videoGameObjects.Add(newVideoObject);
 
