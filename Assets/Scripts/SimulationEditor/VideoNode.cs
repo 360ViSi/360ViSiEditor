@@ -18,7 +18,7 @@ public class VideoNode : MonoBehaviour
     private float endTime = 1;
     private float startTime = 0;
     private bool loopingVideo = true;
-    private float loopTime; //loopTime is 0-1 of the video length
+    private float loopTime = 0; //loopTime is 0-1 of the video length
     private GameObject autoEndAction = null;
 
     void Awake()
@@ -38,7 +38,7 @@ public class VideoNode : MonoBehaviour
         createNewActionNode("action", false);
     }
 
-    public void createNewActionNode(string actionText, bool isAutoEnd, int nextVideoId = -2)
+    public void createNewActionNode(string actionText, bool isAutoEnd, int nextVideoId = -2, float startTime = 0, float endTime = 1)
     {
         //get prefab from structureManager and initilize that
         //add action node to the list and position it in UI
@@ -189,9 +189,5 @@ public class VideoNode : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void InspectorOpen()
-    {
-        //Open this video to the videoplayer
-        NodeInspector.instance.CreateFields(this);
-    }
+    public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 }

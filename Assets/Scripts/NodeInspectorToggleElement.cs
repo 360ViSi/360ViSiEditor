@@ -5,7 +5,7 @@ public class NodeInspectorToggleElement : NodeInspectorElement
 {
     [SerializeField] Toggle elementValue;
 
-    public void InitializeElement(string header, ElementKey key, bool value)
+    public override void InitializeElement(string header, ElementKey key, bool value)
     {
         elementKey = key;
         elementName.text = header;

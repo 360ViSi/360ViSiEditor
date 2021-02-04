@@ -19,7 +19,7 @@ public static class Utilities
 
         if (returnLength)
             result += $" / {FloatToTime(1, maxTime)}";
-
+            
         return result;
     }
 }

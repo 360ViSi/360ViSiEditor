@@ -6,7 +6,7 @@ using TMPro;
 public class NodeInspectorTextElement : NodeInspectorElement
 {
     [SerializeField] TMP_InputField elementValue;
-    public void InitializeElement(string header, ElementKey key, string value)
+    public override void InitializeElement(string header, ElementKey key, string value)
     {
         elementKey = key;
         elementName.text = header;

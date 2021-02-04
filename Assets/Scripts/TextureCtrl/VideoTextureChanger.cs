@@ -13,14 +13,42 @@ public class VideoTextureChanger : MonoBehaviour
     [SerializeField] private SimulationManager simulationManager;
 
     //private variables
-    [SerializeField] private VideoPlayer videoPlayer360;
+    [SerializeField] private VideoPlayer videoPlayer;
+    [SerializeField] TMPro.TMP_Text videoTimeText;
+    float currentVideoEndTime = 1;
+    float currentVideoStartTime = 0;
+    float currentVideoLoopTime = 0;
+    bool currentVideoLoop = false;
 
     // Start is called before the first frame update
     void Start()
     {
       //initialize Video player
-      videoPlayer360.prepareCompleted += PrepareCompleted;
-      videoPlayer360.loopPointReached += VideoEnd;
+      videoPlayer.prepareCompleted += PrepareCompleted;
+    }
+
+    private void Update() 
+    {
+      videoTimeText.text = Utilities.FloatToTime((float)(videoPlayer.time / videoPlayer.length), (float)videoPlayer.length, true);
+
+      if (videoPlayer.length == 0 || !videoPlayer.isPlaying)
+            return;
+          
+
+        // S TODO - has to be a better way to solve this, maybe with just checking for a stop?
+        var endThresholdFrames = 1;
+        if (currentVideoEndTime == 1)
+            endThresholdFrames++;
+        if (videoPlayer.frame < (videoPlayer.frameCount * currentVideoEndTime - endThresholdFrames))
+            return;
+
+        if (currentVideoLoop == false)
+        {
+            videoPlayer.Stop();
+            return;
+        }
+
+        VideoEnd(videoPlayer);
     }
 
     private void VideoEnd(VideoPlayer player)
@@ -30,23 +58,43 @@ public class VideoTextureChanger : MonoBehaviour
 
       if(videoPart.getLoop())
       {
-        player.time = player.length * videoPart.getLoopTime();
+        StartCoroutine(LoopRoutine((float)player.length * currentVideoLoopTime));
         return;
       }
 
       simulationManager.AutoEnd();
     }
 
-    void PrepareCompleted(VideoPlayer videoPlayer360)
+    IEnumerator LoopRoutine(float time)
+    {
+        videoPlayer.time = time;
+        videoPlayer.Pause();
+        yield return new WaitForSeconds(.25f); // it takes some time for the VideoPlayer to seek
+        videoPlayer.Play();
+    }
+
+    void PrepareCompleted(VideoPlayer videoPlayer)
     {
       Debug.Log("video is ready");
-      videoPlayer360.Play();
+      videoPlayer.time = videoPlayer.length * currentVideoStartTime;
+      videoPlayer.Play();
+      
     }
 
     public void changeVideo(string videoFileName)
     {
-      videoPlayer360.url = getVideoURL(videoPointer, videoFileName);
-      videoPlayer360.Prepare();
+      videoPlayer.url = getVideoURL(videoPointer, videoFileName);
+
+      //get currents
+      var videoPart = simulationManager.getCurrentVideoPart();
+      currentVideoStartTime = videoPart.getStartTime();
+      currentVideoEndTime = videoPart.getEndTime();
+      currentVideoLoop = videoPart.getLoop();
+      currentVideoLoopTime = videoPart.getLoopTime();
+      Debug.Log($"start: {currentVideoStartTime}, end: {currentVideoEndTime}, Loop: {currentVideoLoop}, Looptime: {currentVideoLoopTime}");
+
+      videoPlayer.Prepare();
+      //videoPlayer.time = videoPlayer.length * currentVideoStartTime;
     }
 
     private string getVideoURL(VideoPathPointer_SO pointer, string videoFileName)

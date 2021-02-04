@@ -173,13 +173,13 @@ public class StructureManager : MonoBehaviour
         node.setVideoFileName(videoJSONObject.videoFileName);
         node.setLoop(videoJSONObject.loop, true);
         node.setLoopTime(videoJSONObject.loopTime);
-        node.setStartTime(0); //S TODO load these and save
-        node.setEndTime(1);
+        node.setStartTime(videoJSONObject.startTime); 
+        node.setEndTime(videoJSONObject.endTime);
         newVideoObject.GetComponent<RectTransform>().anchoredPosition = videoJSONObject.position;
         videoGameObjects.Add(newVideoObject);
 
         foreach (var item in videoJSONObject.actions)
-            node.createNewActionNode(item.actionText, item.autoEnd, item.nextVideo);
+            node.createNewActionNode(item.actionText, item.autoEnd, item.nextVideo, item.startTime, item.endTime);
     }
 
     public void ClearStructure()

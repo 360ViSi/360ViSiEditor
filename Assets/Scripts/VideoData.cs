@@ -133,9 +133,11 @@ public class VideoPart
   public string videoFileName;
   public int videoID;
   public List<Action> actions;
-
   public bool loop;
   public float loopTime;
+  public float startTime;
+  public float endTime;
+  
   public string getVideoFileName()
   {
     return videoFileName;
@@ -167,6 +169,8 @@ public class VideoPart
   public bool getLoop() => loop;
 
   public float getLoopTime() => loopTime;
+  public float getStartTime() => startTime;
+  public float getEndTime() => endTime;
 
   public int getNextVideoID(int askedActionID)
   {
@@ -202,6 +206,8 @@ public class Action
   public string actionText;
   public int nextVideo;
   public bool autoEnd;
+  public float startTime;
+  public float endTime;
 
   public string getActionText()
   {
@@ -213,4 +219,6 @@ public class Action
   }
 
   public bool getAutoEnd() => autoEnd;
+  public float getStartTime() => startTime;
+  public float getEndTime() => endTime;
 }

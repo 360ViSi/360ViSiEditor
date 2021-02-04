@@ -6,52 +6,96 @@ using UnityEngine.Video;
 
 public class EditorVideoControls : MonoBehaviour
 {
-    [SerializeField] VideoPlayer _videoPlayer;
-    [SerializeField] EditorVideoPlayer _editorVideoPlayer;
+    [SerializeField] VideoPlayer videoPlayer;
+    [SerializeField] EditorVideoPlayer editorVideoPlayer;
 
     [Header("Play/Pause")]
-    [SerializeField] Image _playPauseImage;
-    [SerializeField] Sprite _playSprite;
-    [SerializeField] Sprite _pauseSprite;
+    [SerializeField] Image playPauseImage;
+    [SerializeField] Sprite playSprite;
+    [SerializeField] Sprite pauseSprite;
 
-    [Header("Loop")]
-    [SerializeField] RectTransform _loopPointImageRect;
-    [SerializeField] RectTransform _startPointImageRect;
-    [SerializeField] RectTransform _endPointImageRect;
-    [SerializeField] RectTransform _sliderHandleRect;
+    [Header("Time Line Rects")]
+    [SerializeField] RectTransform loopPointImageRect;
+    [SerializeField] RectTransform videoStartPointImageRect;
+    [SerializeField] RectTransform videoEndPointImageRect;
+    [SerializeField] RectTransform actionStartPointImageRect;
+    [SerializeField] RectTransform actionEndPointImageRect;
+    [SerializeField] RectTransform sliderHandleRect;
 
+    [Header("Buttons")]
+    [SerializeField] GameObject loopButton;
+    [SerializeField] GameObject videoStartButton;
+    [SerializeField] GameObject videoEndButton;
+    [SerializeField] GameObject actionStartButton;
+    [SerializeField] GameObject actionEndButton;
 
     private void Update()
     {
         //S TODO change to function with events
-        if (_videoPlayer.isPlaying)
-            _playPauseImage.sprite = _pauseSprite;
-        else _playPauseImage.sprite = _playSprite;
+        if (videoPlayer.isPlaying)
+            playPauseImage.sprite = pauseSprite;
+        else playPauseImage.sprite = playSprite;
     }
 
     public void TogglePause()
     {
-        if (_videoPlayer.isPlaying)
-            _videoPlayer.Pause();
-        else _videoPlayer.Play();
+        if (videoPlayer.isPlaying)
+            videoPlayer.Pause();
+        else videoPlayer.Play();
     }
 
-    public void SetLoopPoint()
+    public void SetLoopPoint(bool setToVideo = false)
     {
-        _loopPointImageRect.anchorMin = _sliderHandleRect.anchorMin;
-        _loopPointImageRect.anchorMax = _sliderHandleRect.anchorMax;
-        _editorVideoPlayer.SetLoopTimeToVideo();
+        loopPointImageRect.anchorMin = sliderHandleRect.anchorMin;
+        loopPointImageRect.anchorMax = sliderHandleRect.anchorMax;
+        if (setToVideo)
+            editorVideoPlayer.SetLoopTimeToVideo();
     }
-    public void SetVideoStartPoint()
+    public void SetVideoStartPoint(bool setToVideo = false)
     {
-        _startPointImageRect.anchorMin = _sliderHandleRect.anchorMin;
-        _startPointImageRect.anchorMax = _sliderHandleRect.anchorMax;
-        _editorVideoPlayer.SetStartTimeToVideo();
+        videoStartPointImageRect.anchorMin = sliderHandleRect.anchorMin;
+        videoStartPointImageRect.anchorMax = sliderHandleRect.anchorMax;
+        if (setToVideo)
+            editorVideoPlayer.SetStartTimeToVideo();
     }
-    public void SetVideoEndPoint()
+    public void SetVideoEndPoint(bool setToVideo = false)
     {
-        _endPointImageRect.anchorMin = _sliderHandleRect.anchorMin;
-        _endPointImageRect.anchorMax = _sliderHandleRect.anchorMax;
-        _editorVideoPlayer.SetEndTimeToVideo();
+        videoEndPointImageRect.anchorMin = sliderHandleRect.anchorMin;
+        videoEndPointImageRect.anchorMax = sliderHandleRect.anchorMax;
+        if (setToVideo)
+            editorVideoPlayer.SetEndTimeToVideo();
+    }
+
+    public void SetActionStartPoint(bool setToVideo = false)
+    {
+        actionStartPointImageRect.anchorMin = sliderHandleRect.anchorMin;
+        actionStartPointImageRect.anchorMax = sliderHandleRect.anchorMax;
+        if (setToVideo)
+            editorVideoPlayer.SetStartTimeToAction();
+    }
+    public void SetActionEndPoint(bool setToVideo = false)
+    {
+        actionEndPointImageRect.anchorMin = sliderHandleRect.anchorMin;
+        actionEndPointImageRect.anchorMax = sliderHandleRect.anchorMax;
+        if (setToVideo)
+            editorVideoPlayer.SetEndTimeToAction();
+    }
+
+    public void SetCurrentControlsToVideo(bool value)
+    {
+        videoEndButton.SetActive(value);
+        videoStartButton.SetActive(value);
+        
+        var loop = NodeInspector.instance.CurrentVideoNode.getLoop();
+        loopButton.SetActive(loop);
+        loopPointImageRect.gameObject.SetActive(loop);
+        
+        if(NodeInspector.instance.CurrentActionNode != null && NodeInspector.instance.CurrentActionNode.getAutoEnd())
+            value = !value;
+
+        actionStartButton.SetActive(!value);
+        actionEndButton.SetActive(!value);
+        actionEndPointImageRect.gameObject.SetActive(!value);
+        actionStartPointImageRect.gameObject.SetActive(!value);
     }
 }

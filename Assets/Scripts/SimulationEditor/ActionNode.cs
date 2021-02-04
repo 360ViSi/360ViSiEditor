@@ -8,52 +8,54 @@ using TMPro;
 [System.Serializable]
 public class ActionNode : MonoBehaviour
 {
-    [SerializeField]
-    private Color connectedColor;
-    [SerializeField]
-    private Color notConnectedColor;
-    [SerializeField]
-    private Color endActionColor;
+  [SerializeField]
+  private Color connectedColor;
+  [SerializeField]
+  private Color notConnectedColor;
+  [SerializeField]
+  private Color endActionColor;
 
-    private NodePort nodePort;
-    private ConnectionManager connectionManager;
-    private TextMeshProUGUI actionText;
-    private Image thisImage;
-    private int loadedNextVideoID = -2;
-    private bool autoEnd;
+  private NodePort nodePort;
+  private ConnectionManager connectionManager;
+  private TextMeshProUGUI actionText;
+  private Image thisImage;
+  private int loadedNextVideoID = -2;
+  private bool autoEnd;
+  private float startTime = 0;
+  private float endTime = 1;
 
-    [SerializeField] GameObject removeButton = null;
+  [SerializeField] GameObject removeButton = null;
 
-    void Awake()
+  void Awake()
+  {
+
+    // get NodePort
+    nodePort = GetComponentInChildren<NodePort>();
+    if (nodePort==null)
     {
-
-      // get NodePort
-      nodePort = GetComponentInChildren<NodePort>();
-      if (nodePort==null)
-      {
-        Debug.Log("There are no NodePort in "+ name);
-      }
-
-      //get Text object for action Text
-      actionText = GetComponentInChildren<TextMeshProUGUI>();
-      if (actionText==null)
-      {
-        Debug.Log("There are no text object in "+ name); 
-      }
-
-      //get connectionManager
-      connectionManager = GetComponentInParent<ConnectionManager>();
-      if (connectionManager==null)
-      {
-        Debug.Log(name +" Did not get ConnectionManager");
-        return;
-      }
-
-      //setup ActionNode GameObject color
-      thisImage = GetComponent<Image>();
-      this.setMode();
-
+      Debug.Log("There are no NodePort in "+ name);
     }
+
+    //get Text object for action Text
+    actionText = GetComponentInChildren<TextMeshProUGUI>();
+    if (actionText==null)
+    {
+      Debug.Log("There are no text object in "+ name); 
+    }
+
+    //get connectionManager
+    connectionManager = GetComponentInParent<ConnectionManager>();
+    if (connectionManager==null)
+    {
+      Debug.Log(name +" Did not get ConnectionManager");
+      return;
+    }
+
+    //setup ActionNode GameObject color
+    thisImage = GetComponent<Image>();
+    this.setMode();
+
+  }
 
   public void setMode(){
     var connections = connectionManager.getEveryPortConnection(nodePort);
@@ -147,7 +149,7 @@ public class ActionNode : MonoBehaviour
       nodePort.CreateConnection(loadedNextVideoID);
     else Debug.LogError("loadedNextVideoID was -2 and that's illegal (probably autoEnd node?)");
   }
-  
+
   public NodePort getNodePort()
   {
     return nodePort;
@@ -160,11 +162,16 @@ public class ActionNode : MonoBehaviour
     videoNode.removeActionNode(gameObject);
   }
 
-    public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
+  public float getEndTime() => endTime;
+  public void setEndTime(float value) => endTime = value;
+  public float getStartTime() => startTime;
+  public void setStartTime(float value) => startTime = value;
 
-    ///<summary>
-    /// When autoEnd actionNode is created, need to disable
-    /// the ability to remove that node (is automatic if loop is enabled)
-    ///</summary>
-    public void DisableRemoveButton() => removeButton.SetActive(false);
+  public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
+
+  ///<summary>
+  /// When autoEnd actionNode is created, need to disable
+  /// the ability to remove that node (is automatic if loop is enabled)
+  ///</summary>
+  public void DisableRemoveButton() => removeButton.SetActive(false);
 }

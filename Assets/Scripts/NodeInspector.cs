@@ -1,7 +1,9 @@
+using System.Collections;
 using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 ///<summary>
 /// Controls and manages the functions of the IN-APP-INSPECTOR (not Unity inspector)
@@ -10,26 +12,26 @@ using UnityEngine.UI;
 public class NodeInspector : MonoBehaviour
 {
     public static NodeInspector instance;
-    VideoNode _currentVideoNode = null;
-    ActionNode _currentActionNode = null;
-    [SerializeField] EditorVideoPlayer _editorVideoPlayer = null;
+    VideoNode currentVideoNode = null;
+    ActionNode currentActionNode = null;
+    [SerializeField] EditorVideoPlayer editorVideoPlayer = null;
     [Header("UI Elements")]
-    [SerializeField] GameObject _textElementPrefab = null;
-    [SerializeField] GameObject _statsElementPrefab = null;
-    [SerializeField] GameObject _filenameElementPrefab = null;
-    [SerializeField] GameObject _toggleElementPrefab = null;
+    [SerializeField] GameObject textElementPrefab = null;
+    [SerializeField] GameObject timeElementPrefab = null;
+    [SerializeField] GameObject filenameElementPrefab = null;
+    [SerializeField] GameObject toggleElementPrefab = null;
 
     public VideoNode CurrentVideoNode
     {
         get
         {
-            if (_currentVideoNode == null)
+            if (currentVideoNode == null)
                 Debug.LogError("NodeInspectors' currentVideoNode == null");
-            return _currentVideoNode;
+            return currentVideoNode;
         }
     }
 
-    public ActionNode CurrentActionNode { get => _currentActionNode; }
+    public ActionNode CurrentActionNode { get => currentActionNode; }
 
     private void Awake()
     {
@@ -39,90 +41,97 @@ public class NodeInspector : MonoBehaviour
     ///<summary>
     /// Creates and populates all the fields for the editor in-app-inspector
     ///</summary>
-    public void CreateFields(VideoNode node)
+    public void CreateFields(VideoNode node, bool isUpdate = false)
     {
         NullCurrentNodes();
+        currentVideoNode = node;
+        currentVideoNode.GetComponent<Outline>().enabled = true;
 
-        _currentVideoNode = node;
-        _currentVideoNode.GetComponent<Outline>().enabled = true;
+        //Put bg to video
+        if (isUpdate == false)
+            //this is too slow here - needs a frame to function
+            editorVideoPlayer.ChangeVideo(node.getVideoFileName());
 
         //Clean old children first
         for (int i = transform.childCount - 1; i > -1; i--)
             Destroy(transform.GetChild(i).gameObject);
 
-        //Put bg to video
-        _editorVideoPlayer.ChangeVideo(node.getVideoFileName());
-        Debug.Log(node.getEndTime());
-        Debug.Log((float)GetVideoLenght());
-        Debug.Log(Utilities.FloatToTime(node.getEndTime(), (float)GetVideoLenght()));
         //Create new ones
-        //Video file name
-        var textElementObj = Instantiate(_filenameElementPrefab, transform);
-        var textElement = textElementObj.GetComponent<NodeInspectorTextElement>();
-        textElement.InitializeElement(
-            "Video filename",
-            ElementKey.VideoFileName,
-            node.getVideoFileName());
-
-        //loop toggle
-        var toggleElementObj = Instantiate(_toggleElementPrefab, transform);
-        var toggleElement = toggleElementObj.GetComponent<NodeInspectorToggleElement>();
-        toggleElement.InitializeElement(
-            "Loop video",
-            ElementKey.VideoLoop,
-            node.getLoop());
-
-        //Video start time
-        var startTimeTextElementObj = Instantiate(_statsElementPrefab, transform);
-        var startTimeTextElement = startTimeTextElementObj.GetComponent<NodeInspectorStatsElement>();
-        startTimeTextElement.InitializeElement(
-            "Video start time ",
-            ElementKey.VideoStartTime,
-            Utilities.FloatToTime(node.getStartTime(), (float)GetVideoLenght()));
-
-        //Video end time
-        var endTimeTextElementObj = Instantiate(_statsElementPrefab, transform);
-        var endTimeTextElement = endTimeTextElementObj.GetComponent<NodeInspectorStatsElement>();
-        endTimeTextElement.InitializeElement(
-            "Video end time ",
-            ElementKey.VideoEndTime,
-            Utilities.FloatToTime(node.getEndTime(), (float)GetVideoLenght()));
+        editorVideoPlayer.VideoPlayer.prepareCompleted += CreateVideoFields;
     }
 
+    private void CreateVideoFields(VideoPlayer source)
+    {
+        editorVideoPlayer.VideoPlayer.prepareCompleted -= CreateVideoFields;
+        CreateElement("Video filename",
+                      ElementKey.VideoFileName,
+                      filenameElementPrefab,
+                      currentVideoNode.getVideoFileName());
+        CreateElement("Loop video",
+                      ElementKey.VideoLoop,
+                      toggleElementPrefab,
+                      currentVideoNode.getLoop());
+        CreateElement("Video loop time",
+                      ElementKey.VideoLoopTime,
+                      timeElementPrefab,
+                      currentVideoNode.getLoopTime(),
+                      0);
+        CreateElement("Video start time",
+                      ElementKey.VideoStartTime,
+                      timeElementPrefab,
+                      currentVideoNode.getStartTime(),
+                      0);
+        CreateElement("Video end time",
+                      ElementKey.VideoEndTime,
+                      timeElementPrefab,
+                      currentVideoNode.getEndTime(),
+                      1);
+    }
 
     ///<summary>
     /// Overload for CreateFields that takes in an action node instead
     ///</summary>
-    public void CreateFields(ActionNode node)
+    public void CreateFields(ActionNode node, bool isUpdate = false)
     {
+        var oldVideoNode = currentVideoNode;
+
         NullCurrentNodes();
-
-        _currentActionNode = node;
-        _currentVideoNode = node.GetComponentInParent<VideoNode>();
-        _editorVideoPlayer.ChangeVideo(_currentVideoNode.getVideoFileName());
-        _currentActionNode.GetComponent<Outline>().enabled = true;
-
         //Clean old children first
         for (int i = transform.childCount - 1; i > -1; i--)
             Destroy(transform.GetChild(i).gameObject);
 
-        //Create new ones
-        var elementObj = Instantiate(_textElementPrefab, transform);
-        var element = elementObj.GetComponent<NodeInspectorTextElement>();
-        element.InitializeElement("Action name", ElementKey.ActionName, node.getActionText());
+        currentActionNode = node;
+        currentActionNode.GetComponent<Outline>().enabled = true;
+        currentVideoNode = node.GetComponentInParent<VideoNode>();
+        if (isUpdate == false && (oldVideoNode == null || currentVideoNode != oldVideoNode))
+        {
+            editorVideoPlayer.ChangeVideo(currentVideoNode.getVideoFileName());
+            currentVideoNode = node.GetComponentInParent<VideoNode>();
+            editorVideoPlayer.VideoPlayer.prepareCompleted += CreateActionFields;
+        }else {
+            CreateActionFields(editorVideoPlayer.VideoPlayer);
+            editorVideoPlayer.RefreshMarkers();
+        }
+
+
     }
 
-    void NullCurrentNodes()
+    private void CreateActionFields(VideoPlayer source)
     {
-        if (_currentVideoNode != null)
+        editorVideoPlayer.VideoPlayer.prepareCompleted -= CreateActionFields;
+        CreateElement("Action name", ElementKey.ActionName, textElementPrefab, currentActionNode.getActionText());
+        if(!currentActionNode.getAutoEnd())
         {
-            _currentVideoNode.GetComponent<Outline>().enabled = false;
-            _currentVideoNode = null;
-        }
-        if (_currentActionNode != null)
-        {
-            _currentActionNode.GetComponent<Outline>().enabled = false;
-            _currentActionNode = null;
+            CreateElement("Action start time",
+                          ElementKey.ActionStartTime,
+                          timeElementPrefab,
+                          currentActionNode.getStartTime(),
+                          0);
+            CreateElement("Action end time",
+                          ElementKey.ActionEndTime,
+                          timeElementPrefab,
+                          currentActionNode.getEndTime(),
+                          1);
         }
     }
 
@@ -130,25 +139,78 @@ public class NodeInspector : MonoBehaviour
     {
         if (key == ElementKey.VideoFileName)
         {
-            _editorVideoPlayer.ChangeVideo(value);
-            _currentVideoNode.setVideoFileName(value);
+            editorVideoPlayer.ChangeVideo(value);
+            currentVideoNode.setVideoFileName(value);
         }
-        if (key == ElementKey.ActionName) _currentActionNode.setActionText(value);
+        if (key == ElementKey.ActionName) currentActionNode.setActionText(value);
     }
 
     public void UpdateValue(ElementKey key, bool value)
     {
-        if (key == ElementKey.VideoLoop) _currentVideoNode.setLoop(value);
+        if (key == ElementKey.VideoLoop) currentVideoNode.setLoop(value);
+        editorVideoPlayer.RefreshMarkers();
     }
 
     public void UpdateValue(ElementKey key, float value)
     {
-        Debug.Log(key.ToString() + " - " + value);
-        if (key == ElementKey.VideoStartTime) _currentVideoNode.setStartTime(value);
-        if (key == ElementKey.VideoEndTime) _currentVideoNode.setEndTime(value);
+        if (key == ElementKey.VideoStartTime) currentVideoNode.setStartTime(value);
+        if (key == ElementKey.VideoEndTime) currentVideoNode.setEndTime(value);
+        if (key == ElementKey.VideoLoopTime) currentVideoNode.setLoopTime(value);
+
+        if (key == ElementKey.ActionStartTime) currentActionNode.setStartTime(value);
+        if (key == ElementKey.ActionEndTime) currentActionNode.setEndTime(value);
+
+        //These all SO FAR (5) need to refresh the timeline markers, so I'm just going to do it here for all of them
+        editorVideoPlayer.RefreshMarkers();
     }
 
-    public double GetVideoLenght() => _editorVideoPlayer.VideoPlayer.length;
+    public float GetVideoLength() => (float)editorVideoPlayer.VideoPlayer.length;
+
+
+    #region NodeInspectorElementFactory
+    void CreateElement(string header, ElementKey key, GameObject prefab, string value)
+    {
+        var elementObj = Instantiate(prefab, transform);
+        var element = elementObj.GetComponent<NodeInspectorElement>();
+        element.InitializeElement(
+            header,
+            key,
+            value);
+    }
+    void CreateElement(string header, ElementKey key, GameObject prefab, float value, float defaultValue) //S TODO defaultValue refactor
+    {
+        var elementObj = Instantiate(prefab, transform);
+        var element = elementObj.GetComponent<NodeInspectorElement>();
+        element.InitializeElement(
+            header,
+            key,
+            value,
+            defaultValue);
+    }
+    void CreateElement(string header, ElementKey key, GameObject prefab, bool value)
+    {
+        var elementObj = Instantiate(prefab, transform);
+        var element = elementObj.GetComponent<NodeInspectorElement>();
+        element.InitializeElement(
+            header,
+            key,
+            value);
+    }
+
+    void NullCurrentNodes()
+    {
+        if (currentVideoNode != null)
+        {
+            currentVideoNode.GetComponent<Outline>().enabled = false;
+            currentVideoNode = null;
+        }
+        if (currentActionNode != null)
+        {
+            currentActionNode.GetComponent<Outline>().enabled = false;
+            currentActionNode = null;
+        }
+    }
+    #endregion
 }
 
 public enum ElementKey
@@ -158,6 +220,7 @@ public enum ElementKey
     ActionStartTime,
     ActionEndTime,
     VideoLoop,
+    VideoLoopTime,
     VideoStartTime,
     VideoEndTime
 }

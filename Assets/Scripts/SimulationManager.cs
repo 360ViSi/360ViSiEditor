@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -90,12 +91,10 @@ public class SimulationManager : MonoBehaviour
     public void AutoEnd()
     {
       var videoPart = getCurrentVideoPart();
-      if(videoPart.getLoop())
-      {
-        Debug.LogError("Trying to call autoend action for a video with loop.");
-        return;
-      }
-      goToVideo(videoPart.actions.Where(e => e.autoEnd).FirstOrDefault().nextVideo);
+
+      var autoEnds = videoPart.actions.Where(e => e.autoEnd);
+      if(autoEnds.Count() > 0)
+        goToVideo(autoEnds.FirstOrDefault().nextVideo);
     }
 
     public void ResetSimulation()

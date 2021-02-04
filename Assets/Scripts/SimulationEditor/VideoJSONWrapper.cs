@@ -28,6 +28,8 @@ public class VideoJSONWrapper
             position = videoNode.GetComponent<RectTransform>().anchoredPosition;
             loop = videoNode.getLoop();
             loopTime = videoNode.getLoopTime();
+            startTime = videoNode.getStartTime();
+            endTime = videoNode.getEndTime();
 
             if (actionJSONObjects != null)
                 actions = actionJSONObjects;
@@ -36,6 +38,8 @@ public class VideoJSONWrapper
         public bool loop = false;
         public string videoFileName = "";
         public float loopTime = 0;
+        public float startTime = 0;
+        public float endTime = 1;
         public Vector2 position = Vector2.zero;
         public List<ActionJSONObject> actions;
     }
@@ -48,11 +52,15 @@ public class VideoJSONWrapper
             actionText = actionNode.getActionText();
             nextVideo = actionNode.getNextVideoID();
             autoEnd = actionNode.getAutoEnd();
+            startTime = actionNode.getStartTime();
+            endTime = actionNode.getEndTime();
         }
 
         public string actionText = "";
         public int nextVideo = -2;
         public bool autoEnd = false;
+        public float startTime = 0;
+        public float endTime = 1;
     }
     #endregion
 
