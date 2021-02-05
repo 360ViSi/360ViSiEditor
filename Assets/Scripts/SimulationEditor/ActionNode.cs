@@ -76,7 +76,6 @@ public class ActionNode : MonoBehaviour
     {
       // Changes the color regarding to connection status
       // Colors are predefined in Prefab (Unity Inspector)
-
       List<Connection> portConnections = connectionManager.getConnections(this.nodePort,null);
 
       //empty connection list == not connected
@@ -96,7 +95,16 @@ public class ActionNode : MonoBehaviour
     }
     thisImage.color=connectedColor;
   }
-  public void setAsAutoEnd() => autoEnd = true;
+  public void setAutoEnd(bool value)
+  {
+    //Disable autoend for everything else if setting true
+    if(value)
+      foreach(var item in GetComponentInParent<VideoNode>().getActionNodeList())
+        item.setAutoEnd(false);
+
+    autoEnd = value;
+  } 
+    
   public bool getAutoEnd() => autoEnd;
 
   public void setActionText(string newActionText)

@@ -10,6 +10,7 @@ public class NodeInspectorToggleElement : NodeInspectorElement
         elementKey = key;
         elementName.text = header;
         elementValue.isOn = value;
+        elementValue.onValueChanged.AddListener(UpdateValues);
     }
 
     public void UpdateValues(bool value)

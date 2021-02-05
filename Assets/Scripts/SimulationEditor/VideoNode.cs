@@ -33,22 +33,22 @@ public class VideoNode : MonoBehaviour
         if (structureManager == null) Debug.LogError("There is no StructureManager in parent");
     }
 
-    public void createNewActionNode()
+    public void CreateNewActionNode()
     {
-        createNewActionNode("action", false);
+        CreateNewActionNode("action", false);
     }
 
-    public void createNewActionNode(string actionText, bool isAutoEnd, int nextVideoId = -2, float startTime = 0, float endTime = 1)
+    public void CreateNewActionNode(string actionText, bool isAutoEnd, int nextVideoId = -2, float startTime = 0, float endTime = 1)
     {
         //get prefab from structureManager and initilize that
         //add action node to the list and position it in UI
         StructureManager structureManager = GetComponentInParent<StructureManager>();
         GameObject newActionGameObject = Instantiate(structureManager.getActionNodePrefab(), GetComponent<RectTransform>());
-        
-        if(isAutoEnd)
-         actionGameObjects.Insert(0, newActionGameObject);
+
+        if (isAutoEnd)
+            actionGameObjects.Insert(0, newActionGameObject);
         else
-         actionGameObjects.Add(newActionGameObject);
+            actionGameObjects.Add(newActionGameObject);
 
         repositionActionNodes();
         var actionNode = newActionGameObject.GetComponent<ActionNode>();
@@ -57,11 +57,10 @@ public class VideoNode : MonoBehaviour
         actionNode.setStartTime(startTime);
         actionNode.setEndTime(endTime);
 
-        if (isAutoEnd) 
+        if (isAutoEnd)
         {
             autoEndAction = newActionGameObject;
-            actionNode.setAsAutoEnd();
-            actionNode.DisableRemoveButton();
+            actionNode.setAutoEnd(true);
         }
     }
 
@@ -80,41 +79,10 @@ public class VideoNode : MonoBehaviour
         videoFileName = newVideoFileName;
         videoFilenameText.text = videoFileName;
     }
-    public string getVideoFileName()
-    {
-        return videoFileName;
-    }
-
-    public NodePort getNodePort()
-    {
-        return nodePort;
-    }
-
-    public bool getLoop()
-    {
-        return loopingVideo;
-    }
-
-    public void setLoop(bool value, bool onLoad = false)
-    {
-        if (loopingVideo == value)
-            return;
-
-        loopingVideo = value;
-
-        if (onLoad)
-            return;
-
-        if (value == false)
-        {
-            createNewActionNode("AUTOEND", true);
-            return;
-        }
-
-        if (autoEndAction != null)
-            removeActionNode(autoEndAction);
-    }
-
+    public string getVideoFileName() => videoFileName;
+    public NodePort getNodePort() => nodePort;
+    public bool getLoop() => loopingVideo;
+    public void setLoop(bool value) => loopingVideo = value;
     public float getLoopTime() => loopTime;
     public void setLoopTime(float value) => loopTime = value;
     public float getEndTime() => endTime;

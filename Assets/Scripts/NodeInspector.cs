@@ -4,6 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using System.Collections.Generic;
 
 ///<summary>
 /// Controls and manages the functions of the IN-APP-INSPECTOR (not Unity inspector)
@@ -20,6 +21,7 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] GameObject timeElementPrefab = null;
     [SerializeField] GameObject filenameElementPrefab = null;
     [SerializeField] GameObject toggleElementPrefab = null;
+
 
     public VideoNode CurrentVideoNode
     {
@@ -60,6 +62,34 @@ public class NodeInspector : MonoBehaviour
         editorVideoPlayer.VideoPlayer.prepareCompleted += CreateVideoFields;
     }
 
+    ///<summary>
+    /// Overload for CreateFields that takes in an action node instead
+    ///</summary>
+    public void CreateFields(ActionNode node, bool isUpdate = false)
+    {
+        var oldVideoNode = currentVideoNode;
+
+        NullCurrentNodes();
+        //Clean old children first
+        for (int i = transform.childCount - 1; i > -1; i--)
+            Destroy(transform.GetChild(i).gameObject);
+
+        currentActionNode = node;
+        currentActionNode.GetComponent<Outline>().enabled = true;
+        currentVideoNode = node.GetComponentInParent<VideoNode>();
+        if (isUpdate == false && (oldVideoNode == null || currentVideoNode != oldVideoNode))
+        {
+            editorVideoPlayer.ChangeVideo(currentVideoNode.getVideoFileName());
+            currentVideoNode = node.GetComponentInParent<VideoNode>();
+            editorVideoPlayer.VideoPlayer.prepareCompleted += CreateActionFields;
+        }
+        else
+        {
+            CreateActionFields(editorVideoPlayer.VideoPlayer);
+            editorVideoPlayer.RefreshMarkers();
+        }
+    }
+
     private void CreateVideoFields(VideoPlayer source)
     {
         editorVideoPlayer.VideoPlayer.prepareCompleted -= CreateVideoFields;
@@ -86,41 +116,17 @@ public class NodeInspector : MonoBehaviour
                       timeElementPrefab,
                       currentVideoNode.getEndTime(),
                       1);
-    }
-
-    ///<summary>
-    /// Overload for CreateFields that takes in an action node instead
-    ///</summary>
-    public void CreateFields(ActionNode node, bool isUpdate = false)
-    {
-        var oldVideoNode = currentVideoNode;
-
-        NullCurrentNodes();
-        //Clean old children first
-        for (int i = transform.childCount - 1; i > -1; i--)
-            Destroy(transform.GetChild(i).gameObject);
-
-        currentActionNode = node;
-        currentActionNode.GetComponent<Outline>().enabled = true;
-        currentVideoNode = node.GetComponentInParent<VideoNode>();
-        if (isUpdate == false && (oldVideoNode == null || currentVideoNode != oldVideoNode))
-        {
-            editorVideoPlayer.ChangeVideo(currentVideoNode.getVideoFileName());
-            currentVideoNode = node.GetComponentInParent<VideoNode>();
-            editorVideoPlayer.VideoPlayer.prepareCompleted += CreateActionFields;
-        }else {
-            CreateActionFields(editorVideoPlayer.VideoPlayer);
-            editorVideoPlayer.RefreshMarkers();
-        }
-
 
     }
+
+
 
     private void CreateActionFields(VideoPlayer source)
     {
         editorVideoPlayer.VideoPlayer.prepareCompleted -= CreateActionFields;
         CreateElement("Action name", ElementKey.ActionName, textElementPrefab, currentActionNode.getActionText());
-        if(!currentActionNode.getAutoEnd())
+        CreateElement("Video end action", ElementKey.ActionAutoEnd, toggleElementPrefab, currentActionNode.getAutoEnd());
+        if (!currentActionNode.getAutoEnd())
         {
             CreateElement("Action start time",
                           ElementKey.ActionStartTime,
@@ -133,6 +139,7 @@ public class NodeInspector : MonoBehaviour
                           currentActionNode.getEndTime(),
                           1);
         }
+
     }
 
     public void UpdateValue(ElementKey key, string value)
@@ -148,6 +155,12 @@ public class NodeInspector : MonoBehaviour
     public void UpdateValue(ElementKey key, bool value)
     {
         if (key == ElementKey.VideoLoop) currentVideoNode.setLoop(value);
+        if (key == ElementKey.ActionAutoEnd)
+        {
+            currentActionNode.setAutoEnd(value);
+            //changing autoend changes what other fields are shown so need to redraw
+            CreateFields(currentActionNode, true);
+        }
         editorVideoPlayer.RefreshMarkers();
     }
 
@@ -219,6 +232,7 @@ public enum ElementKey
     ActionName,
     ActionStartTime,
     ActionEndTime,
+    ActionAutoEnd,
     VideoLoop,
     VideoLoopTime,
     VideoStartTime,

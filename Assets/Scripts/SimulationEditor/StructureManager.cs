@@ -171,7 +171,7 @@ public class StructureManager : MonoBehaviour
         var node = newVideoObject.GetComponent<VideoNode>();
         node.setVideoID(videoJSONObject.videoID);
         node.setVideoFileName(videoJSONObject.videoFileName);
-        node.setLoop(videoJSONObject.loop, true);
+        node.setLoop(videoJSONObject.loop);
         node.setLoopTime(videoJSONObject.loopTime);
         node.setStartTime(videoJSONObject.startTime); 
         node.setEndTime(videoJSONObject.endTime);
@@ -179,7 +179,7 @@ public class StructureManager : MonoBehaviour
         videoGameObjects.Add(newVideoObject);
 
         foreach (var item in videoJSONObject.actions)
-            node.createNewActionNode(item.actionText,
+            node.CreateNewActionNode(item.actionText,
                                      item.autoEnd,
                                      item.nextVideo,
                                      item.startTime,
