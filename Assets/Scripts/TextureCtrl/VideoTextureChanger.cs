@@ -23,17 +23,17 @@ public class VideoTextureChanger : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-      //initialize Video player
-      videoPlayer.prepareCompleted += PrepareCompleted;
+        //initialize Video player
+        videoPlayer.prepareCompleted += PrepareCompleted;
     }
 
-    private void Update() 
+    private void Update()
     {
-      videoTimeText.text = Utilities.FloatToTime((float)(videoPlayer.time / videoPlayer.length), (float)videoPlayer.length, true);
+        videoTimeText.text = Utilities.FloatToTime((float)(videoPlayer.time / videoPlayer.length), (float)videoPlayer.length, true);
 
-      if (videoPlayer.length == 0 || !videoPlayer.isPlaying)
+        if (videoPlayer.length == 0 || !videoPlayer.isPlaying)
             return;
-          
+
 
         // S TODO - has to be a better way to solve this, maybe with just checking for a stop?
         var endThresholdFrames = 1;
@@ -45,26 +45,12 @@ public class VideoTextureChanger : MonoBehaviour
         if (currentVideoLoop == false)
         {
             videoPlayer.Stop();
+            simulationManager.AutoEnd();
             return;
         }
-
-        VideoEnd(videoPlayer);
+        StartCoroutine(LoopRoutine((float)videoPlayer.length * currentVideoLoopTime));
     }
-
-    private void VideoEnd(VideoPlayer player)
-    {
-      Debug.Log("Loop");
-      var videoPart = simulationManager.getCurrentVideoPart();
-
-      if(videoPart.getLoop())
-      {
-        StartCoroutine(LoopRoutine((float)player.length * currentVideoLoopTime));
-        return;
-      }
-
-      simulationManager.AutoEnd();
-    }
-
+    
     IEnumerator LoopRoutine(float time)
     {
         videoPlayer.time = time;
@@ -75,79 +61,79 @@ public class VideoTextureChanger : MonoBehaviour
 
     void PrepareCompleted(VideoPlayer videoPlayer)
     {
-      Debug.Log("video is ready");
-      videoPlayer.time = videoPlayer.length * currentVideoStartTime;
-      videoPlayer.Play();
-      
+        Debug.Log("video is ready");
+        videoPlayer.time = videoPlayer.length * currentVideoStartTime;
+        videoPlayer.Play();
+
     }
 
     public void changeVideo(string videoFileName)
     {
-      videoPlayer.url = getVideoURL(videoPointer, videoFileName);
+        videoPlayer.url = getVideoURL(videoPointer, videoFileName);
 
-      //get currents
-      var videoPart = simulationManager.getCurrentVideoPart();
-      currentVideoStartTime = videoPart.getStartTime();
-      currentVideoEndTime = videoPart.getEndTime();
-      currentVideoLoop = videoPart.getLoop();
-      currentVideoLoopTime = videoPart.getLoopTime();
-      Debug.Log($"start: {currentVideoStartTime}, end: {currentVideoEndTime}, Loop: {currentVideoLoop}, Looptime: {currentVideoLoopTime}");
+        //get currents
+        var videoPart = simulationManager.getCurrentVideoPart();
+        currentVideoStartTime = videoPart.getStartTime();
+        currentVideoEndTime = videoPart.getEndTime();
+        currentVideoLoop = videoPart.getLoop();
+        currentVideoLoopTime = videoPart.getLoopTime();
+        Debug.Log($"start: {currentVideoStartTime}, end: {currentVideoEndTime}, Loop: {currentVideoLoop}, Looptime: {currentVideoLoopTime}");
 
-      videoPlayer.Prepare();
-      //videoPlayer.time = videoPlayer.length * currentVideoStartTime;
+        videoPlayer.Prepare();
+        //videoPlayer.time = videoPlayer.length * currentVideoStartTime;
     }
 
     private string getVideoURL(VideoPathPointer_SO pointer, string videoFileName)
     {
-      //S TODO: placeholder folder for easier dev
-      string directory = @"C:\Unity\"; //getVideoFolder(pointer);
-      DirectoryInfo dirInfo = new DirectoryInfo(directory);
-      string videoURL = "";
+        //S TODO: placeholder folder for easier dev
+        string directory = @"C:\Unity\"; //getVideoFolder(pointer);
+        DirectoryInfo dirInfo = new DirectoryInfo(directory);
+        string videoURL = "";
 
-      //read every file name in folder
-      foreach (var file in dirInfo.GetFiles())
-      {
-        string fileName = file.Name;
-        if (videoFileName != fileName)
+        //read every file name in folder
+        foreach (var file in dirInfo.GetFiles())
         {
-          continue;
-        }
-        //compare to VideoPathPointer_OS extensions
-        foreach (var extension in pointer.fileExtensions)
-        {
-          string nameTail = fileName.Substring(fileName.Length-extension.Length,extension.Length);
+            string fileName = file.Name;
+            if (videoFileName != fileName)
+            {
+                continue;
+            }
+            //compare to VideoPathPointer_OS extensions
+            foreach (var extension in pointer.fileExtensions)
+            {
+                string nameTail = fileName.Substring(fileName.Length - extension.Length, extension.Length);
 
-          //if extension matches add URL to list
-          if(nameTail == extension)
-          {
-            videoURL = directory + fileName;
-            break;
-          }
+                //if extension matches add URL to list
+                if (nameTail == extension)
+                {
+                    videoURL = directory + fileName;
+                    break;
+                }
+            }
         }
-      }
-      if (videoURL=="")
-      {
-        Debug.Log("Video "+videoFileName+" is not in "+directory+" folder");
-      }
-      return videoURL;
+        if (videoURL == "")
+        {
+            Debug.Log("Video " + videoFileName + " is not in " + directory + " folder");
+        }
+        return videoURL;
     }
 
     private string getVideoFolder(VideoPathPointer_SO pointer)
     {
-      // Get absolute path to Application
-      // and relative path to videoPointer.
-      // Both will have same "Assets" folder which need to be removed.
-      // Also videoPointer filename need to be removed to get pure folder path.
-      // Path separator is used to make the code operationsystem independent
-      string pathToVideo = Application.dataPath;
-      char pathSeparator = Path.DirectorySeparatorChar;
-      string[] relativePathFolders = AssetDatabase.GetAssetPath(videoPointer).Split(pathSeparator);
-      //drop first and last part (i=1 and Length-1)
-      for (int i = 1; i < relativePathFolders.Length - 1 ; i++)
-      {
-        pathToVideo += pathSeparator+relativePathFolders[i];
-      }
-      pathToVideo += pathSeparator;
-      return pathToVideo;
+        // Get absolute path to Application
+        // and relative path to videoPointer.
+        // Both will have same "Assets" folder which need to be removed.
+        // Also videoPointer filename need to be removed to get pure folder path.
+        // Path separator is used to make the code operationsystem independent
+        string pathToVideo = Application.dataPath;
+        char pathSeparator = Path.DirectorySeparatorChar;
+        string[] relativePathFolders = AssetDatabase.GetAssetPath(videoPointer).Split(pathSeparator);
+        //drop first and last part (i=1 and Length-1)
+        for (int i = 1; i < relativePathFolders.Length - 1; i++)
+        {
+            pathToVideo += pathSeparator + relativePathFolders[i];
+        }
+        pathToVideo += pathSeparator;
+        return pathToVideo;
     }
 }

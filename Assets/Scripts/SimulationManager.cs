@@ -32,7 +32,6 @@ public class SimulationManager : MonoBehaviour
     void setStartVideo()
     {
       string startVideoFileName = videoData.getStartPart().getVideoFileName();
-      Debug.Log(videoData.getStartPart().videoID);
       currentVideoID = videoData.getStartPart().videoID;
       videoTextureChanger.changeVideo(startVideoFileName);
       videoPlayer.Play();
@@ -90,9 +89,13 @@ public class SimulationManager : MonoBehaviour
 
     public void AutoEnd()
     {
+      Debug.Log("AutoEnd");
       var videoPart = getCurrentVideoPart();
 
       var autoEnds = videoPart.actions.Where(e => e.autoEnd);
+
+      Debug.Log("autoEnds.Count" + autoEnds.Count());
+
       if(autoEnds.Count() > 0)
         goToVideo(autoEnds.FirstOrDefault().nextVideo);
     }

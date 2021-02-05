@@ -54,7 +54,6 @@ public class ActionNode : MonoBehaviour
     //setup ActionNode GameObject color
     thisImage = GetComponent<Image>();
     this.setMode();
-
   }
 
   public void setMode(){
