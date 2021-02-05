@@ -54,6 +54,7 @@ public class VideoJSONWrapper
             autoEnd = actionNode.getAutoEnd();
             startTime = actionNode.getStartTime();
             endTime = actionNode.getEndTime();
+            actionType = actionNode.getActionType();
         }
 
         public string actionText = "";
@@ -61,6 +62,7 @@ public class VideoJSONWrapper
         public bool autoEnd = false;
         public float startTime = 0;
         public float endTime = 1;
+        public ActionType actionType = ActionType.ScreenButton; 
     }
     #endregion
 

@@ -2,6 +2,7 @@ using System.Globalization;
 using System;
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class NodeInspectorTextElement : NodeInspectorElement
 {
@@ -23,6 +24,4 @@ public class NodeInspectorTextElement : NodeInspectorElement
     {
         inspector.UpdateValue(elementKey, value);
     }
-
-
 }

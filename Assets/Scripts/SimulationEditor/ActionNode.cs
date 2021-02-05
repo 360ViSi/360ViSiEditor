@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
+
 [System.Serializable]
 public class ActionNode : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class ActionNode : MonoBehaviour
   private bool autoEnd;
   private float startTime = 0;
   private float endTime = 1;
+  private ActionType actionType = ActionType.ScreenButton;
 
   [SerializeField] GameObject removeButton = null;
 
@@ -173,6 +175,8 @@ public class ActionNode : MonoBehaviour
   public void setEndTime(float value) => endTime = value;
   public float getStartTime() => startTime;
   public void setStartTime(float value) => startTime = value;
+  public ActionType getActionType() => actionType;
+  public ActionType setActionType(ActionType value) => actionType = value;
 
   public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 
@@ -181,4 +185,9 @@ public class ActionNode : MonoBehaviour
   /// the ability to remove that node (is automatic if loop is enabled)
   ///</summary>
   public void DisableRemoveButton() => removeButton.SetActive(false);
+}
+public enum ActionType{
+  ScreenButton, // In VR this would be the panel in front of the player
+  WorldButton, //somewhere in world - commonly PoI in other 360 tour programs
+  Prefab, //this will not be included in a while
 }

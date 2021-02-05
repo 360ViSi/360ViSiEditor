@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System;
 using System.IO;
@@ -21,6 +22,7 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] GameObject timeElementPrefab = null;
     [SerializeField] GameObject filenameElementPrefab = null;
     [SerializeField] GameObject toggleElementPrefab = null;
+    [SerializeField] GameObject dropdownElementPrefab = null;
 
 
     public VideoNode CurrentVideoNode
@@ -126,6 +128,7 @@ public class NodeInspector : MonoBehaviour
         editorVideoPlayer.VideoPlayer.prepareCompleted -= CreateActionFields;
         CreateElement("Action name", ElementKey.ActionName, textElementPrefab, currentActionNode.getActionText());
         CreateElement("Video end action", ElementKey.ActionAutoEnd, toggleElementPrefab, currentActionNode.getAutoEnd());
+        CreateElement("Action type", ElementKey.ActionType, dropdownElementPrefab, (int)currentActionNode.getActionType());
         if (!currentActionNode.getAutoEnd())
         {
             CreateElement("Action start time",
@@ -164,6 +167,11 @@ public class NodeInspector : MonoBehaviour
         editorVideoPlayer.RefreshMarkers();
     }
 
+    public void UpdateValue(ElementKey key, int value)
+    {
+        if(key == ElementKey.ActionType) currentActionNode.setActionType((ActionType)value);
+    }
+
     public void UpdateValue(ElementKey key, float value)
     {
         if (key == ElementKey.VideoStartTime) currentVideoNode.setStartTime(value);
@@ -190,7 +198,7 @@ public class NodeInspector : MonoBehaviour
             key,
             value);
     }
-    void CreateElement(string header, ElementKey key, GameObject prefab, float value, float defaultValue) //S TODO defaultValue refactor
+    void CreateElement(string header, ElementKey key, GameObject prefab, float value, float defaultValue)
     {
         var elementObj = Instantiate(prefab, transform);
         var element = elementObj.GetComponent<NodeInspectorElement>();
@@ -201,6 +209,15 @@ public class NodeInspector : MonoBehaviour
             defaultValue);
     }
     void CreateElement(string header, ElementKey key, GameObject prefab, bool value)
+    {
+        var elementObj = Instantiate(prefab, transform);
+        var element = elementObj.GetComponent<NodeInspectorElement>();
+        element.InitializeElement(
+            header,
+            key,
+            value);
+    }
+    void CreateElement(string header, ElementKey key, GameObject prefab, int value)
     {
         var elementObj = Instantiate(prefab, transform);
         var element = elementObj.GetComponent<NodeInspectorElement>();
@@ -233,6 +250,7 @@ public enum ElementKey
     ActionStartTime,
     ActionEndTime,
     ActionAutoEnd,
+    ActionType,
     VideoLoop,
     VideoLoopTime,
     VideoStartTime,

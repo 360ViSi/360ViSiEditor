@@ -38,7 +38,8 @@ public class VideoNode : MonoBehaviour
         CreateNewActionNode("action", false);
     }
 
-    public void CreateNewActionNode(string actionText, bool isAutoEnd, int nextVideoId = -2, float startTime = 0, float endTime = 1)
+    public void CreateNewActionNode(string actionText, bool isAutoEnd, int nextVideoId = -2, float startTime = 0,
+                                    float endTime = 1, ActionType actionType = ActionType.ScreenButton)
     {
         //get prefab from structureManager and initilize that
         //add action node to the list and position it in UI
@@ -56,6 +57,7 @@ public class VideoNode : MonoBehaviour
         actionNode.setLoadedVideoID(nextVideoId);
         actionNode.setStartTime(startTime);
         actionNode.setEndTime(endTime);
+        actionNode.setActionType(actionType);
 
         if (isAutoEnd)
         {
