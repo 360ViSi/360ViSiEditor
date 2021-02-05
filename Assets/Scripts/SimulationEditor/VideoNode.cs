@@ -54,6 +54,8 @@ public class VideoNode : MonoBehaviour
         var actionNode = newActionGameObject.GetComponent<ActionNode>();
         actionNode.setActionText(actionText);
         actionNode.setLoadedVideoID(nextVideoId);
+        actionNode.setStartTime(startTime);
+        actionNode.setEndTime(endTime);
 
         if (isAutoEnd) 
         {

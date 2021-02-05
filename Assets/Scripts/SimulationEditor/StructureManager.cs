@@ -179,7 +179,11 @@ public class StructureManager : MonoBehaviour
         videoGameObjects.Add(newVideoObject);
 
         foreach (var item in videoJSONObject.actions)
-            node.createNewActionNode(item.actionText, item.autoEnd, item.nextVideo, item.startTime, item.endTime);
+            node.createNewActionNode(item.actionText,
+                                     item.autoEnd,
+                                     item.nextVideo,
+                                     item.startTime,
+                                     item.endTime);
     }
 
     public void ClearStructure()

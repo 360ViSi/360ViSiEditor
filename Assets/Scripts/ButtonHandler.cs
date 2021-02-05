@@ -1,60 +1,59 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class ButtonHandler : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField]
-    private List<Button> buttons;
+    private List<ActionButton> buttons;
 
     [SerializeField]
     private SimulationManager simulationManager;
-
-    void Start()
-    {
-      for (int i=0; i<buttons.Count; i++)
-      {
-        int actionID = i;
-        buttons[i].onClick.AddListener(delegate {whenClicked(actionID);});
-      }
-    }
+    [SerializeField] VideoPlayer videoPlayer;
 
     // Update is called once per frame
     void Update()
     {
-      var videoPart = simulationManager.getCurrentVideoPart();
-      if(videoPart == null) 
-        return;
-      setupButtons(videoPart);
+        var videoPart = simulationManager.getCurrentVideoPart();
+        if (videoPart == null)
+            return;
+        SetupButtons(videoPart);
     }
 
-    public void whenClicked(int actionID)
+    public void WhenClicked(int actionID)
     {
-      simulationManager.actionSelected(actionID);
+        simulationManager.actionSelected(actionID);
     }
 
-    private void setupButtons(VideoPart currentVideoPart)
+    private void SetupButtons(VideoPart currentVideoPart)
     {
-      int actionCount=0;
-      if  (currentVideoPart!=null)
-      {
-        actionCount =  currentVideoPart.getActionCount();
-      }
-      var listOfEnabledActions = new List<Action>();
+        //S NOTE: if the video ends time is divided by 0 so it will result in NaN 
+        //-> is this an issue?
+        var currentTime = videoPlayer.time / videoPlayer.length;
+        if(double.IsNaN(currentTime)) 
+            currentTime = 1;
 
-      for (int i=0; i<buttons.Count;i++)
-      {
-        if (i<actionCount)
+        //S TODO set the times on video already, so no need to LINQ in update
+        var arrayOfEnabledActions = currentVideoPart.actions
+          .Where(e => e.startTime < currentTime
+                      && e.endTime >= currentTime
+                      && e.autoEnd == false).ToArray();
+
+        for (int i = 0; i < buttons.Count; i++)
         {
-          buttons[i].gameObject.SetActive(true);
-          buttons[i].gameObject.GetComponentInChildren<Text>().text=currentVideoPart.getActionText(i);
-          continue;
+            if (i < arrayOfEnabledActions.Length)
+            {
+                buttons[i].gameObject.SetActive(true);
+                buttons[i].SetAction(arrayOfEnabledActions[i].getActionText(),
+                                     arrayOfEnabledActions[i].getNextVideo());
+                continue;
+            }
+            buttons[i].gameObject.SetActive(false);
         }
-        buttons[i].gameObject.SetActive(false);
-      }
-
     }
-
 }
