@@ -8,6 +8,7 @@ public class EditorVideoControls : MonoBehaviour
 {
     [SerializeField] VideoPlayer videoPlayer;
     [SerializeField] EditorVideoPlayer editorVideoPlayer;
+    [SerializeField] GameObject nodeCanvas;
 
     [Header("Play/Pause")]
     [SerializeField] Image playPauseImage;
@@ -31,7 +32,11 @@ public class EditorVideoControls : MonoBehaviour
 
     private void Update()
     {
-        //S TODO change to function with events
+        //S TODO set a real input for this
+        if(Input.GetKeyDown(KeyCode.Tab))
+            nodeCanvas.SetActive(!nodeCanvas.activeInHierarchy);
+
+        //S LATER - set this to happen with events
         if (videoPlayer.isPlaying)
             playPauseImage.sprite = pauseSprite;
         else playPauseImage.sprite = playSprite;
@@ -44,6 +49,7 @@ public class EditorVideoControls : MonoBehaviour
         else videoPlayer.Play();
     }
 
+    #region Marker points
     public void SetLoopPoint(bool setToVideo = false)
     {
         loopPointImageRect.anchorMin = sliderHandleRect.anchorMin;
@@ -80,6 +86,7 @@ public class EditorVideoControls : MonoBehaviour
         if (setToVideo)
             editorVideoPlayer.SetEndTimeToAction();
     }
+    #endregion
 
     public void SetCurrentControlsToVideo(bool value)
     {
