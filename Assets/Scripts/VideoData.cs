@@ -208,17 +208,13 @@ public class Action
   public bool autoEnd;
   public float startTime;
   public float endTime;
-
-  public string getActionText()
-  {
-    return actionText;
-  }
-  public int getNextVideo()
-  {
-    return nextVideo;
-  }
-
+  public ActionType actionType;
+  public Vector3 worldPosition;
+  public string getActionText() => actionText;
+  public int getNextVideo() => nextVideo;
   public bool getAutoEnd() => autoEnd;
   public float getStartTime() => startTime;
   public float getEndTime() => endTime;
+  public ActionType getActionType() => actionType;
+  public Vector3 getWorldPosition() => worldPosition;
 }

@@ -25,7 +25,7 @@ public class ActionNode : MonoBehaviour
   private float startTime = 0;
   private float endTime = 1;
   private ActionType actionType = ActionType.ScreenButton;
-
+  private Vector3 worldPosition = Vector3.zero;
   [SerializeField] GameObject removeButton = null;
 
   void Awake()
@@ -176,7 +176,9 @@ public class ActionNode : MonoBehaviour
   public float getStartTime() => startTime;
   public void setStartTime(float value) => startTime = value;
   public ActionType getActionType() => actionType;
-  public ActionType setActionType(ActionType value) => actionType = value;
+  public void setActionType(ActionType value) => actionType = value;
+  public Vector3 getWorldPosition() => worldPosition; 
+  public void setWorldPosition(Vector3 value) => worldPosition = value;
 
   public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 

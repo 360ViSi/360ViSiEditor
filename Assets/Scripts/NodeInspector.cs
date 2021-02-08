@@ -17,13 +17,15 @@ public class NodeInspector : MonoBehaviour
     VideoNode currentVideoNode = null;
     ActionNode currentActionNode = null;
     [SerializeField] EditorVideoPlayer editorVideoPlayer = null;
+    [SerializeField] EditorVideoControls editorVideoControls = null;
     [Header("UI Elements")]
     [SerializeField] GameObject textElementPrefab = null;
     [SerializeField] GameObject timeElementPrefab = null;
     [SerializeField] GameObject filenameElementPrefab = null;
     [SerializeField] GameObject toggleElementPrefab = null;
     [SerializeField] GameObject dropdownElementPrefab = null;
-
+    [SerializeField] GameObject buttonElementPrefab = null;
+    GameObject currentWorldMarker;
 
     public VideoNode CurrentVideoNode
     {
@@ -129,6 +131,11 @@ public class NodeInspector : MonoBehaviour
         CreateElement("Action name", ElementKey.ActionName, textElementPrefab, currentActionNode.getActionText());
         CreateElement("Video end action", ElementKey.ActionAutoEnd, toggleElementPrefab, currentActionNode.getAutoEnd());
         CreateElement("Action type", ElementKey.ActionType, dropdownElementPrefab, (int)currentActionNode.getActionType());
+        if (currentActionNode.getActionType() != ActionType.ScreenButton)
+        {
+            CreateElement("Set Marker", buttonElementPrefab, StartWorldMarkerPositioning);
+        }
+
         if (!currentActionNode.getAutoEnd())
         {
             CreateElement("Action start time",
@@ -142,8 +149,32 @@ public class NodeInspector : MonoBehaviour
                           currentActionNode.getEndTime(),
                           1);
         }
-
+        CreateWorldMarkers();
     }
+
+    public void CreateWorldMarkers()
+    {
+        if (currentActionNode.getActionType() != ActionType.WorldButton
+            || currentActionNode.getWorldPosition() == Vector3.zero) return;
+
+        Debug.Log(currentActionNode.getWorldPosition());
+        if (currentWorldMarker != null)
+        {
+            Destroy(currentWorldMarker);
+            currentWorldMarker = null;
+        }
+        var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        go.layer = 9;
+
+        go.transform.position = currentActionNode.getWorldPosition();
+        var oldRotation = transform.rotation;
+        go.transform.LookAt(transform);
+        go.transform.localEulerAngles = new Vector3(oldRotation.x, 0, oldRotation.z);
+        go.transform.localScale = new Vector3(10, .5f, 10);
+
+        currentWorldMarker = go;
+    }
+
 
     public void UpdateValue(ElementKey key, string value)
     {
@@ -169,7 +200,9 @@ public class NodeInspector : MonoBehaviour
 
     public void UpdateValue(ElementKey key, int value)
     {
-        if(key == ElementKey.ActionType) currentActionNode.setActionType((ActionType)value);
+        if (key == ElementKey.ActionType) currentActionNode.setActionType((ActionType)value);
+
+        CreateFields(currentActionNode, true);
     }
 
     public void UpdateValue(ElementKey key, float value)
@@ -183,6 +216,11 @@ public class NodeInspector : MonoBehaviour
 
         //These all SO FAR (5) need to refresh the timeline markers, so I'm just going to do it here for all of them
         editorVideoPlayer.RefreshMarkers();
+    }
+
+    public void StartWorldMarkerPositioning()
+    {
+        editorVideoControls.PlacingWorldSpaceMarker = true;
     }
 
     public float GetVideoLength() => (float)editorVideoPlayer.VideoPlayer.length;
@@ -226,9 +264,23 @@ public class NodeInspector : MonoBehaviour
             key,
             value);
     }
+    void CreateElement(string header, GameObject prefab, System.Action buttonAction)
+    {
+        var elementObj = Instantiate(prefab, transform);
+        var element = elementObj.GetComponent<NodeInspectorElement>();
+        element.InitializeElement(
+            header,
+            buttonAction);
+    }
+
 
     void NullCurrentNodes()
     {
+        if (currentWorldMarker != null)
+        {
+            Destroy(currentWorldMarker);
+            currentWorldMarker = null;
+        }
         if (currentVideoNode != null)
         {
             currentVideoNode.GetComponent<Outline>().enabled = false;

@@ -184,7 +184,8 @@ public class StructureManager : MonoBehaviour
                                      item.nextVideo,
                                      item.startTime,
                                      item.endTime,
-                                     item.actionType);
+                                     item.actionType,
+                                     item.worldPosition);
     }
 
     public void ClearStructure()

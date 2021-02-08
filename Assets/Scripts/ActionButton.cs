@@ -6,15 +6,22 @@ public class ActionButton : MonoBehaviour
     [SerializeField] SimulationManager simulationManager;
     [SerializeField] Text buttonText;
     [SerializeField] Button button;
+    float startTime;
+    float endTime;
 
-    public void SetAction(string text, int nextVideoID)
+    public void SetAction(Action action)
     {
-        buttonText.text = text;
-        this.nextVideoID = nextVideoID;
+        buttonText.text = action.getActionText();
+        this.nextVideoID = action.getNextVideo();
+        this.startTime = action.getStartTime();
+        this.endTime = action.getEndTime();
     }
 
-    public void Activate()
+    public void Activate() => simulationManager.goToVideo(nextVideoID);
+
+    public void SetActive(double currentTime)
     {
-        simulationManager.goToVideo(nextVideoID);
+        //S LATER - button.enabled to hide button when it's not usable
+        button.interactable = currentTime > startTime && currentTime <= endTime;
     }
 }

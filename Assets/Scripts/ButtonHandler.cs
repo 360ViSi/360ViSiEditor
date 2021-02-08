@@ -10,50 +10,59 @@ public class ButtonHandler : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField]
-    private List<ActionButton> buttons;
+    private List<ActionButton> screenButtons = new List<ActionButton>();
+    private List<WorldButton> worldButtons = new List<WorldButton>();
 
     [SerializeField]
     private SimulationManager simulationManager;
     [SerializeField] VideoPlayer videoPlayer;
+    [SerializeField] GameObject worldButtonPrefab;
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        var videoPart = simulationManager.getCurrentVideoPart();
-        if (videoPart == null)
-            return;
-        SetupButtons(videoPart);
-    }
-
-    public void WhenClicked(int actionID)
-    {
-        simulationManager.actionSelected(actionID);
-    }
-
-    private void SetupButtons(VideoPart currentVideoPart)
-    {
-        //S NOTE: if the video ends time is divided by 0 so it will result in NaN 
-        //-> is this an issue?
         var currentTime = videoPlayer.time / videoPlayer.length;
-        if(double.IsNaN(currentTime)) 
+        if (double.IsNaN(currentTime))
             currentTime = 1;
 
-        //S TODO set the times on video already, so no need to LINQ in update
-        var arrayOfEnabledActions = currentVideoPart.actions
-          .Where(e => e.startTime < currentTime
-                      && e.endTime >= currentTime
-                      && e.autoEnd == false).ToArray();
+        foreach (var item in screenButtons)
+            item.SetActive(currentTime);
 
-        for (int i = 0; i < buttons.Count; i++)
+        foreach (var item in worldButtons)
+            item.SetActive(currentTime);
+    }
+    public void SetupActions()
+    {
+        foreach (var item in worldButtons)
+            Destroy(item.gameObject);
+            
+        worldButtons.Clear();
+        var currentVideoPart = simulationManager.getCurrentVideoPart();
+
+        var buttonActions = currentVideoPart.actions
+          .Where(e => e.autoEnd == false
+                      && e.actionType == ActionType.ScreenButton).ToArray();
+
+        var worldActions = currentVideoPart.actions
+          .Where(e => e.autoEnd == false
+                      && e.actionType == ActionType.WorldButton).ToArray();
+
+        for (int i = 0; i < screenButtons.Count; i++)
         {
-            if (i < arrayOfEnabledActions.Length)
+            if (i < buttonActions.Length)
             {
-                buttons[i].gameObject.SetActive(true);
-                buttons[i].SetAction(arrayOfEnabledActions[i].getActionText(),
-                                     arrayOfEnabledActions[i].getNextVideo());
+                screenButtons[i].gameObject.SetActive(true);
+                screenButtons[i].SetAction(buttonActions[i]);
                 continue;
             }
-            buttons[i].gameObject.SetActive(false);
+            screenButtons[i].gameObject.SetActive(false);
+        }
+
+        for (int i = 0; i < worldActions.Length; i++)
+        {
+            var go = Instantiate(worldButtonPrefab);
+            var worldButton = go.GetComponent<WorldButton>();
+            worldButton.SetAction(worldActions[i], simulationManager);
+            worldButtons.Add(worldButton);
         }
     }
 }

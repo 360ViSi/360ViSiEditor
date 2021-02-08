@@ -15,4 +15,5 @@ public class NodeInspectorElement : MonoBehaviour
     public virtual void InitializeElement(string header, ElementKey key, float value, float defaultValue){}
     public virtual void InitializeElement(string header, ElementKey key, bool value){}
     public virtual void InitializeElement(string header, ElementKey key, int value){}
+    public virtual void InitializeElement(string header, System.Action buttonAction){}
 }

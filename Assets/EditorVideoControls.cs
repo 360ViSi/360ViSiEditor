@@ -7,6 +7,8 @@ using UnityEngine.Video;
 public class EditorVideoControls : MonoBehaviour
 {
     [SerializeField] VideoPlayer videoPlayer;
+    [SerializeField] Camera videoCamera;
+    [SerializeField] LayerMask videoLayer;
     [SerializeField] EditorVideoPlayer editorVideoPlayer;
     [SerializeField] GameObject nodeCanvas;
 
@@ -30,16 +32,53 @@ public class EditorVideoControls : MonoBehaviour
     [SerializeField] GameObject actionStartButton;
     [SerializeField] GameObject actionEndButton;
 
+    bool placingWorldSpaceMarker = false;
+
+    public bool PlacingWorldSpaceMarker
+    {
+        get { return placingWorldSpaceMarker; }
+        set
+        {
+            nodeCanvas.SetActive(!value);
+            placingWorldSpaceMarker = value;
+        }
+    }
+
     private void Update()
     {
-        //S TODO set a real input for this
-        if(Input.GetKeyDown(KeyCode.Tab))
-            nodeCanvas.SetActive(!nodeCanvas.activeInHierarchy);
+        if (placingWorldSpaceMarker)
+            SetWorldSpaceActionPosition();
 
-        //S LATER - set this to happen with events
+        //S TODO set a real input for this
+        ToggleNodeCanvas();
+        //S LATER - set this to happen with events or smth
+        TogglePlayPauseSprite();
+    }
+
+    private void SetWorldSpaceActionPosition()
+    {
+        if (Input.GetMouseButtonDown(0) == false) return;
+        Debug.Log("Click");
+        var ray = videoCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, videoLayer, QueryTriggerInteraction.Collide))
+        {
+            NodeInspector.instance.CurrentActionNode.setWorldPosition(hit.point);
+            NodeInspector.instance.CreateWorldMarkers();
+            PlacingWorldSpaceMarker = false;
+        }
+    }
+
+    private void TogglePlayPauseSprite()
+    {
         if (videoPlayer.isPlaying)
             playPauseImage.sprite = pauseSprite;
         else playPauseImage.sprite = playSprite;
+    }
+
+    private void ToggleNodeCanvas()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+            nodeCanvas.SetActive(!nodeCanvas.activeInHierarchy);
     }
 
     public void TogglePause()
@@ -87,17 +126,16 @@ public class EditorVideoControls : MonoBehaviour
             editorVideoPlayer.SetEndTimeToAction();
     }
     #endregion
-
     public void SetCurrentControlsToVideo(bool value)
     {
         videoEndButton.SetActive(value);
         videoStartButton.SetActive(value);
-        
+
         var loop = NodeInspector.instance.CurrentVideoNode.getLoop();
         loopButton.SetActive(loop);
         loopPointImageRect.gameObject.SetActive(loop);
-        
-        if(NodeInspector.instance.CurrentActionNode != null && NodeInspector.instance.CurrentActionNode.getAutoEnd())
+
+        if (NodeInspector.instance.CurrentActionNode != null && NodeInspector.instance.CurrentActionNode.getAutoEnd())
             value = !value;
 
         actionStartButton.SetActive(!value);

@@ -35,11 +35,11 @@ public class VideoNode : MonoBehaviour
 
     public void CreateNewActionNode()
     {
-        CreateNewActionNode("action", false);
+        CreateNewActionNode("action", false, -2, 0, 1, ActionType.ScreenButton, Vector3.zero);
     }
 
-    public void CreateNewActionNode(string actionText, bool isAutoEnd, int nextVideoId = -2, float startTime = 0,
-                                    float endTime = 1, ActionType actionType = ActionType.ScreenButton)
+    public void CreateNewActionNode(string actionText, bool isAutoEnd, int nextVideoId, float startTime,
+                                    float endTime, ActionType actionType, Vector3 worldPosition)
     {
         //get prefab from structureManager and initilize that
         //add action node to the list and position it in UI
@@ -58,6 +58,7 @@ public class VideoNode : MonoBehaviour
         actionNode.setStartTime(startTime);
         actionNode.setEndTime(endTime);
         actionNode.setActionType(actionType);
+        actionNode.setWorldPosition(worldPosition);
 
         if (isAutoEnd)
         {

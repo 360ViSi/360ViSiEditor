@@ -14,6 +14,7 @@ public class SimulationManager : MonoBehaviour
     VideoTextureChanger videoTextureChanger;
     [SerializeField] GameObject endPanel; 
     [SerializeField] VideoPlayer videoPlayer;
+    [SerializeField] ButtonHandler buttonHandler;
     //private parameters
     private int currentVideoID=-2;
 
@@ -34,6 +35,7 @@ public class SimulationManager : MonoBehaviour
       string startVideoFileName = videoData.getStartPart().getVideoFileName();
       currentVideoID = videoData.getStartPart().videoID;
       videoTextureChanger.changeVideo(startVideoFileName);
+      buttonHandler.SetupActions();
       videoPlayer.Play();
     }
 
@@ -84,6 +86,7 @@ public class SimulationManager : MonoBehaviour
 
       currentVideoID=nextVideoID;
       videoTextureChanger.changeVideo(nextVideoFileName);
+      buttonHandler.SetupActions();
       Debug.Log("Video is "+nextVideoFileName);
     }
 

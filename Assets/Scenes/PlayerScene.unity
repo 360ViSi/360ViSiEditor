@@ -308,6 +308,7 @@ MonoBehaviour:
   videoTextureChanger: {fileID: 757786608}
   endPanel: {fileID: 1016711823}
   videoPlayer: {fileID: 757786606}
+  buttonHandler: {fileID: 1406188673}
 --- !u!4 &11482227
 Transform:
   m_ObjectHideFlags: 0
@@ -669,6 +670,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RootOrder
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6625541873740c364b5c3d4a4ff4452c,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6625541873740c364b5c3d4a4ff4452c,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6625541873740c364b5c3d4a4ff4452c,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6625541873740c364b5c3d4a4ff4452c,
         type: 3}
@@ -2006,7 +2022,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5f6db7c0faf3e9b8978370d7b5aa40d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttons:
+  screenButtons:
   - {fileID: 837409890006125834}
   - {fileID: 452945155}
   - {fileID: 620969972}
@@ -2014,6 +2030,8 @@ MonoBehaviour:
   - {fileID: 428401059}
   simulationManager: {fileID: 11482226}
   videoPlayer: {fileID: 757786606}
+  worldButtonPrefab: {fileID: 6512121361242140342, guid: 66560fc3864547549ba8fae3edd9cb5f,
+    type: 3}
 --- !u!4 &1406188674
 Transform:
   m_ObjectHideFlags: 0

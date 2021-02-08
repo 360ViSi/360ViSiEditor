@@ -578,7 +578,6 @@ GameObject:
   - component: {fileID: 231366841}
   - component: {fileID: 231366840}
   - component: {fileID: 231366842}
-  - component: {fileID: 231366843}
   m_Layer: 5
   m_Name: Video Controls
   m_TagString: Untagged
@@ -659,6 +658,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   videoPlayer: {fileID: 2019835299}
+  videoCamera: {fileID: 595350883}
+  videoLayer:
+    serializedVersion: 2
+    m_Bits: 512
   editorVideoPlayer: {fileID: 2019835301}
   nodeCanvas: {fileID: 452938059}
   playPauseImage: {fileID: 1655965467}
@@ -675,22 +678,6 @@ MonoBehaviour:
   videoEndButton: {fileID: 975990928}
   actionStartButton: {fileID: 925051685}
   actionEndButton: {fileID: 1318802572}
---- !u!114 &231366843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 231366838}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0e27f7bbb5bd7547a168f5186bf161e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  videoCamera: {fileID: 595350883}
-  videoLayer:
-    serializedVersion: 2
-    m_Bits: 512
 --- !u!224 &319198207 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6791179902262900887, guid: c51b143aeb1ea55b6989fdd996dfa339,
@@ -1085,6 +1072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   editorVideoPlayer: {fileID: 2019835301}
+  editorVideoControls: {fileID: 231366842}
   textElementPrefab: {fileID: 4252406531029555589, guid: ddee4292ac6db4e4a8d57ce3ba3b2bca,
     type: 3}
   timeElementPrefab: {fileID: 4252406531029555589, guid: 7956d922f5efba34ebc146a6af4abe94,
@@ -1094,6 +1082,8 @@ MonoBehaviour:
   toggleElementPrefab: {fileID: 5345425060366363121, guid: 0e8214351026de642b0f2e35a1935ea8,
     type: 3}
   dropdownElementPrefab: {fileID: 4252406531029555589, guid: 3a05e51460d7c5843bd4e6b493f66c75,
+    type: 3}
+  buttonElementPrefab: {fileID: 2306612660807580130, guid: f9b0281dcdbfec843bdfebf387dd767a,
     type: 3}
 --- !u!114 &592401125
 MonoBehaviour:
