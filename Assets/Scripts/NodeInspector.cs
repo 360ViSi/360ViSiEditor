@@ -63,6 +63,10 @@ public class NodeInspector : MonoBehaviour
             Destroy(transform.GetChild(i).gameObject);
 
         //Create new ones
+        CreateElement("Video filename",
+                      ElementKey.VideoFileName,
+                      filenameElementPrefab,
+                      currentVideoNode.getVideoFileName());
         editorVideoPlayer.VideoPlayer.prepareCompleted += CreateVideoFields;
     }
 
@@ -97,10 +101,6 @@ public class NodeInspector : MonoBehaviour
     private void CreateVideoFields(VideoPlayer source)
     {
         editorVideoPlayer.VideoPlayer.prepareCompleted -= CreateVideoFields;
-        CreateElement("Video filename",
-                      ElementKey.VideoFileName,
-                      filenameElementPrefab,
-                      currentVideoNode.getVideoFileName());
         CreateElement("Loop video",
                       ElementKey.VideoLoop,
                       toggleElementPrefab,

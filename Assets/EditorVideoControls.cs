@@ -49,6 +49,9 @@ public class EditorVideoControls : MonoBehaviour
         if (placingWorldSpaceMarker)
             SetWorldSpaceActionPosition();
 
+        if(Input.GetKeyDown(KeyCode.Escape))
+            PlacingWorldSpaceMarker = false;
+
         //S TODO set a real input for this
         ToggleNodeCanvas();
         //S LATER - set this to happen with events or smth
@@ -64,7 +67,7 @@ public class EditorVideoControls : MonoBehaviour
         {
             NodeInspector.instance.CurrentActionNode.setWorldPosition(hit.point);
             NodeInspector.instance.CreateWorldMarkers();
-            PlacingWorldSpaceMarker = false;
+            //PlacingWorldSpaceMarker = false;
         }
     }
 

@@ -516,7 +516,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5482200187587917893}
-        m_MethodName: createNewActionNode
+        m_MethodName: CreateNewActionNode
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -72,6 +72,7 @@ public class EditorVideoPlayer : MonoBehaviour
         var wasPaused = videoPlayer.isPaused;
 
         var fullpath = @"C:\Unity\" + filename;
+        fullpath.Replace('\\', Path.DirectorySeparatorChar);
         if (!File.Exists(fullpath))
         {
             Debug.LogError($"No file with path {fullpath} found");
@@ -81,6 +82,7 @@ public class EditorVideoPlayer : MonoBehaviour
 
         videoPlayer.prepareCompleted -= PrepareVideo(videoPlayer, true);
         videoPlayer.prepareCompleted -= PrepareVideo(videoPlayer, false);
+
 
         if (wasPaused)
             videoPlayer.prepareCompleted += PrepareVideo(videoPlayer, true);

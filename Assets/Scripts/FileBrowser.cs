@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using SFB;
 using UnityEngine;
@@ -7,8 +8,13 @@ public class FileBrowser : MonoBehaviour
 {
     public void OpenFileBrowser(){
         var paths = StandaloneFileBrowser.OpenFilePanel("Open File", @"C:\Unity\", "", false);
-        var pathArr = paths[0].Split('\\');
+        
+        var pathArr = paths[0].Split(Path.DirectorySeparatorChar);
+        if(pathArr.Length == 1)
+            pathArr = paths[0].Split(Path.AltDirectorySeparatorChar);
+
         var filename = pathArr[pathArr.Length - 1];
+        Debug.Log(Path.AltDirectorySeparatorChar + " - " + filename);
         GetComponentInParent<NodeInspectorTextElement>().UpdateValueFromFileBrowser(filename);
     }
 }
