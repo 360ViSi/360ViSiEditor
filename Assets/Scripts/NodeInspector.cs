@@ -1,3 +1,4 @@
+using System.Net;
 using System.Linq;
 using System.Collections;
 using System;
@@ -16,8 +17,10 @@ public class NodeInspector : MonoBehaviour
     public static NodeInspector instance;
     VideoNode currentVideoNode = null;
     ActionNode currentActionNode = null;
+    [SerializeField] Transform videoCamTransform = null;
     [SerializeField] EditorVideoPlayer editorVideoPlayer = null;
     [SerializeField] EditorVideoControls editorVideoControls = null;
+    [SerializeField] WorldInspector worldInspector = null;
     [Header("UI Elements")]
     [SerializeField] GameObject textElementPrefab = null;
     [SerializeField] GameObject timeElementPrefab = null;
@@ -25,6 +28,9 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] GameObject toggleElementPrefab = null;
     [SerializeField] GameObject dropdownElementPrefab = null;
     [SerializeField] GameObject buttonElementPrefab = null;
+    [Header("World Elements")]
+    [SerializeField] GameObject worldButtonPrefab = null;
+    [SerializeField] GameObject floorButtonPrefab = null;
     GameObject currentWorldMarker;
 
     public VideoNode CurrentVideoNode
@@ -152,27 +158,58 @@ public class NodeInspector : MonoBehaviour
         CreateWorldMarkers();
     }
 
+    ///<summary>
+    /// Spawns a marker in the world depending on the ActionType.
+    /// Called from EditorVideoControls while setting a new position
+    ///</summary>
     public void CreateWorldMarkers()
     {
-        if (currentActionNode.getActionType() != ActionType.WorldButton
-            || currentActionNode.getWorldPosition() == Vector3.zero) return;
+        if (currentActionNode.getWorldPosition() == Vector3.zero){
+            worldInspector.gameObject.SetActive(false);
+            return;
+        }
 
-        Debug.Log(currentActionNode.getWorldPosition());
         if (currentWorldMarker != null)
         {
             Destroy(currentWorldMarker);
             currentWorldMarker = null;
         }
-        var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //Instantiate specific prefab
+        GameObject go = null;
+        var type = currentActionNode.getActionType();
+        bool isCanvas = false;
+        switch (type)
+        {
+            case ActionType.WorldButton:
+            isCanvas =true;
+                go = Instantiate(worldButtonPrefab);
+                break;
+            case ActionType.FloorButton:
+                go = Instantiate(floorButtonPrefab);
+                break;
+            case ActionType.Prefab:
+                throw new NotImplementedException();
+            default:
+                Destroy(go);
+                worldInspector.gameObject.SetActive(false);
+                return;
+        }
+
         go.layer = 9;
 
         go.transform.position = currentActionNode.getWorldPosition();
-        var oldRotation = transform.rotation;
-        go.transform.LookAt(transform);
-        go.transform.localEulerAngles = new Vector3(oldRotation.x, 0, oldRotation.z);
-        go.transform.localScale = new Vector3(10, .5f, 10);
+        var oldRotation = go.transform.rotation;
+        go.transform.LookAt(videoCamTransform);
+
+        if (currentActionNode.getActionType() == ActionType.FloorButton)
+        {
+            go.transform.localEulerAngles = new Vector3(oldRotation.x, 0, oldRotation.z);
+            go.transform.localScale = new Vector3(10, .5f, 10);
+        }
 
         currentWorldMarker = go;
+        worldInspector.SetTarget(go, isCanvas);
+        worldInspector.gameObject.SetActive(true);
     }
 
 
@@ -221,6 +258,7 @@ public class NodeInspector : MonoBehaviour
     public void StartWorldMarkerPositioning()
     {
         editorVideoControls.PlacingWorldSpaceMarker = true;
+        editorVideoPlayer.VideoPlayer.Pause();
     }
 
     public float GetVideoLength() => (float)editorVideoPlayer.VideoPlayer.length;
@@ -264,6 +302,7 @@ public class NodeInspector : MonoBehaviour
             key,
             value);
     }
+
     void CreateElement(string header, GameObject prefab, System.Action buttonAction)
     {
         var elementObj = Instantiate(prefab, transform);

@@ -530,7 +530,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 2.667e-42, y: 1.01e-43, z: 2.3509887e-38, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 1.0728e-41, z: 0, w: -5.90625}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -740,6 +740,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: sphere_flipped_normals
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6625541873740c364b5c3d4a4ff4452c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6625541873740c364b5c3d4a4ff4452c, type: 3}
@@ -2030,7 +2035,9 @@ MonoBehaviour:
   - {fileID: 428401059}
   simulationManager: {fileID: 11482226}
   videoPlayer: {fileID: 757786606}
-  worldButtonPrefab: {fileID: 6512121361242140342, guid: 66560fc3864547549ba8fae3edd9cb5f,
+  worldButtonPrefab: {fileID: 7096832405384579042, guid: 9bd981b9d4382aa4ba2bfac4928877a9,
+    type: 3}
+  floorButtonPrefab: {fileID: 6512121361242140342, guid: 66560fc3864547549ba8fae3edd9cb5f,
     type: 3}
 --- !u!4 &1406188674
 Transform:

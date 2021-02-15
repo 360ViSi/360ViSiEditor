@@ -1,16 +1,26 @@
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class WorldButton : MonoBehaviour
 {
     int nextVideoID;
     SimulationManager simulationManager;
-    MeshRenderer meshRenderer;
+    Image image;
     float startTime;
     float endTime;
     bool mouseOver;
-    private void Start() 
+
+    public bool MouseOver { get => mouseOver; set => mouseOver = value; }
+
+    private void Start()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
+        GetComponent<Canvas>().worldCamera = Camera.main;
+        image = GetComponentInChildren<Image>();
+        var childImage = transform.GetChild(0).gameObject.AddComponent<WorldButtonImage>();
+        childImage.Button = this;
     }
 
     public void SetAction(Action action, SimulationManager simulationManager)
@@ -21,23 +31,17 @@ public class WorldButton : MonoBehaviour
         this.simulationManager = simulationManager;
 
         transform.position = action.getWorldPosition();
-        var oldRotation = transform.rotation;
         transform.LookAt(transform);
-        transform.localEulerAngles = new Vector3(oldRotation.x, 0, oldRotation.z);
-        transform.localScale = new Vector3(10, .5f, 10);
+        transform.localScale = new Vector3(-.01f, .01f, 1);
     }
-    private void Update() 
+    private void Update()
     {
-        if(mouseOver)
-            meshRenderer.material.SetColor("_Color", Color.green);
+        if (mouseOver)
+            image.color = Color.green;
         else
-            meshRenderer.material.SetColor("_Color", Color.white);
-
-
+            image.color = Color.red;
     }
+
     public void Activate() => simulationManager.goToVideo(nextVideoID);
     public void SetActive(double currentTime) => gameObject.SetActive(currentTime > startTime && currentTime <= endTime);
-    private void OnMouseDown() => Activate();
-    private void OnMouseEnter() => mouseOver = true;
-    private void OnMouseExit() => mouseOver = false;
 }

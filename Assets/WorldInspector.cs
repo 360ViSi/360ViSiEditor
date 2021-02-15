@@ -12,6 +12,7 @@ public class WorldInspector : MonoBehaviour
     bool targetVisible;
 
     public bool TargetVisible { get => targetVisible; set => targetVisible = value; }
+    public Camera VideoCamera { get => videoCamera; }
 
     // Update is called once per frame
     void LateUpdate()
@@ -19,12 +20,12 @@ public class WorldInspector : MonoBehaviour
         if (target == null)
             return;
 
-        var pos = videoCamera.WorldToScreenPoint(target.transform.position + Vector3.up * 3);
+        var pos = videoCamera.WorldToScreenPoint(target.transform.position + Vector3.up * 5);
         transform.position = pos;
         graphicsObject.SetActive(targetVisible);
     }
 
-    public void SetTarget(GameObject newTarget)
+    public void SetTarget(GameObject newTarget, bool isCanvas = false)
     {
         if (target != null)
         {
@@ -34,6 +35,7 @@ public class WorldInspector : MonoBehaviour
         if (newTarget == null) return;
 
         var targetComponent = newTarget.AddComponent<WorldInspectorTarget>();
+        targetComponent.IsCanvas = isCanvas;
         targetComponent.Inspector = this;
         this.target = newTarget.transform;
     }
