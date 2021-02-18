@@ -37,9 +37,9 @@ public class WorldButton : MonoBehaviour
         tmpText.text = action.getActionText();
         
         transform.position = action.getWorldPosition();
-        transform.LookAt(transform);
+        transform.LookAt(simulationManager.transform);
         //world canvas size quirk - might remove flipping later
-        transform.localScale = new Vector3(-.01f, .01f, 1);
+        //transform.localScale = new Vector3(-.01f, .01f, 1);
     }
     private void Update()
     {

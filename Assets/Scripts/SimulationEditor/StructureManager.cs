@@ -191,11 +191,11 @@ public class StructureManager : MonoBehaviour
     public void ClearStructure()
     {
         //S TODO
-        Debug.LogError("Clearing is not yet implemented! If you had no nodes, you're fine");
+        Debug.Log("Clearing is not yet implemented! If you had no nodes, you're fine");
     }
 
     public void removeVideoNode(GameObject nodeObject)
     {
         videoGameObjects.Remove(nodeObject);
-    }
+    } 
 }

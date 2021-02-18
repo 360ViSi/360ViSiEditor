@@ -23,7 +23,7 @@ public class EditorVideoControls : MonoBehaviour
     [SerializeField] RectTransform videoEndPointImageRect;
     [SerializeField] RectTransform actionStartPointImageRect;
     [SerializeField] RectTransform actionEndPointImageRect;
-    [SerializeField] RectTransform sliderHandleRect;
+    [SerializeField] RectTransform sliderHandleRect; //S TODO replace with timeline's position
 
     [Header("Buttons")]
     [SerializeField] GameObject loopButton;
@@ -94,37 +94,31 @@ public class EditorVideoControls : MonoBehaviour
     #region Marker points
     public void SetLoopPoint(bool setToVideo = false)
     {
-        loopPointImageRect.anchorMin = sliderHandleRect.anchorMin;
-        loopPointImageRect.anchorMax = sliderHandleRect.anchorMax;
+        loopPointImageRect.anchoredPosition = sliderHandleRect.anchoredPosition;
         if (setToVideo)
             editorVideoPlayer.SetLoopTimeToVideo();
     }
     public void SetVideoStartPoint(bool setToVideo = false)
     {
-        videoStartPointImageRect.anchorMin = sliderHandleRect.anchorMin;
-        videoStartPointImageRect.anchorMax = sliderHandleRect.anchorMax;
         if (setToVideo)
             editorVideoPlayer.SetStartTimeToVideo();
     }
     public void SetVideoEndPoint(bool setToVideo = false)
     {
-        videoEndPointImageRect.anchorMin = sliderHandleRect.anchorMin;
-        videoEndPointImageRect.anchorMax = sliderHandleRect.anchorMax;
         if (setToVideo)
             editorVideoPlayer.SetEndTimeToVideo();
     }
 
     public void SetActionStartPoint(bool setToVideo = false)
     {
-        actionStartPointImageRect.anchorMin = sliderHandleRect.anchorMin;
-        actionStartPointImageRect.anchorMax = sliderHandleRect.anchorMax;
+        
+        actionStartPointImageRect.anchoredPosition = sliderHandleRect.anchoredPosition;
         if (setToVideo)
             editorVideoPlayer.SetStartTimeToAction();
     }
     public void SetActionEndPoint(bool setToVideo = false)
     {
-        actionEndPointImageRect.anchorMin = sliderHandleRect.anchorMin;
-        actionEndPointImageRect.anchorMax = sliderHandleRect.anchorMax;
+        actionEndPointImageRect.anchoredPosition = sliderHandleRect.anchoredPosition;
         if (setToVideo)
             editorVideoPlayer.SetEndTimeToAction();
     }

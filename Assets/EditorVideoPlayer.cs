@@ -11,7 +11,8 @@ public class EditorVideoPlayer : MonoBehaviour
 {
     VideoPlayer videoPlayer;
     [SerializeField] NodeInspector nodeInspector;
-    [SerializeField] TimeSlider timeSlider;
+    [SerializeField] TimelineDraggable timeSlider;
+    [SerializeField] SimTimeline simTimeline;
     [SerializeField] TMPro.TMP_Text currentTime;
     [SerializeField] Material renderMaterial;
     [SerializeField] EditorVideoControls editorVideoControls;
@@ -93,6 +94,12 @@ public class EditorVideoPlayer : MonoBehaviour
         RefreshMarkers();
     }
 
+    IEnumerator SetVideoStartTimeOnVideoChange()
+    {
+        yield return new WaitForFixedUpdate(); 
+        videoPlayer.time = nodeInspector.CurrentVideoNode.getStartTime() * videoPlayer.length;
+    }
+
     /*
     All markers are basically handled individually, could maybe generalize
     partly but not sure if worth the effort.
@@ -121,67 +128,71 @@ public class EditorVideoPlayer : MonoBehaviour
     ///</summary>
     public void SetLoopTimeToVideo()
     {
-        nodeInspector.CurrentVideoNode.setLoopTime(timeSlider.value);
-        currentVideoLoopTime = timeSlider.value;
+        nodeInspector.CurrentVideoNode.setLoopTime(timeSlider.Value);
+        currentVideoLoopTime = timeSlider.Value;
         nodeInspector.CreateFields(nodeInspector.CurrentVideoNode, true);
     }
 
     void GetLoopTimeFromVideo()
     {
         var loopTime = nodeInspector.CurrentVideoNode.getLoopTime();
-        timeSlider.value = loopTime;
+        timeSlider.Value = loopTime;
         currentVideoLoopTime = loopTime;
         editorVideoControls.SetLoopPoint();
     }
 
     public void SetStartTimeToVideo()
     {
-        nodeInspector.CurrentVideoNode.setStartTime(timeSlider.value);
-        currentVideoStartTime = timeSlider.value;
+        nodeInspector.CurrentVideoNode.setStartTime(timeSlider.Value);
+        currentVideoStartTime = timeSlider.Value;
+        simTimeline.StartTime = timeSlider.Value;
         nodeInspector.CreateFields(nodeInspector.CurrentVideoNode, true);
     }
 
     void GetStartTimeFromVideo()
     {
         var startTime = nodeInspector.CurrentVideoNode.getStartTime();
-        timeSlider.value = startTime;
+        timeSlider.Value = startTime;
         currentVideoStartTime = startTime;
+        simTimeline.StartTime = startTime;
         editorVideoControls.SetVideoStartPoint();
     }
     public void SetEndTimeToVideo()
     {
-        nodeInspector.CurrentVideoNode.setEndTime(timeSlider.value);
-        currentVideoEndTime = timeSlider.value;
+        nodeInspector.CurrentVideoNode.setEndTime(timeSlider.Value);
+        currentVideoEndTime = timeSlider.Value;
+        simTimeline.EndTime = timeSlider.Value;
         nodeInspector.CreateFields(nodeInspector.CurrentVideoNode, true);
     }
     void GetEndTimeFromVideo()
     {
         var endTime = nodeInspector.CurrentVideoNode.getEndTime();
-        timeSlider.value = endTime;
+        timeSlider.Value = endTime;
         currentVideoEndTime = endTime;
+        simTimeline.EndTime = endTime;
         editorVideoControls.SetVideoEndPoint();
     }
 
     public void SetStartTimeToAction()
     {
-        nodeInspector.CurrentActionNode.setStartTime(timeSlider.value);
+        nodeInspector.CurrentActionNode.setStartTime(timeSlider.Value);
         nodeInspector.CreateFields(nodeInspector.CurrentActionNode, true);
     }
     void GetStartTimeFromAction()
     {
         var startTime = nodeInspector.CurrentActionNode.getStartTime();
-        timeSlider.value = startTime;
+        timeSlider.Value = startTime;
         editorVideoControls.SetActionStartPoint();
     }
     public void SetEndTimeToAction()
     {
-        nodeInspector.CurrentActionNode.setEndTime(timeSlider.value);
+        nodeInspector.CurrentActionNode.setEndTime(timeSlider.Value);
         nodeInspector.CreateFields(nodeInspector.CurrentActionNode, true);
     }
     void GetEndTimeFromAction()
     {
         var endTime = nodeInspector.CurrentActionNode.getEndTime();
-        timeSlider.value = endTime;
+        timeSlider.Value = endTime;
         editorVideoControls.SetActionEndPoint();
     }
 
@@ -189,7 +200,7 @@ public class EditorVideoPlayer : MonoBehaviour
 
     private VideoPlayer.EventHandler PrepareVideo(VideoPlayer player, bool pause)
     {
-        //player.time = (double)_nodeInspector.CurrentVideoNode.getStartTime();
+        StartCoroutine(SetVideoStartTimeOnVideoChange());
 
         if (pause)
             player.Pause();
@@ -211,7 +222,7 @@ public class EditorVideoPlayer : MonoBehaviour
         {
             StartCoroutine(LoopRoutine((float)(player.length * nodeInspector.CurrentVideoNode.getStartTime())));
         }
-        else player.time = timeSlider.value;
+        else player.time = timeSlider.Value;
     }
 
     private void TogglePause()
@@ -226,14 +237,14 @@ public class EditorVideoPlayer : MonoBehaviour
     {
         if (isSliderHeld)
         {
-            currentTime.text = Utilities.FloatToTime(timeSlider.value, (float)videoPlayer.length, true);
+            currentTime.text = Utilities.FloatToTime(timeSlider.Value, (float)videoPlayer.length, true);
             return;
         }
 
         if (videoPlayer.length == 0) return;
 
         var videoTime = (float)(videoPlayer.time / videoPlayer.length);
-        timeSlider.value = videoTime;
+        timeSlider.Value = videoTime;
         currentTime.text = Utilities.FloatToTime(videoTime, (float)videoPlayer.length, true);
     }
 
@@ -247,7 +258,7 @@ public class EditorVideoPlayer : MonoBehaviour
     private void EndHold()
     {
         isSliderHeld = false;
-        videoPlayer.frame = (long)(videoPlayer.frameCount * timeSlider.value);
+        videoPlayer.frame = (long)(videoPlayer.frameCount * timeSlider.Value);
 
         if (playAfterHold)
             videoPlayer.Play();
