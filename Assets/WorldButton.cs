@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using TMPro;
 
 public class WorldButton : MonoBehaviour
 {
@@ -12,6 +12,8 @@ public class WorldButton : MonoBehaviour
     float startTime;
     float endTime;
     bool mouseOver;
+    GameObject tooltipPanel;
+    TMP_Text tmpText;
 
     public bool MouseOver { get => mouseOver; set => mouseOver = value; }
 
@@ -30,16 +32,27 @@ public class WorldButton : MonoBehaviour
         this.endTime = action.getEndTime();
         this.simulationManager = simulationManager;
 
+        tooltipPanel = transform.GetChild(1).gameObject;
+        tmpText = GetComponentInChildren<TMP_Text>();
+        tmpText.text = action.getActionText();
+        
         transform.position = action.getWorldPosition();
         transform.LookAt(transform);
+        //world canvas size quirk - might remove flipping later
         transform.localScale = new Vector3(-.01f, .01f, 1);
     }
     private void Update()
     {
         if (mouseOver)
+        {
             image.color = Color.green;
+            tooltipPanel.SetActive(true);
+        }
         else
-            image.color = Color.red;
+        {
+            image.color = Color.white;
+            tooltipPanel.SetActive(false);
+        }
     }
 
     public void Activate() => simulationManager.goToVideo(nextVideoID);
