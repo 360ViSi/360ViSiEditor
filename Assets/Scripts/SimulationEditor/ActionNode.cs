@@ -195,5 +195,5 @@ public enum ActionType{
   ScreenButton, // In VR this would be the panel in front of the player
   WorldButton, //somewhere in world - commonly PoI in other 360 tour programs
   FloorButton, //Marker rotated on the floor
-  Prefab, //this will not be included in a while
+  AreaButton, //this will not be included in a while
 }

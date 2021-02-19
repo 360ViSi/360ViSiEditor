@@ -33,6 +33,7 @@ public class NodeInspector : MonoBehaviour
     [Header("World Elements")]
     [SerializeField] GameObject worldButtonPrefab = null;
     [SerializeField] GameObject floorButtonPrefab = null;
+    [SerializeField] GameObject areaButtonPrefab = null;
     GameObject currentWorldMarker;
 
     public VideoNode CurrentVideoNode
@@ -190,14 +191,15 @@ public class NodeInspector : MonoBehaviour
             case ActionType.WorldButton:
                 isCanvas = true;
                 go = Instantiate(worldButtonPrefab);
-                var editorWorldButton = go.GetComponent<EditorWorldButton>();
-                editorWorldButton.Initialize(currentActionNode, icons.GetIconSprite(CurrentActionNode.getIconName()));
+                if(TryGetComponent(out EditorWorldButton editorWorldButton))
+                    editorWorldButton.Initialize(currentActionNode, icons.GetIconSprite(CurrentActionNode.getIconName()));
                 break;
             case ActionType.FloorButton:
                 go = Instantiate(floorButtonPrefab);
                 break;
-            case ActionType.Prefab:
-                throw new NotImplementedException();
+            case ActionType.AreaButton:
+                go = Instantiate(areaButtonPrefab);
+                break;
             default:
                 Destroy(go);
                 worldInspector.gameObject.SetActive(false);

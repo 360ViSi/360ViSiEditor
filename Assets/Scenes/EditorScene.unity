@@ -969,6 +969,8 @@ MonoBehaviour:
     type: 3}
   floorButtonPrefab: {fileID: 6512121361242140342, guid: 66560fc3864547549ba8fae3edd9cb5f,
     type: 3}
+  areaButtonPrefab: {fileID: 3709169441309110236, guid: 35bd9f2f2dcde354b972e4533b347c1a,
+    type: 3}
 --- !u!114 &592401125
 MonoBehaviour:
   m_ObjectHideFlags: 0

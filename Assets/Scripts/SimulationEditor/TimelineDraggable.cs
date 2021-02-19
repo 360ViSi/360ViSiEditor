@@ -20,7 +20,6 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
         {
             this.value = value;
             value = Mathf.Clamp(value, 0, 1);
-            //S TODO if there is a problem on set here, take the screen width at start
             draggedPosition = value * (Screen.width - 2 * fullbarPadding) + fullbarPadding;
             rectTransform.position = new Vector2(draggedPosition, rectTransform.position.y);
         }

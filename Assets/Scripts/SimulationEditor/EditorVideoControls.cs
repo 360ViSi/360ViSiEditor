@@ -59,7 +59,6 @@ public class EditorVideoControls : MonoBehaviour
     private void SetWorldSpaceActionPosition()
     {
         if (Input.GetMouseButtonDown(0) == false) return;
-        Debug.Log("Click");
         var ray = videoCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, videoLayer, QueryTriggerInteraction.Collide))
         {
