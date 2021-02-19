@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class FileBrowser : MonoBehaviour
 {
+    //If there is more use for this functionality, make more generic method
     public void OpenFileBrowser(){
         var paths = StandaloneFileBrowser.OpenFilePanel("Open File", @"C:\Unity\", "", false);
         
