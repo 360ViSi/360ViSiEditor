@@ -19,8 +19,6 @@ public class EditorVideoControls : MonoBehaviour
 
     [Header("Time Line Rects")]
     [SerializeField] RectTransform loopPointImageRect;
-    [SerializeField] RectTransform videoStartPointImageRect;
-    [SerializeField] RectTransform videoEndPointImageRect;
     [SerializeField] RectTransform actionStartPointImageRect;
     [SerializeField] RectTransform actionEndPointImageRect;
     [SerializeField] RectTransform sliderHandleRect; //S TODO replace with timeline's position
@@ -67,7 +65,7 @@ public class EditorVideoControls : MonoBehaviour
         {
             NodeInspector.instance.CurrentActionNode.setWorldPosition(hit.point);
             NodeInspector.instance.CreateWorldMarkers();
-            //PlacingWorldSpaceMarker = false;
+            PlacingWorldSpaceMarker = false;
         }
     }
 

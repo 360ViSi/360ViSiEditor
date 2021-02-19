@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce91d6f81caecae4c8004513dd8efca4, type: 3}
+  m_Name: SO_Icons
+  m_EditorClassIdentifier: 
+  icons:
+  - iconName: walk
+    sprite: {fileID: 21300000, guid: 512a7a923239b9c4e824658343521e07, type: 3}
+  - iconName: done
+    sprite: {fileID: 21300000, guid: a49e9c96621016f4abc2e18c7e0cb452, type: 3}
+  - iconName: hand
+    sprite: {fileID: 21300000, guid: 8d5210121414f934bbf1d0a4ce894162, type: 3}
+  - iconName: speak
+    sprite: {fileID: 21300000, guid: 11234a8744e56c846bc4822ced9c5c34, type: 3}

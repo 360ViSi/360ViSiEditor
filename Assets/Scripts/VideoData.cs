@@ -210,6 +210,7 @@ public class Action
   public float endTime;
   public ActionType actionType;
   public Vector3 worldPosition;
+  public string iconName = "hand";
   public string getActionText() => actionText;
   public int getNextVideo() => nextVideo;
   public bool getAutoEnd() => autoEnd;
@@ -217,4 +218,5 @@ public class Action
   public float getEndTime() => endTime;
   public ActionType getActionType() => actionType;
   public Vector3 getWorldPosition() => worldPosition;
+  public string getIconName() => iconName;
 }

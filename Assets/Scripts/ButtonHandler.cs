@@ -70,7 +70,7 @@ public class ButtonHandler : MonoBehaviour
         for (int i = 0; i < floorActions.Length; i++)
         {
             var go = Instantiate(floorButtonPrefab);
-            var floorButton = go.AddComponent<FloorButton>();
+            var floorButton = go.GetComponent<FloorButton>();
             floorButton.SetAction(floorActions[i], simulationManager);
             floorButtons.Add(floorButton);
         }
@@ -78,7 +78,7 @@ public class ButtonHandler : MonoBehaviour
         for (int i = 0; i < worldActions.Length; i++)
         {
             var go = Instantiate(worldButtonPrefab);
-            var worldButton = go.AddComponent<WorldButton>();
+            var worldButton = go.GetComponent<WorldButton>();
             worldButton.SetAction(worldActions[i], simulationManager);
             worldButtons.Add(worldButton);
         }

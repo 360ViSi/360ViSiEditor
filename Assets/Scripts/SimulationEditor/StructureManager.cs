@@ -185,7 +185,8 @@ public class StructureManager : MonoBehaviour
                                      item.startTime,
                                      item.endTime,
                                      item.actionType,
-                                     item.worldPosition);
+                                     item.worldPosition,
+                                     item.iconName);
     }
 
     public void ClearStructure()

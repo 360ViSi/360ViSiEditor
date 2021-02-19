@@ -12,7 +12,7 @@ public class EditorVideoPlayer : MonoBehaviour
     VideoPlayer videoPlayer;
     [SerializeField] NodeInspector nodeInspector;
     [SerializeField] TimelineDraggable timeSlider;
-    [SerializeField] SimTimeline simTimeline;
+    [SerializeField] SimulationTimeline simulationTimeline;
     [SerializeField] TMPro.TMP_Text currentTime;
     [SerializeField] Material renderMaterial;
     [SerializeField] EditorVideoControls editorVideoControls;
@@ -145,7 +145,7 @@ public class EditorVideoPlayer : MonoBehaviour
     {
         nodeInspector.CurrentVideoNode.setStartTime(timeSlider.Value);
         currentVideoStartTime = timeSlider.Value;
-        simTimeline.StartTime = timeSlider.Value;
+        simulationTimeline.StartTime = timeSlider.Value;
         nodeInspector.CreateFields(nodeInspector.CurrentVideoNode, true);
     }
 
@@ -154,14 +154,14 @@ public class EditorVideoPlayer : MonoBehaviour
         var startTime = nodeInspector.CurrentVideoNode.getStartTime();
         timeSlider.Value = startTime;
         currentVideoStartTime = startTime;
-        simTimeline.StartTime = startTime;
+        simulationTimeline.StartTime = startTime;
         editorVideoControls.SetVideoStartPoint();
     }
     public void SetEndTimeToVideo()
     {
         nodeInspector.CurrentVideoNode.setEndTime(timeSlider.Value);
         currentVideoEndTime = timeSlider.Value;
-        simTimeline.EndTime = timeSlider.Value;
+        simulationTimeline.EndTime = timeSlider.Value;
         nodeInspector.CreateFields(nodeInspector.CurrentVideoNode, true);
     }
     void GetEndTimeFromVideo()
@@ -169,7 +169,7 @@ public class EditorVideoPlayer : MonoBehaviour
         var endTime = nodeInspector.CurrentVideoNode.getEndTime();
         timeSlider.Value = endTime;
         currentVideoEndTime = endTime;
-        simTimeline.EndTime = endTime;
+        simulationTimeline.EndTime = endTime;
         editorVideoControls.SetVideoEndPoint();
     }
 

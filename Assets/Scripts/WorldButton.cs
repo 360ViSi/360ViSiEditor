@@ -8,21 +8,20 @@ public class WorldButton : MonoBehaviour
 {
     int nextVideoID;
     SimulationManager simulationManager;
-    Image image;
+    [SerializeField] SO_Icons iconDb;
+    [SerializeField] Image image;
     float startTime;
     float endTime;
     bool mouseOver;
-    GameObject tooltipPanel;
-    TMP_Text tmpText;
+    [SerializeField] GameObject tooltipPanel;
+    [SerializeField] TMP_Text tmpText;
 
     public bool MouseOver { get => mouseOver; set => mouseOver = value; }
 
     private void Start()
     {
         GetComponent<Canvas>().worldCamera = Camera.main;
-        image = GetComponentInChildren<Image>();
-        var childImage = transform.GetChild(0).gameObject.AddComponent<WorldButtonImage>();
-        childImage.Button = this;
+        image.gameObject.GetComponent<WorldButtonImage>().Button = this; 
     }
 
     public void SetAction(Action action, SimulationManager simulationManager)
@@ -32,10 +31,8 @@ public class WorldButton : MonoBehaviour
         this.endTime = action.getEndTime();
         this.simulationManager = simulationManager;
 
-        tooltipPanel = transform.GetChild(1).gameObject;
-        tmpText = GetComponentInChildren<TMP_Text>();
         tmpText.text = action.getActionText();
-        
+        image.sprite = iconDb.GetIconSprite(action.getIconName());
         transform.position = action.getWorldPosition();
         transform.LookAt(simulationManager.transform);
         //world canvas size quirk - might remove flipping later

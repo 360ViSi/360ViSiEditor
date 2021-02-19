@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimTimeline : MonoBehaviour
+public class SimulationTimeline : MonoBehaviour
 {
     [SerializeField] RectTransform fullbar;
     [SerializeField] RectTransform activeBar;
@@ -30,7 +30,6 @@ public class SimTimeline : MonoBehaviour
 
     private void SetActiveBarVisual()
     {
-        Debug.Log("Setting visual");
         var width = fullbar.rect.width;
         var leftPixels = width * startTime;
         var rightPixels = width * (1 - endTime);

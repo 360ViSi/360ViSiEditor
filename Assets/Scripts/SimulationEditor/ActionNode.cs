@@ -26,6 +26,7 @@ public class ActionNode : MonoBehaviour
   private float endTime = 1;
   private ActionType actionType = ActionType.ScreenButton;
   private Vector3 worldPosition = Vector3.zero;
+  private string iconName = "walk";
   [SerializeField] GameObject removeButton = null;
 
   void Awake()
@@ -179,6 +180,8 @@ public class ActionNode : MonoBehaviour
   public void setActionType(ActionType value) => actionType = value;
   public Vector3 getWorldPosition() => worldPosition; 
   public void setWorldPosition(Vector3 value) => worldPosition = value;
+  public string getIconName() => iconName;
+  public void setIconName(string value) => iconName = value;
 
   public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 

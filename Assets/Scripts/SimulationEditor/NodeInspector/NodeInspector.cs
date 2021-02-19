@@ -17,10 +17,12 @@ public class NodeInspector : MonoBehaviour
     public static NodeInspector instance;
     VideoNode currentVideoNode = null;
     ActionNode currentActionNode = null;
+    [SerializeField] SO_Icons icons;
     [SerializeField] Transform videoCamTransform = null;
     [SerializeField] EditorVideoPlayer editorVideoPlayer = null;
     [SerializeField] EditorVideoControls editorVideoControls = null;
     [SerializeField] WorldInspector worldInspector = null;
+    [SerializeField] GameObject iconSelectionPanel = null;
     [Header("UI Elements")]
     [SerializeField] GameObject textElementPrefab = null;
     [SerializeField] GameObject timeElementPrefab = null;
@@ -141,6 +143,10 @@ public class NodeInspector : MonoBehaviour
         {
             CreateElement("Set Marker", buttonElementPrefab, StartWorldMarkerPositioning);
         }
+        if (currentActionNode.getActionType() == ActionType.WorldButton)
+        {
+            CreateElement("Change Icon", buttonElementPrefab, OpenIconSelection);
+        }
 
         if (!currentActionNode.getAutoEnd())
         {
@@ -164,7 +170,8 @@ public class NodeInspector : MonoBehaviour
     ///</summary>
     public void CreateWorldMarkers()
     {
-        if (currentActionNode.getWorldPosition() == Vector3.zero){
+        if (currentActionNode.getWorldPosition() == Vector3.zero)
+        {
             worldInspector.gameObject.SetActive(false);
             return;
         }
@@ -181,8 +188,10 @@ public class NodeInspector : MonoBehaviour
         switch (type)
         {
             case ActionType.WorldButton:
-            isCanvas =true;
+                isCanvas = true;
                 go = Instantiate(worldButtonPrefab);
+                var editorWorldButton = go.GetComponent<EditorWorldButton>();
+                editorWorldButton.Initialize(currentActionNode, icons.GetIconSprite(CurrentActionNode.getIconName()));
                 break;
             case ActionType.FloorButton:
                 go = Instantiate(floorButtonPrefab);
@@ -208,8 +217,9 @@ public class NodeInspector : MonoBehaviour
         }
 
         currentWorldMarker = go;
-        worldInspector.SetTarget(go, isCanvas);
-        worldInspector.gameObject.SetActive(true);
+        //S NOTE activate worldinspector here if it is needed
+        //worldInspector.SetTarget(go, isCanvas);
+        //worldInspector.gameObject.SetActive(true);
     }
 
 
@@ -220,7 +230,11 @@ public class NodeInspector : MonoBehaviour
             editorVideoPlayer.ChangeVideo(value);
             currentVideoNode.setVideoFileName(value);
         }
-        if (key == ElementKey.ActionName) currentActionNode.setActionText(value);
+        if (key == ElementKey.ActionName)
+        {
+            currentActionNode.setActionText(value);
+            CreateWorldMarkers();
+        }
     }
 
     public void UpdateValue(ElementKey key, bool value)
@@ -259,6 +273,15 @@ public class NodeInspector : MonoBehaviour
     {
         editorVideoControls.PlacingWorldSpaceMarker = true;
         editorVideoPlayer.VideoPlayer.Pause();
+    }
+
+    public void OpenIconSelection() => iconSelectionPanel.SetActive(true);
+
+    public void SetIcon(string iconName)
+    {
+        CurrentActionNode.setIconName(iconName);
+        Debug.Log(CurrentActionNode.getIconName());
+        CreateWorldMarkers();
     }
 
     public float GetVideoLength() => (float)editorVideoPlayer.VideoPlayer.length;
@@ -331,6 +354,7 @@ public class NodeInspector : MonoBehaviour
             currentActionNode = null;
         }
     }
+
     #endregion
 }
 
