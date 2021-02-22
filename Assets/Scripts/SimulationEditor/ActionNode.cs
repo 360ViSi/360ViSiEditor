@@ -27,6 +27,7 @@ public class ActionNode : MonoBehaviour
   private ActionType actionType = ActionType.ScreenButton;
   private Vector3 worldPosition = Vector3.zero;
   private string iconName = "walk";
+  private Vector3[] areaMarkerVertices = null;
   [SerializeField] GameObject removeButton = null;
 
   void Awake()
@@ -182,6 +183,8 @@ public class ActionNode : MonoBehaviour
   public void setWorldPosition(Vector3 value) => worldPosition = value;
   public string getIconName() => iconName;
   public void setIconName(string value) => iconName = value;
+  public Vector3[] getAreaMarkerVertices() => areaMarkerVertices;
+  public void setAreaMarkerVertices(Vector3[] value) => areaMarkerVertices = value;
 
   public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 

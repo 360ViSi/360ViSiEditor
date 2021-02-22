@@ -124,7 +124,7 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
       try
       {
-        NodePort dropPort = dropNode.GetComponent<NodePort>();
+        NodePort dropPort = dropNode.GetComponentInParent<VideoNode>().getNodePort();
         Debug.Log("DropPort: "+dropPort);
         if (dropPort.isInPort)
         {
@@ -138,11 +138,8 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
           connectionManager.deleteConnection(this,null);
         }
       }
-
-      // did not drop on NodePort
       catch(System.NullReferenceException e)
       {
-          Debug.Log(e + " - DragEnd: null");
           connectionManager.deleteConnection(this,null);
       }
 

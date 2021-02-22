@@ -35,11 +35,13 @@ public class VideoNode : MonoBehaviour
 
     public void CreateNewActionNode()
     {
-        CreateNewActionNode("action", false, -2, 0, 1, ActionType.ScreenButton, Vector3.zero, "hand");
+        //This setups the defaults for a new action node, called from the button of a videoNode
+        CreateNewActionNode("action", false, -2, 0, 1, ActionType.ScreenButton, Vector3.zero, "hand", null);
     }
 
     public void CreateNewActionNode(string actionText, bool isAutoEnd, int nextVideoId, float startTime,
-                                    float endTime, ActionType actionType, Vector3 worldPosition, string iconName)
+                                    float endTime, ActionType actionType, Vector3 worldPosition, string iconName,
+                                    Vector3[] areaMarkerVertices)
     {
         //get prefab from structureManager and initilize that
         //add action node to the list and position it in UI
@@ -60,6 +62,7 @@ public class VideoNode : MonoBehaviour
         actionNode.setActionType(actionType);
         actionNode.setWorldPosition(worldPosition);
         actionNode.setIconName(iconName);
+        actionNode.setAreaMarkerVertices(areaMarkerVertices);
 
         if (isAutoEnd)
         {

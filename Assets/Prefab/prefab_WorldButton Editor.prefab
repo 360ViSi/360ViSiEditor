@@ -21,10 +21,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2397066425085507704, guid: 9bd981b9d4382aa4ba2bfac4928877a9,
+        type: 3}
+      propertyPath: m_Name
+      value: prefab_ActionText Panel
+      objectReference: {fileID: 0}
     - target: {fileID: 7096832405384579042, guid: 9bd981b9d4382aa4ba2bfac4928877a9,
         type: 3}
       propertyPath: m_Name
-      value: prefab_WorldButton EditorVariant
+      value: prefab_WorldButton Editor
       objectReference: {fileID: 0}
     - target: {fileID: 7096832405384579045, guid: 9bd981b9d4382aa4ba2bfac4928877a9,
         type: 3}

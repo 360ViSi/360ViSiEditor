@@ -35,8 +35,6 @@ public class WorldButton : MonoBehaviour
         image.sprite = iconDb.GetIconSprite(action.getIconName());
         transform.position = action.getWorldPosition();
         transform.LookAt(simulationManager.transform);
-        //world canvas size quirk - might remove flipping later
-        //transform.localScale = new Vector3(-.01f, .01f, 1);
     }
     private void Update()
     {

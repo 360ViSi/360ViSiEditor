@@ -1,18 +1,19 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using UnityEngine;
 
 public class AreaButtonDragVertex : MonoBehaviour
 {
-    AreaButton areaButton;
-    [SerializeField] Camera videoCamera;
+    EditorAreaButton areaButton;
+    Camera videoCamera;
     [SerializeField] LayerMask videoLayer;
     // Start is called before the first frame update
-    void Start()
+
+    public void Initialize(EditorAreaButton areaButton, Camera cam)
     {
-        //S TODO fix this
-        videoCamera = GameObject.Find("VideoCamera").GetComponent<Camera>();
-        areaButton = transform.parent.GetComponent<AreaButton>();
+        this.areaButton = areaButton;
+        this.videoCamera = cam;
     }
 
     private void OnMouseDrag()

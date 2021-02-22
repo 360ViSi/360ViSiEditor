@@ -23,6 +23,9 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] EditorVideoControls editorVideoControls = null;
     [SerializeField] WorldInspector worldInspector = null;
     [SerializeField] GameObject iconSelectionPanel = null;
+
+
+
     [Header("UI Elements")]
     [SerializeField] GameObject textElementPrefab = null;
     [SerializeField] GameObject timeElementPrefab = null;
@@ -191,7 +194,7 @@ public class NodeInspector : MonoBehaviour
             case ActionType.WorldButton:
                 isCanvas = true;
                 go = Instantiate(worldButtonPrefab);
-                if(TryGetComponent(out EditorWorldButton editorWorldButton))
+                if (TryGetComponent(out EditorWorldButton editorWorldButton))
                     editorWorldButton.Initialize(currentActionNode, icons.GetIconSprite(CurrentActionNode.getIconName()));
                 break;
             case ActionType.FloorButton:
@@ -199,6 +202,8 @@ public class NodeInspector : MonoBehaviour
                 break;
             case ActionType.AreaButton:
                 go = Instantiate(areaButtonPrefab);
+                var vertices = currentActionNode.getAreaMarkerVertices();
+                go.GetComponent<EditorAreaButton>().Initialize(this, videoCamTransform.GetComponent<Camera>(), vertices);
                 break;
             default:
                 Destroy(go);
@@ -275,6 +280,11 @@ public class NodeInspector : MonoBehaviour
     {
         editorVideoControls.PlacingWorldSpaceMarker = true;
         editorVideoPlayer.VideoPlayer.Pause();
+    }
+    public void StopAreaMarkerPositioning(Vector3[] vertices)
+    {
+        editorVideoControls.PlacingWorldSpaceMarker = false;
+        currentActionNode.setAreaMarkerVertices(vertices);
     }
 
     public void OpenIconSelection() => iconSelectionPanel.SetActive(true);

@@ -57,6 +57,7 @@ public class VideoJSONWrapper
             actionType = actionNode.getActionType();
             worldPosition = actionNode.getWorldPosition();
             iconName = actionNode.getIconName();
+            areaMarkerVertices = actionNode.getAreaMarkerVertices();
         }
 
         public string actionText = "";
@@ -67,6 +68,7 @@ public class VideoJSONWrapper
         public ActionType actionType = ActionType.ScreenButton; 
         public Vector3 worldPosition = Vector3.zero;
         public string iconName = "hand";
+        public Vector3[] areaMarkerVertices = null;
     }
     #endregion
 

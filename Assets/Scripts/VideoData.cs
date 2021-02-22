@@ -211,6 +211,7 @@ public class Action
   public ActionType actionType;
   public Vector3 worldPosition;
   public string iconName = "hand";
+  public Vector3[] areaMarkerVertices;
   public string getActionText() => actionText;
   public int getNextVideo() => nextVideo;
   public bool getAutoEnd() => autoEnd;
@@ -219,4 +220,5 @@ public class Action
   public ActionType getActionType() => actionType;
   public Vector3 getWorldPosition() => worldPosition;
   public string getIconName() => iconName;
+  public Vector3[] getAreaMarkerVertices() => areaMarkerVertices;
 }
