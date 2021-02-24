@@ -159,7 +159,6 @@ public class VideoNode : MonoBehaviour
         {
             item.GetComponent<ActionNode>().getNodePort().disconnect();
             Destroy(item);
-            //S TODO: REMEMBER TO REFRESH ACTIONNODE INDEXING?
         }
 
         //delete this node only when it's not connected to anything

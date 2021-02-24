@@ -25,6 +25,8 @@ public class CanvasLine : MonoBehaviour
         if (startPoint) startPosition = startPoint.position;
         if (endPoint) endPosition = endPoint.position;
 
+        //S NOTE Expects canvas to be 1080p
+        endPosition.x = endPosition.x / Screen.width * 1920;
         if (startPosition == endPosition) enabled = false;
 
         CalculateLine();

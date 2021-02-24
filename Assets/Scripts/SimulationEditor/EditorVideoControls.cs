@@ -47,7 +47,7 @@ public class EditorVideoControls : MonoBehaviour
         if (placingWorldSpaceMarker)
             SetWorldSpaceActionPosition();
 
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
             PlacingWorldSpaceMarker = false;
 
         //S TODO set a real input for this
@@ -67,7 +67,8 @@ public class EditorVideoControls : MonoBehaviour
 
             //if it's AreaButton, explicit confirmation is required due to setting of the vertices
             //S LATER - confusing, setter is not called but want to stay in the UI-less view
-            if(NodeInspector.instance.CurrentActionNode.getActionType() == ActionType.AreaButton){
+            if (NodeInspector.instance.CurrentActionNode.getActionType() == ActionType.AreaButton)
+            {
                 placingWorldSpaceMarker = false;
                 return;
             }
@@ -103,20 +104,18 @@ public class EditorVideoControls : MonoBehaviour
         if (setToVideo)
             editorVideoPlayer.SetLoopTimeToVideo();
     }
-    public void SetVideoStartPoint(bool setToVideo = false)
+    public void SetVideoStartPoint(float value)
     {
-        if (setToVideo)
-            editorVideoPlayer.SetStartTimeToVideo();
+        editorVideoPlayer.SetStartTimeToVideo(value);
     }
-    public void SetVideoEndPoint(bool setToVideo = false)
+    public void SetVideoEndPoint(float value)
     {
-        if (setToVideo)
-            editorVideoPlayer.SetEndTimeToVideo();
+        editorVideoPlayer.SetEndTimeToVideo(value);
     }
 
     public void SetActionStartPoint(bool setToVideo = false)
     {
-        
+
         actionStartPointImageRect.anchoredPosition = sliderHandleRect.anchoredPosition;
         if (setToVideo)
             editorVideoPlayer.SetStartTimeToAction();
@@ -130,9 +129,6 @@ public class EditorVideoControls : MonoBehaviour
     #endregion
     public void SetCurrentControlsToVideo(bool value)
     {
-        videoEndButton.SetActive(value);
-        videoStartButton.SetActive(value);
-
         var loop = NodeInspector.instance.CurrentVideoNode.getLoop();
         loopButton.SetActive(loop);
         loopPointImageRect.gameObject.SetActive(loop);

@@ -68,7 +68,11 @@ public class EditorVideoPlayer : MonoBehaviour
         LoopVideo(videoPlayer);
     }
 
-    public void ChangeVideo(string filename)
+    ///<summary>
+    /// Tries to change the video of the videoplayer,
+    /// returns true if succesful, false if video not found
+    ///</summary>
+    public bool TryChangeVideo(string filename)
     {
         var wasPaused = videoPlayer.isPaused;
 
@@ -77,7 +81,7 @@ public class EditorVideoPlayer : MonoBehaviour
         if (!File.Exists(fullpath))
         {
             Debug.LogError($"No file with path {fullpath} found");
-            return;
+            return false;
         }
         videoPlayer.url = fullpath;
 
@@ -92,6 +96,7 @@ public class EditorVideoPlayer : MonoBehaviour
 
         videoPlayer.Prepare();
         RefreshMarkers();
+        return true;
     }
 
     IEnumerator SetVideoStartTimeOnVideoChange()
@@ -141,11 +146,11 @@ public class EditorVideoPlayer : MonoBehaviour
         editorVideoControls.SetLoopPoint();
     }
 
-    public void SetStartTimeToVideo()
+    public void SetStartTimeToVideo(float value)
     {
-        nodeInspector.CurrentVideoNode.setStartTime(timeSlider.Value);
-        currentVideoStartTime = timeSlider.Value;
-        simulationTimeline.StartTime = timeSlider.Value;
+        nodeInspector.CurrentVideoNode.setStartTime(value);
+        currentVideoStartTime = value;
+        simulationTimeline.StartTime = value;
         nodeInspector.CreateFields(nodeInspector.CurrentVideoNode, true);
     }
 
@@ -155,13 +160,12 @@ public class EditorVideoPlayer : MonoBehaviour
         timeSlider.Value = startTime;
         currentVideoStartTime = startTime;
         simulationTimeline.StartTime = startTime;
-        editorVideoControls.SetVideoStartPoint();
     }
-    public void SetEndTimeToVideo()
+    public void SetEndTimeToVideo(float value)
     {
-        nodeInspector.CurrentVideoNode.setEndTime(timeSlider.Value);
-        currentVideoEndTime = timeSlider.Value;
-        simulationTimeline.EndTime = timeSlider.Value;
+        nodeInspector.CurrentVideoNode.setEndTime(value);
+        currentVideoEndTime = value;
+        simulationTimeline.EndTime = value;
         nodeInspector.CreateFields(nodeInspector.CurrentVideoNode, true);
     }
     void GetEndTimeFromVideo()
@@ -170,7 +174,6 @@ public class EditorVideoPlayer : MonoBehaviour
         timeSlider.Value = endTime;
         currentVideoEndTime = endTime;
         simulationTimeline.EndTime = endTime;
-        editorVideoControls.SetVideoEndPoint();
     }
 
     public void SetStartTimeToAction()
@@ -255,10 +258,10 @@ public class EditorVideoPlayer : MonoBehaviour
         videoPlayer.Pause();
         realLoop = false;
     }
-    private void EndHold()
+    private void EndHold(float value)
     {
         isSliderHeld = false;
-        videoPlayer.frame = (long)(videoPlayer.frameCount * timeSlider.Value);
+        videoPlayer.frame = (long)(videoPlayer.frameCount * value);
 
         if (playAfterHold)
             videoPlayer.Play();

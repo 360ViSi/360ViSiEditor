@@ -36,7 +36,6 @@ public class StructureManager : MonoBehaviour
             Debug.Log("There are no ConnectionManager as a child of " + name);
         }
 
-        //S TODO remove when startup loadin is not great anymore
         JsonToSimulation();
     }
     public void createNewVideoNode()

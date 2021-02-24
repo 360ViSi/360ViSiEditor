@@ -56,41 +56,43 @@ public class NodeInspector : MonoBehaviour
         if (instance == null) instance = this;
         else if (instance != this) Destroy(gameObject);
 
-        //Clears all children - makes editor work much easier
+        DestroyAllInspectorElements();
+    }
+
+    void DestroyAllInspectorElements()
+    {
         for (int i = 0; i < transform.childCount; i++)
             Destroy(transform.GetChild(i).gameObject);
     }
+
     ///<summary>
     /// Creates and populates all the fields for the editor in-app-inspector
     ///</summary>
     public void CreateFields(VideoNode node, bool isUpdate = false)
     {
+
         NullCurrentNodes();
         currentVideoNode = node;
         currentVideoNode.GetComponent<Outline>().enabled = true;
 
-        //Clean old children first
-        for (int i = transform.childCount - 1; i > -1; i--)
-            Destroy(transform.GetChild(i).gameObject);
+        DestroyAllInspectorElements();
 
         //Put bg to video
-        if (isUpdate == false)
-            try
-            {
-                editorVideoPlayer.ChangeVideo(node.getVideoFileName());
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
-
+        if (!isUpdate)
+        {
+            var canUseVideo = editorVideoPlayer.TryChangeVideo(node.getVideoFileName());
+            if (canUseVideo)
+                editorVideoPlayer.VideoPlayer.prepareCompleted += CreateVideoFields;
+        }
 
         //Create new ones
         CreateElement("Video filename",
                       ElementKey.VideoFileName,
                       filenameElementPrefab,
                       currentVideoNode.getVideoFileName());
-        editorVideoPlayer.VideoPlayer.prepareCompleted += CreateVideoFields;
+
+        if (isUpdate)
+            CreateVideoFields(editorVideoPlayer.VideoPlayer);
     }
 
     ///<summary>
@@ -101,16 +103,14 @@ public class NodeInspector : MonoBehaviour
         var oldVideoNode = currentVideoNode;
 
         NullCurrentNodes();
-        //Clean old children first
-        for (int i = transform.childCount - 1; i > -1; i--)
-            Destroy(transform.GetChild(i).gameObject);
+        DestroyAllInspectorElements();
 
         currentActionNode = node;
         currentActionNode.GetComponent<Outline>().enabled = true;
         currentVideoNode = node.GetComponentInParent<VideoNode>();
         if (isUpdate == false && (oldVideoNode == null || currentVideoNode != oldVideoNode))
         {
-            editorVideoPlayer.ChangeVideo(currentVideoNode.getVideoFileName());
+            editorVideoPlayer.TryChangeVideo(currentVideoNode.getVideoFileName());
             currentVideoNode = node.GetComponentInParent<VideoNode>();
             editorVideoPlayer.VideoPlayer.prepareCompleted += CreateActionFields;
         }
@@ -156,7 +156,7 @@ public class NodeInspector : MonoBehaviour
 
         if (!currentActionNode.getAutoEnd())
             CreateElement("Action type", ElementKey.ActionType, dropdownElementPrefab, (int)currentActionNode.getActionType());
-        
+
         if (currentActionNode.getActionType() != ActionType.ScreenButton)
             CreateElement("Set Marker", buttonElementPrefab, StartWorldMarkerPositioning);
         if (currentActionNode.getActionType() == ActionType.WorldButton)
@@ -244,7 +244,7 @@ public class NodeInspector : MonoBehaviour
     {
         if (key == ElementKey.VideoFileName)
         {
-            editorVideoPlayer.ChangeVideo(value);
+            editorVideoPlayer.TryChangeVideo(value);
             currentVideoNode.setVideoFileName(value);
         }
         if (key == ElementKey.ActionName)

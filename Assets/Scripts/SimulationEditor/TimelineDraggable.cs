@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
+[System.Serializable]
+public class UnityEventFloat : UnityEvent<float> { }
 
 public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler
 {
@@ -13,7 +15,7 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
     float fullbarPadding = 64;
     float draggedPosition = 0;
     public UnityEvent OnHold;
-    public UnityEvent OnRelease;
+    public UnityEventFloat OnRelease;
     public float Value
     {
         get => value; set
@@ -40,7 +42,7 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
     public void OnEndDrag(PointerEventData eventData)
     {
         value = (draggedPosition - fullbarPadding) / (Screen.width - fullbarPadding * 2);
-        OnRelease?.Invoke();
+        OnRelease?.Invoke(value);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -48,3 +50,4 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
         OnHold?.Invoke();
     }
 }
+

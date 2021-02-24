@@ -6,24 +6,30 @@ public class SimulationTimeline : MonoBehaviour
 {
     [SerializeField] RectTransform fullbar;
     [SerializeField] RectTransform activeBar;
-    [Range(0,1)]
+    [Range(0, 1)]
     [SerializeField] float startTime = 0;
-    [Range(0,1)]
+    [Range(0, 1)]
     [SerializeField] float endTime = 1;
+    [SerializeField] TimelineDraggable startDraggable;
+    [SerializeField] TimelineDraggable endDraggable;
 
     public float StartTime
     {
-        get => startTime; set
+        get => startTime;
+        set
         {
             startTime = value;
+            startDraggable.Value = value;
             SetActiveBarVisual();
         }
     }
     public float EndTime
     {
-        get => endTime; set
+        get => endTime;
+        set
         {
             endTime = value;
+            endDraggable.Value = value;
             SetActiveBarVisual();
         }
     }
