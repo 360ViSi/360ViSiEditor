@@ -120,20 +120,22 @@ public class VideoTextureChanger : MonoBehaviour
 
     private string getVideoFolder(VideoPathPointer_SO pointer)
     {
+        return null; //CANNOT USE ASSETDATABASE IN A BUILD
+        
         // Get absolute path to Application
         // and relative path to videoPointer.
         // Both will have same "Assets" folder which need to be removed.
         // Also videoPointer filename need to be removed to get pure folder path.
         // Path separator is used to make the code operationsystem independent
-        string pathToVideo = Application.dataPath;
-        char pathSeparator = Path.DirectorySeparatorChar;
-        string[] relativePathFolders = AssetDatabase.GetAssetPath(videoPointer).Split(pathSeparator);
-        //drop first and last part (i=1 and Length-1)
-        for (int i = 1; i < relativePathFolders.Length - 1; i++)
-        {
-            pathToVideo += pathSeparator + relativePathFolders[i];
-        }
-        pathToVideo += pathSeparator;
-        return pathToVideo;
+        // string pathToVideo = Application.dataPath;
+        // char pathSeparator = Path.DirectorySeparatorChar;
+        // string[] relativePathFolders = AssetDatabase.GetAssetPath(videoPointer).Split(pathSeparator);
+        // //drop first and last part (i=1 and Length-1)
+        // for (int i = 1; i < relativePathFolders.Length - 1; i++)
+        // {
+        //     pathToVideo += pathSeparator + relativePathFolders[i];
+        // }
+        // pathToVideo += pathSeparator;
+        // return pathToVideo;
     }
 }

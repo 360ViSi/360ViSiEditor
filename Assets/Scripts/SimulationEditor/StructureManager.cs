@@ -190,10 +190,11 @@ public class StructureManager : MonoBehaviour
                                      item.areaMarkerVertices);
     }
 
+    [ContextMenu("Clear")]
     public void ClearStructure()
     {
-        //S TODO
-        Debug.Log("Clearing is not yet implemented! If you had no nodes, you're fine");
+        for (int i = videoGameObjects.Count - 1; i > -1; i--)
+            videoGameObjects[i].GetComponent<VideoNode>().deleteNode();
     }
 
     public void removeVideoNode(GameObject nodeObject)

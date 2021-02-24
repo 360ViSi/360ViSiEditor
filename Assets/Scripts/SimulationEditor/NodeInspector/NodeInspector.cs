@@ -55,6 +55,10 @@ public class NodeInspector : MonoBehaviour
     {
         if (instance == null) instance = this;
         else if (instance != this) Destroy(gameObject);
+
+        //Clears all children - makes editor work much easier
+        for (int i = 0; i < transform.childCount; i++)
+            Destroy(transform.GetChild(i).gameObject);
     }
     ///<summary>
     /// Creates and populates all the fields for the editor in-app-inspector
@@ -65,14 +69,21 @@ public class NodeInspector : MonoBehaviour
         currentVideoNode = node;
         currentVideoNode.GetComponent<Outline>().enabled = true;
 
-        //Put bg to video
-        if (isUpdate == false)
-            //this is too slow here - needs a frame to function
-            editorVideoPlayer.ChangeVideo(node.getVideoFileName());
-
         //Clean old children first
         for (int i = transform.childCount - 1; i > -1; i--)
             Destroy(transform.GetChild(i).gameObject);
+
+        //Put bg to video
+        if (isUpdate == false)
+            try
+            {
+                editorVideoPlayer.ChangeVideo(node.getVideoFileName());
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+
 
         //Create new ones
         CreateElement("Video filename",
@@ -142,15 +153,14 @@ public class NodeInspector : MonoBehaviour
         editorVideoPlayer.VideoPlayer.prepareCompleted -= CreateActionFields;
         CreateElement("Action name", ElementKey.ActionName, textElementPrefab, currentActionNode.getActionText());
         CreateElement("Video end action", ElementKey.ActionAutoEnd, toggleElementPrefab, currentActionNode.getAutoEnd());
-        CreateElement("Action type", ElementKey.ActionType, dropdownElementPrefab, (int)currentActionNode.getActionType());
+
+        if (!currentActionNode.getAutoEnd())
+            CreateElement("Action type", ElementKey.ActionType, dropdownElementPrefab, (int)currentActionNode.getActionType());
+        
         if (currentActionNode.getActionType() != ActionType.ScreenButton)
-        {
             CreateElement("Set Marker", buttonElementPrefab, StartWorldMarkerPositioning);
-        }
         if (currentActionNode.getActionType() == ActionType.WorldButton)
-        {
             CreateElement("Change Icon", buttonElementPrefab, OpenIconSelection);
-        }
 
         if (!currentActionNode.getAutoEnd())
         {
