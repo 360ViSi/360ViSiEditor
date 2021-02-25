@@ -321,6 +321,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: prefab_ActionText Panel
       objectReference: {fileID: 0}
+    - target: {fileID: 8663225110257872847, guid: 82a2b80fbb1905d4f97fffe51c543167,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82a2b80fbb1905d4f97fffe51c543167, type: 3}
 --- !u!1 &2397066425085507704 stripped

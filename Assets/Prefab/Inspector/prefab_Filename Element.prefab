@@ -255,7 +255,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1065093583}
-        m_MethodName: OpenFileBrowser
+        m_MethodName: GetVideoFilepath
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

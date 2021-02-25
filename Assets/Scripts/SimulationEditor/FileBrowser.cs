@@ -6,16 +6,15 @@ using UnityEngine;
 
 public class FileBrowser : MonoBehaviour
 {
-    //If there is more use for this functionality, make more generic method
-    public void OpenFileBrowser(){
-        var paths = StandaloneFileBrowser.OpenFilePanel("Open File", @"C:\Unity\", "", false);
-        
-        var pathArr = paths[0].Split(Path.DirectorySeparatorChar);
-        if(pathArr.Length == 1)
-            pathArr = paths[0].Split(Path.AltDirectorySeparatorChar);
+    public void GetVideoFilepath()
+    {
+        var path = StandaloneFileBrowser.OpenFilePanel("Open File", ProjectManager.instance.FolderPath, "", false)[0];
+
+        var pathArr = path.Split(Path.DirectorySeparatorChar);
+        if (pathArr.Length == 1)
+            pathArr = path.Split(Path.AltDirectorySeparatorChar);
 
         var filename = pathArr[pathArr.Length - 1];
-        Debug.Log(Path.AltDirectorySeparatorChar + " - " + filename);
         GetComponentInParent<NodeInspectorTextElement>().UpdateValueFromFileBrowser(filename);
     }
 }

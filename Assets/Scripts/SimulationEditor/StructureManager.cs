@@ -5,7 +5,6 @@ using UnityEngine;
 using System.IO;
 public class StructureManager : MonoBehaviour
 {
-
     //1. StructureManager use VideoNode gameobjects and ConnectionManager
     //to keep record of the simulation structure.
     //(VideoNodes keep track of their own action nodes)
@@ -21,7 +20,6 @@ public class StructureManager : MonoBehaviour
     private GameObject startNode;
     [SerializeField]
     private GameObject endNode;
-
     private List<GameObject> videoGameObjects = new List<GameObject>();
     private int generatedVideoID = 0;
     private ConnectionManager connectionManager;
@@ -35,8 +33,6 @@ public class StructureManager : MonoBehaviour
         {
             Debug.Log("There are no ConnectionManager as a child of " + name);
         }
-
-        JsonToSimulation();
     }
     public void createNewVideoNode()
     {
@@ -105,36 +101,35 @@ public class StructureManager : MonoBehaviour
     }
     public VideoNode GetVideoNodeWithId(int videoID)
     {
-        if(videoID == -1)
+        if (videoID == -1)
             return endNode.GetComponent<VideoNode>();
-            
+
         return getVideoNodeList().Where(e => e.getVideoID() == videoID).First();
     }
 
     public void SimulationToJson()
     {
-        //S TODO: replace all lines with @"C:\Unity\ with an actual folder that the user can set,
-        //this is just used so it's faster to develop
         VideoJSONWrapper wrapper = new VideoJSONWrapper(
             getVideoNodeList(),
             startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID()
-        ); //S TODO get the id of the video that start goes to
+        );
         var json = JsonUtility.ToJson(wrapper);
 
         Debug.Log(json.ToString());
 
-        if (File.Exists(@"C:\Unity\simu.json"))
-            File.Delete(@"C:\Unity\simu.json");
+        if (File.Exists(ProjectManager.instance.FullPath))
+            File.Delete(ProjectManager.instance.FullPath);
 
-        File.WriteAllText(@"C:\Unity\simu.json", json);
+        File.WriteAllText(ProjectManager.instance.FullPath, json);
     }
 
     public void JsonToSimulation()
     {
         //S TODO Filebrowser
-        if (File.Exists(@"C:\Unity\simu.json") == false) return;
+        Debug.Log(ProjectManager.instance.FullPath);
+        if (File.Exists(ProjectManager.instance.FullPath) == false) return;
 
-        var fileText = File.ReadAllText(@"C:\Unity\simu.json");
+        var fileText = File.ReadAllText(ProjectManager.instance.FullPath);
         var wrapper = JsonUtility.FromJson<VideoJSONWrapper>(fileText);
         Debug.Log(JsonUtility.ToJson(wrapper));
 
@@ -151,11 +146,21 @@ public class StructureManager : MonoBehaviour
         //Create connections
         foreach (var item in getVideoNodeList())
             foreach (var action in item.getActionNodeList())
+            {
                 action.CreateLoadedConnection();
+                action.setMode();
+            }
 
         connectionManager.redrawConnection(null, null);
 
         var startNodePort = startNode.GetComponent<ActionNode>().getNodePort();
+
+        if (wrapper.startId == -2)
+        {
+            Debug.LogWarning("No video connected to the start");
+            return;
+        }
+
         var firstVideoPort = GetVideoNodeWithId(wrapper.startId).getNodePort();
         connectionManager.createConnection(startNodePort, firstVideoPort);
         connectionManager.redrawConnection(startNodePort, firstVideoPort);
@@ -172,7 +177,7 @@ public class StructureManager : MonoBehaviour
         node.setVideoFileName(videoJSONObject.videoFileName);
         node.setLoop(videoJSONObject.loop);
         node.setLoopTime(videoJSONObject.loopTime);
-        node.setStartTime(videoJSONObject.startTime); 
+        node.setStartTime(videoJSONObject.startTime);
         node.setEndTime(videoJSONObject.endTime);
         newVideoObject.GetComponent<RectTransform>().anchoredPosition = videoJSONObject.position;
         videoGameObjects.Add(newVideoObject);
@@ -199,5 +204,5 @@ public class StructureManager : MonoBehaviour
     public void removeVideoNode(GameObject nodeObject)
     {
         videoGameObjects.Remove(nodeObject);
-    } 
+    }
 }
