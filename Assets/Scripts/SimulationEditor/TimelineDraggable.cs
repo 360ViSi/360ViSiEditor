@@ -3,22 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class UnityEventFloat : UnityEvent<float> { }
 
-public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler
+public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Range(0, 1)]
-    [SerializeField] float value;
+    float value;
     RectTransform rectTransform;
     float fullbarPadding = 64;
     float draggedPosition = 0;
+    [SerializeField] Color hoverColor = Color.yellow;
+    Color defaultColor;
+    Image image;
+
     public UnityEvent OnHold;
     public UnityEventFloat OnRelease;
     public float Value
     {
-        get => value; set
+        get => value; 
+        set
         {
             this.value = value;
             value = Mathf.Clamp(value, 0, 1);
@@ -29,6 +35,8 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
     void Start()
     {
+        image = GetComponent<Image>();
+        defaultColor = image.color;
         rectTransform = GetComponent<RectTransform>();
     }
 
@@ -45,9 +53,10 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
         OnRelease?.Invoke(value);
     }
 
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        OnHold?.Invoke();
-    }
+    public void OnBeginDrag(PointerEventData eventData) => OnHold?.Invoke();
+
+    public void OnPointerExit(PointerEventData eventData) => image.color = defaultColor;
+
+    public void OnPointerEnter(PointerEventData eventData) => image.color = hoverColor;
 }
 

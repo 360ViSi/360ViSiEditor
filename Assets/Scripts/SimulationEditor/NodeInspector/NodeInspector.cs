@@ -108,6 +108,8 @@ public class NodeInspector : MonoBehaviour
         currentActionNode = node;
         currentActionNode.GetComponent<Outline>().enabled = true;
         currentVideoNode = node.GetComponentInParent<VideoNode>();
+
+        //Clicking on action that isnt from the same video as the previous one (or none)
         if (isUpdate == false && (oldVideoNode == null || currentVideoNode != oldVideoNode))
         {
             editorVideoPlayer.TryChangeVideo(currentVideoNode.getVideoFileName());
@@ -143,7 +145,6 @@ public class NodeInspector : MonoBehaviour
                       timeElementPrefab,
                       currentVideoNode.getEndTime(),
                       1);
-
     }
 
 
@@ -155,20 +156,24 @@ public class NodeInspector : MonoBehaviour
         CreateElement("Video end action", ElementKey.ActionAutoEnd, toggleElementPrefab, currentActionNode.getAutoEnd());
 
         if (!currentActionNode.getAutoEnd())
+        {
             CreateElement("Action type", ElementKey.ActionType, dropdownElementPrefab, (int)currentActionNode.getActionType());
+            CreateElement("Timed action", ElementKey.ActionIsTimed, toggleElementPrefab, currentActionNode.getIsTimed());
+        }
 
         if (currentActionNode.getActionType() != ActionType.ScreenButton)
             CreateElement("Set Marker", buttonElementPrefab, StartWorldMarkerPositioning);
         if (currentActionNode.getActionType() == ActionType.WorldButton)
             CreateElement("Change Icon", buttonElementPrefab, OpenIconSelection);
 
-        if (!currentActionNode.getAutoEnd())
+        if (!currentActionNode.getAutoEnd() && currentActionNode.getIsTimed())
         {
             CreateElement("Action start time",
                           ElementKey.ActionStartTime,
                           timeElementPrefab,
                           currentActionNode.getStartTime(),
                           0);
+
             CreateElement("Action end time",
                           ElementKey.ActionEndTime,
                           timeElementPrefab,
@@ -198,11 +203,9 @@ public class NodeInspector : MonoBehaviour
         //Instantiate specific prefab
         GameObject go = null;
         var type = currentActionNode.getActionType();
-        bool isCanvas = false;
         switch (type)
         {
             case ActionType.WorldButton:
-                isCanvas = true;
                 go = Instantiate(worldButtonPrefab);
                 if (TryGetComponent(out EditorWorldButton editorWorldButton))
                     editorWorldButton.Initialize(currentActionNode, icons.GetIconSprite(CurrentActionNode.getIconName()));
@@ -261,6 +264,13 @@ public class NodeInspector : MonoBehaviour
         {
             currentActionNode.setAutoEnd(value);
             //changing autoend changes what other fields are shown so need to redraw
+            CreateFields(currentActionNode, true);
+        }
+        if (key == ElementKey.ActionIsTimed)
+        {
+            currentActionNode.setIsTimed(value);
+            currentActionNode.setStartTime(0);
+            currentActionNode.setEndTime(1);
             CreateFields(currentActionNode, true);
         }
         editorVideoPlayer.RefreshMarkers();
@@ -388,6 +398,7 @@ public enum ElementKey
     ActionEndTime,
     ActionAutoEnd,
     ActionType,
+    ActionIsTimed,
     VideoLoop,
     VideoLoopTime,
     VideoStartTime,

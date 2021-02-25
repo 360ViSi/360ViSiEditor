@@ -133,8 +133,14 @@ public class EditorVideoControls : MonoBehaviour
         loopButton.SetActive(loop);
         loopPointImageRect.gameObject.SetActive(loop);
 
-        if (NodeInspector.instance.CurrentActionNode != null && NodeInspector.instance.CurrentActionNode.getAutoEnd())
-            value = !value;
+        if (NodeInspector.instance.CurrentActionNode != null)
+        {
+            if (NodeInspector.instance.CurrentActionNode.getAutoEnd())
+                value = !value;
+
+            if (!NodeInspector.instance.CurrentActionNode.getIsTimed())
+                return;
+        }
 
         actionStartButton.SetActive(!value);
         actionEndButton.SetActive(!value);
