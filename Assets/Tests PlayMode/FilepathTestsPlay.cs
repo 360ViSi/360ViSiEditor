@@ -12,6 +12,9 @@ namespace Tests
 {
     public class FilepathTestsPlay
     {
+        ///<summary>
+        /// Tests if the default full path returns simu.json from default folder.
+        ///</summary>
         [UnityTest]
         public IEnumerator FilepathTestsPlayMode()
         {
@@ -25,9 +28,12 @@ namespace Tests
             var filename = pathArr[pathArr.Length - 1];
 
             Debug.Log(filename);
-            Assert.AreEqual(filename, "simu.json");
+            Assert.AreEqual(filename, "new project.json");
         }
 
+        ///<summary>
+        /// Tests creating a new project in editor and loading in player will PAUSE the tests 
+        ///</summary>
         [UnityTest]
         public IEnumerator NewProject()
         {

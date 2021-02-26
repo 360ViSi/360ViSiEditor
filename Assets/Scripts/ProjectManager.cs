@@ -14,13 +14,14 @@ public class ProjectManager : MonoBehaviour
         if (instance == null) instance = this;
         else if (this != instance) Destroy(gameObject);
     }
-    string fileName = "simu.json";
+    string fileName = "new project";
     string folderPath = @"C:\Unity\"; //S NOTE change this
+    string json = ".json";
 
     public string FileName { get => fileName; }
     public string FolderPath { get => folderPath; }
 
-    public string FullPath { get => folderPath + fileName; }
+    public string FullPath { get => folderPath + fileName + json; }
     public StructureManager StructureManager { get => structureManager; }
 
     public void NewProject(string path = "")
@@ -61,5 +62,10 @@ public class ProjectManager : MonoBehaviour
         fileName = pathArr[pathArr.Length - 1];
 
         structureManager.JsonToSimulation();
+    }
+
+    public void SaveProject(string path)
+    {
+        structureManager.SimulationToJson();
     }
 }
