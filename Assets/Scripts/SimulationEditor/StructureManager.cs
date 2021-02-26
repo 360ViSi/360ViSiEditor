@@ -107,7 +107,7 @@ public class StructureManager : MonoBehaviour
         return getVideoNodeList().Where(e => e.getVideoID() == videoID).First();
     }
 
-    public void SimulationToJson()
+    public void SimulationToJson(string path)
     {
         VideoJSONWrapper wrapper = new VideoJSONWrapper(
             getVideoNodeList(),
@@ -117,21 +117,21 @@ public class StructureManager : MonoBehaviour
 
         Debug.Log(json.ToString());
 
-        if (File.Exists(ProjectManager.instance.FullPath))
-            File.Delete(ProjectManager.instance.FullPath);
+        if (File.Exists(path))
+            File.Delete(path);
 
-        File.WriteAllText(ProjectManager.instance.FullPath, json);
+        File.WriteAllText(path, json);
     }
 
     public void JsonToSimulation()
     {
         //S TODO Filebrowser
-        Debug.Log(ProjectManager.instance.FullPath);
-        if (File.Exists(ProjectManager.instance.FullPath) == false) return;
-
+        if (File.Exists(ProjectManager.instance.FullPath) == false) {
+            Debug.LogError($"File not found at: {ProjectManager.instance.FullPath}" );
+            return;
+        }
         var fileText = File.ReadAllText(ProjectManager.instance.FullPath);
         var wrapper = JsonUtility.FromJson<VideoJSONWrapper>(fileText);
-        Debug.Log(JsonUtility.ToJson(wrapper));
 
         //To ease the loading process and make sure all the id's match up etc.
         //clearing the whole structure while loading new one.

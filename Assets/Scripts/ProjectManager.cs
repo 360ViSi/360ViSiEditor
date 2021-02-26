@@ -40,7 +40,9 @@ public class ProjectManager : MonoBehaviour
             folderPath += Path.DirectorySeparatorChar;
         }
 
-        fileName = pathArr[pathArr.Length - 1];
+        var fileNameSplit = pathArr[pathArr.Length - 1].Split('.');
+        //filenames with . don't work
+        fileName = fileNameSplit[0];
     }
 
     public void OpenProject(string path)
@@ -66,6 +68,9 @@ public class ProjectManager : MonoBehaviour
 
     public void SaveProject(string path)
     {
-        structureManager.SimulationToJson();
+        if (path == "")
+            path = StandaloneFileBrowser.SaveFilePanel("Save the project file", FolderPath, fileName, "json");
+
+        structureManager.SimulationToJson(path);
     }
 }
