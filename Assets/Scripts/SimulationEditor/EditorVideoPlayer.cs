@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
-using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(VideoPlayer))]
 public class EditorVideoPlayer : MonoBehaviour
@@ -21,9 +20,14 @@ public class EditorVideoPlayer : MonoBehaviour
     float currentVideoLoopTime = 0;
     float currentVideoStartTime = 0;
     float currentVideoEndTime = 1;
-    bool realLoop; //Determines if video actually looped OR was just rewound
+    double currentvideoLength;
+    ///<summary>
+    ///Determines if video actually looped OR was just rewound
+    ///</summary>
+    bool realLoop;
 
     public VideoPlayer VideoPlayer { get => videoPlayer; }
+    public double CurrentvideoLength { get => currentvideoLength; }
 
     void Start()
     {
@@ -76,7 +80,7 @@ public class EditorVideoPlayer : MonoBehaviour
     {
         var wasPaused = videoPlayer.isPaused;
 
-        var fullpath = @"C:\Unity\" + filename;
+        var fullpath = ProjectManager.instance.FolderPath + filename;
         fullpath.Replace('\\', Path.DirectorySeparatorChar);
         if (!File.Exists(fullpath))
         {
@@ -88,7 +92,6 @@ public class EditorVideoPlayer : MonoBehaviour
         videoPlayer.prepareCompleted -= PrepareVideo(videoPlayer, true);
         videoPlayer.prepareCompleted -= PrepareVideo(videoPlayer, false);
 
-
         if (wasPaused)
             videoPlayer.prepareCompleted += PrepareVideo(videoPlayer, true);
         else
@@ -99,10 +102,11 @@ public class EditorVideoPlayer : MonoBehaviour
         return true;
     }
 
-    IEnumerator SetVideoStartTimeOnVideoChange()
+    IEnumerator SetVideoStartTimeAndLengthOnVideoChange()
     {
-        yield return new WaitForFixedUpdate(); 
+        yield return new WaitForFixedUpdate();
         videoPlayer.time = nodeInspector.CurrentVideoNode.getStartTime() * videoPlayer.length;
+        currentvideoLength = videoPlayer.length;
     }
 
     /*
@@ -203,7 +207,7 @@ public class EditorVideoPlayer : MonoBehaviour
 
     private VideoPlayer.EventHandler PrepareVideo(VideoPlayer player, bool pause)
     {
-        StartCoroutine(SetVideoStartTimeOnVideoChange());
+        StartCoroutine(SetVideoStartTimeAndLengthOnVideoChange());
 
         if (pause)
             player.Pause();
@@ -271,7 +275,7 @@ public class EditorVideoPlayer : MonoBehaviour
     {
         videoPlayer.time = time;
         videoPlayer.Pause();
-        yield return new WaitForSeconds(.25f); // it takes some time for the VideoPlayer to seek
+        yield return new WaitForSeconds(.25f); //S LATER - it takes some time for the VideoPlayer to seek -> should be just visual race IIRC
         videoPlayer.Play();
     }
 }
