@@ -40,7 +40,7 @@ namespace Tests
             SceneManager.LoadScene("EditorScene", LoadSceneMode.Single);
             yield return null;
             var path = @"C:\Unity\PlayTest.json";
-            ProjectManager.instance.NewProject(path);
+            ProjectManager.instance.NewProject();
             ProjectManager.instance.SaveProject(path);
 
             Debug.Log(ProjectManager.instance.FileName);

@@ -9,6 +9,7 @@ public class ProjectManager : MonoBehaviour
 {
     public static ProjectManager instance;
     [SerializeField] StructureManager structureManager;
+    [SerializeField] YesNoDialog yesNoDialog;
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -24,26 +25,13 @@ public class ProjectManager : MonoBehaviour
     public string FullPath { get => folderPath + fileName + json; }
     public StructureManager StructureManager { get => structureManager; }
 
-    public void NewProject(string path = "")
+    public void NewProject()
     {
-        if (path == "")
-            path = StandaloneFileBrowser.SaveFilePanel("Create a new project file", FolderPath, fileName, "json");
-
-        var pathArr = path.Split(Path.DirectorySeparatorChar);
-        if (pathArr.Length == 1)
-            pathArr = path.Split(Path.AltDirectorySeparatorChar);
-
-        folderPath = "";
-        for (int i = 0; i < pathArr.Length - 1; i++)
-        {
-            folderPath += pathArr[i];
-            folderPath += Path.DirectorySeparatorChar;
-        }
-
-        var fileNameSplit = pathArr[pathArr.Length - 1].Split('.');
-        //filenames with . don't work
-        fileName = fileNameSplit[0];
+        Action<bool> clear = ClearStructure;
+        yesNoDialog.Initialize(ClearStructure, "Hello");
     }
+
+    void ClearStructure(bool value) => StructureManager.ClearStructure();
 
     public void OpenProject(string path)
     {
@@ -69,6 +57,19 @@ public class ProjectManager : MonoBehaviour
     {
         if (path == "")
             path = StandaloneFileBrowser.SaveFilePanel("Save the project file", FolderPath, fileName, "json");
+
+        var pathArr = path.Split(Path.DirectorySeparatorChar);
+        if (pathArr.Length == 1)
+            pathArr = path.Split(Path.AltDirectorySeparatorChar);
+
+        folderPath = "";
+        for (int i = 0; i < pathArr.Length - 1; i++)
+        {
+            folderPath += pathArr[i];
+            folderPath += Path.DirectorySeparatorChar;
+        }
+        var fileNameSplit = pathArr[pathArr.Length - 1].Split('.');
+        fileName = fileNameSplit[0];
 
         structureManager.SimulationToJson(path);
     }
