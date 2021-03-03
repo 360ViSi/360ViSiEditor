@@ -60,9 +60,8 @@ public class ProjectManager : MonoBehaviour
             folderPath += pathArr[i];
             folderPath += Path.DirectorySeparatorChar;
         }
-
-        fileName = pathArr[pathArr.Length - 1];
-
+        var fileNameSplit = pathArr[pathArr.Length - 1].Split('.');
+        fileName = fileNameSplit[0];
         structureManager.JsonToSimulation();
     }
 

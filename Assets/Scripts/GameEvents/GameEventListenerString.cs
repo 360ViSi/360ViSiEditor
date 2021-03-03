@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-[CreateAssetMenu(menuName = "GameEvents/Listeners/String", fileName = "GameEventListenerString")]
 public class GameEventListenerString : MonoBehaviour
 {
     public GameEventString Event;

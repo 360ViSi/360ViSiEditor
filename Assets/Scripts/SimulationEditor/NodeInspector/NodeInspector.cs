@@ -23,8 +23,7 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] EditorVideoControls editorVideoControls = null;
     [SerializeField] WorldInspector worldInspector = null;
     [SerializeField] GameObject iconSelectionPanel = null;
-
-
+    bool editingAreaMarker = false;
 
     [Header("UI Elements")]
     [SerializeField] GameObject textElementPrefab = null;
@@ -161,6 +160,8 @@ public class NodeInspector : MonoBehaviour
             CreateElement("Set Marker", buttonElementPrefab, StartWorldMarkerPositioning);
         if (currentActionNode.getActionType() == ActionType.WorldButton)
             CreateElement("Change Icon", buttonElementPrefab, OpenIconSelection);
+        if(currentActionNode.getActionType() == ActionType.AreaButton && currentActionNode.getAreaMarkerVertices() != null)
+            CreateElement("Edit Marker", buttonElementPrefab, EditAreaMarkerPositioning);
 
         if (!currentActionNode.getAutoEnd())
         {
@@ -182,7 +183,7 @@ public class NodeInspector : MonoBehaviour
     /// Spawns a marker in the world depending on the ActionType.
     /// Called from EditorVideoControls while setting a new position
     ///</summary>
-    public void CreateWorldMarkers()
+    public void CreateWorldMarkers(bool firstLoad = true)
     {
         if (currentActionNode.getWorldPosition() == Vector3.zero)
         {
@@ -198,11 +199,9 @@ public class NodeInspector : MonoBehaviour
         //Instantiate specific prefab
         GameObject go = null;
         var type = currentActionNode.getActionType();
-        bool isCanvas = false;
         switch (type)
         {
             case ActionType.WorldButton:
-                isCanvas = true;
                 go = Instantiate(worldButtonPrefab);
                 if (TryGetComponent(out EditorWorldButton editorWorldButton))
                     editorWorldButton.Initialize(currentActionNode, icons.GetIconSprite(CurrentActionNode.getIconName()));
@@ -213,7 +212,7 @@ public class NodeInspector : MonoBehaviour
             case ActionType.AreaButton:
                 go = Instantiate(areaButtonPrefab);
                 var vertices = currentActionNode.getAreaMarkerVertices();
-                go.GetComponent<EditorAreaButton>().Initialize(this, videoCamTransform.GetComponent<Camera>(), vertices);
+                go.GetComponent<EditorAreaButton>().Initialize(this, videoCamTransform.GetComponent<Camera>(), vertices, editingAreaMarker && !firstLoad, editingAreaMarker);
                 break;
             default:
                 Destroy(go);
@@ -288,13 +287,27 @@ public class NodeInspector : MonoBehaviour
 
     public void StartWorldMarkerPositioning()
     {
-        editorVideoControls.PlacingWorldSpaceMarker = true;
+        if(editingAreaMarker)
+            editorVideoControls.NodeCanvas.SetActive(false);
+        else
+            editorVideoControls.PlacingWorldSpaceMarker = true;
+
         editorVideoPlayer.VideoPlayer.Pause();
+        CreateWorldMarkers(firstLoad: false);
+        editingAreaMarker = false;
+
     }
     public void StopAreaMarkerPositioning(Vector3[] vertices)
     {
         editorVideoControls.PlacingWorldSpaceMarker = false;
         currentActionNode.setAreaMarkerVertices(vertices);
+        CreateFields(currentActionNode, true);
+    }
+
+    public void EditAreaMarkerPositioning()
+    {
+        editingAreaMarker = true;
+        StartWorldMarkerPositioning();
     }
 
     public void OpenIconSelection() => iconSelectionPanel.SetActive(true);
