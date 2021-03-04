@@ -18,6 +18,7 @@ public class ProjectManager : MonoBehaviour
     string fileName = "new project";
     string folderPath = @"C:\Unity\"; //S NOTE change this
     string json = ".json";
+    bool wasSaved = false;
 
     public string FileName { get => fileName; }
     public string FolderPath { get => folderPath; }
@@ -27,11 +28,19 @@ public class ProjectManager : MonoBehaviour
 
     public void NewProject()
     {
-        Action<bool> clear = ClearStructure;
-        yesNoDialog.Initialize(ClearStructure, "Hello");
+        yesNoDialog.Initialize(ClearStructure, "Are you sure you want to delete all current nodes from the workspace? \n All unsaved changes will be lost.");
     }
 
-    void ClearStructure(bool value) => StructureManager.ClearStructure();
+    ///<summary>
+    /// Supplied to the yesNoDialog as parameter to give a warning befor clearing all the nodes
+    ///</summary>
+    void ClearStructure(bool value)
+    {
+        if(value == false) return;
+
+        wasSaved = true;
+        StructureManager.ClearStructure();
+    }
 
     public void OpenProject(string path)
     {
@@ -50,10 +59,15 @@ public class ProjectManager : MonoBehaviour
         }
         var fileNameSplit = pathArr[pathArr.Length - 1].Split('.');
         fileName = fileNameSplit[0];
+
         structureManager.JsonToSimulation();
+        wasSaved = true;
     }
 
-    public void SaveProject(string path)
+    ///<summary>
+    /// Save As - asks for location and filename with windows dialog
+    ///</summary>
+    public void SaveProjectAs(string path)
     {
         if (path == "")
             path = StandaloneFileBrowser.SaveFilePanel("Save the project file", FolderPath, fileName, "json");
@@ -72,5 +86,20 @@ public class ProjectManager : MonoBehaviour
         fileName = fileNameSplit[0];
 
         structureManager.SimulationToJson(path);
+        wasSaved = true;
+    }
+
+    ///<summary>
+    /// Save without any dialogs, overwrites the last saved or opened project
+    ///</summary>
+    public void SaveProject()
+    {
+        if (wasSaved == false)
+        {
+            SaveProjectAs("");
+            return;
+        }
+
+        structureManager.SimulationToJson(FullPath);
     }
 }

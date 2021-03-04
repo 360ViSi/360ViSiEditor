@@ -4,10 +4,9 @@ using TMPro;
 
 public class YesNoDialog : MonoBehaviour
 {
-
     Action<bool> dialogEvent;
-    [SerializeField] TMP_Text questionText;    
-    [SerializeField] GameObject dialogPanel;    
+    [SerializeField] TMP_Text questionText;
+    [SerializeField] GameObject dialogPanel;
 
     internal void Initialize(Action<bool> dialogEvent, string text)
     {
@@ -18,8 +17,7 @@ public class YesNoDialog : MonoBehaviour
 
     public void Answer(bool value)
     {
-        if(value) 
-            dialogEvent?.Invoke(value);
+        dialogEvent.Invoke(value);
         dialogPanel.SetActive(false);
     }
 }

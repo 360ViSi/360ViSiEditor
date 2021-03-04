@@ -41,7 +41,7 @@ namespace Tests
             yield return null;
             var path = @"C:\Unity\PlayTest.json";
             ProjectManager.instance.NewProject();
-            ProjectManager.instance.SaveProject(path);
+            ProjectManager.instance.SaveProjectAs(path);
 
             Debug.Log(ProjectManager.instance.FileName);
             Debug.Log(ProjectManager.instance.FolderPath);

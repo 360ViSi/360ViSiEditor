@@ -194,7 +194,6 @@ public class StructureManager : MonoBehaviour
                                      item.areaMarkerVertices);
     }
 
-    [ContextMenu("Clear")]
     public void ClearStructure()
     {
         for (int i = videoGameObjects.Count - 1; i > -1; i--)
