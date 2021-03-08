@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "this_is_a_video_folder", menuName = "ScriptableObjects/VideoPathPointer_SO", order = 1)]
-public class VideoPathPointer_SO : ScriptableObject
+[CreateAssetMenu(fileName = "SO_StringList", menuName = "ScriptableObjects/SO_StringList", order = 1)]
+public class SO_StringList : ScriptableObject
 {
-  public string[] fileExtensions;
+  public List<string> data = new List<string>();
 }

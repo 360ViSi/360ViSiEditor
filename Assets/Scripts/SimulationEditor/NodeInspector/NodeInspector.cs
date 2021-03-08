@@ -38,16 +38,7 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] GameObject areaButtonPrefab = null;
     GameObject currentWorldMarker;
 
-    public VideoNode CurrentVideoNode
-    {
-        get
-        {
-            if (currentVideoNode == null)
-                Debug.LogError("NodeInspectors' currentVideoNode == null");
-            return currentVideoNode;
-        }
-    }
-
+    public VideoNode CurrentVideoNode => currentVideoNode;
     public ActionNode CurrentActionNode { get => currentActionNode; }
 
     private void Awake()
@@ -327,7 +318,6 @@ public class NodeInspector : MonoBehaviour
     public void SetIcon(string iconName)
     {
         CurrentActionNode.setIconName(iconName);
-        Debug.Log(CurrentActionNode.getIconName());
         CreateWorldMarkers();
     }
 

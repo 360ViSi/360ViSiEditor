@@ -14,6 +14,7 @@ public class EditorAreaButton : MonoBehaviour
     bool mouseOver;
     NodeInspector nodeInspector;
     GameObject confirmButtonObject;
+    bool editing;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,15 +29,15 @@ public class EditorAreaButton : MonoBehaviour
         var vertices = points.Select(e => e.localPosition).ToArray();
         nodeInspector.StopAreaMarkerPositioning(vertices);
         confirmButtonObject.SetActive(false);
-        ShowVertices(false);
+        ShowVerticesAndHighlight(false);
     }
 
     private void Update()
     {
-        if (mouseOver)
+        if (mouseOver && editing)
             meshRenderer.material.SetColor("_Color", new Color(0, 1, 0, .25f));
         else
-            meshRenderer.material.SetColor("_Color", new Color(0, 0, 0, .25f));
+            meshRenderer.material.SetColor("_Color", new Color(0, 0, 0, .5f));
     }
 
     public void Initialize(NodeInspector nodeInspector, Camera videoCamera, Vector3[] vertices = null, bool showVertices = true, bool enableConfirmButton = false)
@@ -55,14 +56,16 @@ public class EditorAreaButton : MonoBehaviour
         if (vertices == null || vertices.Length == 0)
             return;
 
-        ShowVertices(showVertices);
+        ShowVerticesAndHighlight(showVertices);
 
         for (int i = 0; i < points.Length; i++)
             points[i].localPosition = vertices[i];
     }   
 
-    void ShowVertices(bool value)
+    void ShowVerticesAndHighlight(bool value)
     {
+        editing = value;
+
         foreach (var item in points)
             item.GetComponent<MeshRenderer>().enabled = value;
     }

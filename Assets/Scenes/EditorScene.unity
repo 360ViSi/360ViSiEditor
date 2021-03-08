@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3181,7 +3181,7 @@ GameObject:
   - component: {fileID: 956234885}
   - component: {fileID: 956234887}
   m_Layer: 5
-  m_Name: Time Draggable
+  m_Name: Current Time Draggable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3255,7 +3255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68763de9f510e0f4ea37863b2c46cbb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  value: 0
+  hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   OnHold:
     m_PersistentCalls:
       m_Calls: []
@@ -3938,7 +3938,7 @@ GameObject:
   - component: {fileID: 1228567279}
   - component: {fileID: 1228567281}
   m_Layer: 5
-  m_Name: DragHandler R
+  m_Name: End Time Draggable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4012,7 +4012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68763de9f510e0f4ea37863b2c46cbb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  value: 0
+  hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   OnHold:
     m_PersistentCalls:
       m_Calls: []
@@ -5041,7 +5041,7 @@ GameObject:
   - component: {fileID: 1679731266}
   - component: {fileID: 1679731265}
   m_Layer: 5
-  m_Name: DragHandler L
+  m_Name: Start Time Draggable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5078,7 +5078,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68763de9f510e0f4ea37863b2c46cbb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  value: 0
+  hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   OnHold:
     m_PersistentCalls:
       m_Calls: []
@@ -5330,6 +5330,21 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4361127241615038048}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1714834258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714834257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.7019608}
+  m_EffectDistance: {x: 1.5, y: -1.5}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1728053545
 GameObject:
   m_ObjectHideFlags: 0
@@ -5466,6 +5481,21 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1650445421}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1733135678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1733135677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.7019608}
+  m_EffectDistance: {x: 1.5, y: -1.5}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1738296545
 GameObject:
   m_ObjectHideFlags: 0

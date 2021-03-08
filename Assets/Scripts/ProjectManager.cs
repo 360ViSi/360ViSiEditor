@@ -5,18 +5,16 @@ using System.IO;
 using SFB;
 using UnityEngine;
 
+///<summary>
+/// Manager for project level top left buttons of the Editor (Open, Save, Clear)
+///</summary>
 public class ProjectManager : MonoBehaviour
 {
     public static ProjectManager instance;
     [SerializeField] StructureManager structureManager;
     [SerializeField] YesNoDialog yesNoDialog;
-    private void Awake()
-    {
-        if (instance == null) instance = this;
-        else if (this != instance) Destroy(gameObject);
-    }
     string fileName = "new project";
-    string folderPath = @"C:\Unity\"; //S NOTE change this
+    string folderPath = @"C:\Unity\"; //S NOTE change this to reflect my documents?
     string json = ".json";
     bool wasSaved = false;
 
@@ -25,6 +23,17 @@ public class ProjectManager : MonoBehaviour
 
     public string FullPath { get => folderPath + fileName + json; }
     public StructureManager StructureManager { get => structureManager; }
+
+    private void Awake()
+    {
+        if (instance == null) instance = this;
+        else if (this != instance) Destroy(gameObject);
+    }
+
+    private void Start()
+    {
+        OpenProject(@"C:\Unity\solo.json");
+    }
 
     public void NewProject()
     {
@@ -36,7 +45,7 @@ public class ProjectManager : MonoBehaviour
     ///</summary>
     void ClearStructure(bool value)
     {
-        if(value == false) return;
+        if (value == false) return;
 
         wasSaved = true;
         StructureManager.ClearStructure();
@@ -47,18 +56,8 @@ public class ProjectManager : MonoBehaviour
         if (path == "")
             path = StandaloneFileBrowser.OpenFilePanel("Load a new project file", FolderPath, "json", false)[0];
 
-        var pathArr = path.Split(Path.DirectorySeparatorChar);
-        if (pathArr.Length == 1)
-            pathArr = path.Split(Path.AltDirectorySeparatorChar);
-
-        folderPath = "";
-        for (int i = 0; i < pathArr.Length - 1; i++)
-        {
-            folderPath += pathArr[i];
-            folderPath += Path.DirectorySeparatorChar;
-        }
-        var fileNameSplit = pathArr[pathArr.Length - 1].Split('.');
-        fileName = fileNameSplit[0];
+        folderPath = Utilities.FolderPathFromFilePath(path);
+        fileName = Utilities.FileNameFromFilePath(path, false);
 
         structureManager.JsonToSimulation();
         wasSaved = true;
@@ -72,18 +71,8 @@ public class ProjectManager : MonoBehaviour
         if (path == "")
             path = StandaloneFileBrowser.SaveFilePanel("Save the project file", FolderPath, fileName, "json");
 
-        var pathArr = path.Split(Path.DirectorySeparatorChar);
-        if (pathArr.Length == 1)
-            pathArr = path.Split(Path.AltDirectorySeparatorChar);
-
-        folderPath = "";
-        for (int i = 0; i < pathArr.Length - 1; i++)
-        {
-            folderPath += pathArr[i];
-            folderPath += Path.DirectorySeparatorChar;
-        }
-        var fileNameSplit = pathArr[pathArr.Length - 1].Split('.');
-        fileName = fileNameSplit[0];
+        folderPath = Utilities.FolderPathFromFilePath(path);
+        fileName = Utilities.FileNameFromFilePath(path, false);
 
         structureManager.SimulationToJson(path);
         wasSaved = true;

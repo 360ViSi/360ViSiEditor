@@ -1275,7 +1275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c323aa631b17bfa3b3014f7ef462c16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoPointer: {fileID: 11400000, guid: cf0e8d90afcd97a07ba6ec7ce8b92b9a, type: 2}
+  videoFileNames: {fileID: 11400000, guid: cb98afb1e62010d428adcb18439eac16, type: 2}
   simulationManager: {fileID: 11482226}
   videoPlayer: {fileID: 757786606}
   videoTimeText: {fileID: 58008130}
@@ -2227,7 +2227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b68766988e4086f4b25af51d9133559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jsonFile: {fileID: 4900000, guid: c6ca12bda41f048479c846bb24611d05, type: 3}
+  projectFilePath: {fileID: 11400000, guid: c321940bac584fe499210ec26c1480d0, type: 2}
 --- !u!4 &1639072033
 Transform:
   m_ObjectHideFlags: 0

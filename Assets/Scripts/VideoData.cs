@@ -8,19 +8,15 @@ public class VideoData : MonoBehaviour
 {
     //variables used in editor
     [SerializeField]
-    private TextAsset jsonFile;
-
+    private SO_String projectFilePath;
     //private variables
     private VideoStructure videoStructure;
 
     //awake is called before start
     void Awake()
     {
-      
-      //S TODO - placeholder for dev
-      var fileString = File.ReadAllText(@"C:\Unity\simu.json");
+      var fileString = File.ReadAllText(projectFilePath.data);
       videoStructure = JsonUtility.FromJson<VideoStructure>(fileString);
-      //videoStructure = JsonUtility.FromJson<VideoStructure>(jsonFile.text);
 
       //debuging print video filenames
       foreach (VideoPart video in videoStructure.videos)
@@ -40,6 +36,11 @@ public class VideoData : MonoBehaviour
     public VideoPart getStartPart()
     {
       return videoStructure.getStartPart();
+    }
+
+    public string getFolderPath()
+    {
+      return Utilities.FolderPathFromFilePath(projectFilePath.data);
     }
 
     //private functions
@@ -142,7 +143,6 @@ public class VideoPart
   {
     return videoFileName;
   }
-
   public int getVideoID()
   {
     return videoID;

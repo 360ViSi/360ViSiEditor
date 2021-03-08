@@ -8,12 +8,16 @@ using UnityEngine.UI;
 [System.Serializable]
 public class UnityEventFloat : UnityEvent<float> { }
 
+///<summary>
+/// Draggable elements on the video timeline, clamped to the fullbar width
+/// Use dynamic UnityEvents in the inspector to set values
+///</summary>
 public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Range(0, 1)]
     float value;
     RectTransform rectTransform;
-    float fullbarPadding = 64;
+    float fullbarPadding = 0;
     float draggedPosition = 0;
     [SerializeField] Color hoverColor = Color.yellow;
     Color defaultColor;
@@ -23,7 +27,7 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
     public UnityEventFloat OnRelease;
     public float Value
     {
-        get => value; 
+        get => value;
         set
         {
             this.value = value;
@@ -35,6 +39,8 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
     void Start()
     {
+        //S NOTE - Expecting the canvas to be scaled to 1080p and the padding for the full bar to be 64 px
+        fullbarPadding = 64f * (Screen.width / 1920f); 
         image = GetComponent<Image>();
         defaultColor = image.color;
         rectTransform = GetComponent<RectTransform>();
@@ -49,6 +55,7 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        //value = draggedPosition;
         value = (draggedPosition - fullbarPadding) / (Screen.width - fullbarPadding * 2);
         OnRelease?.Invoke(value);
     }
