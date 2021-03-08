@@ -135,19 +135,18 @@ public class EditorVideoPlayer : MonoBehaviour
     /// set to the current time, is there need for more customization 
     /// -> might get too complex for users
     ///</summary>
-    public void SetLoopTimeToVideo()
+    public void SetLoopTimeToVideo(float value)
     {
-        nodeInspector.CurrentVideoNode.setLoopTime(timeSlider.Value);
-        currentVideoLoopTime = timeSlider.Value;
+        nodeInspector.CurrentVideoNode.setLoopTime(value);
+        currentVideoLoopTime = value;
         nodeInspector.CreateFields(nodeInspector.CurrentVideoNode, true);
     }
 
     void GetLoopTimeFromVideo()
     {
         var loopTime = nodeInspector.CurrentVideoNode.getLoopTime();
-        timeSlider.Value = loopTime;
         currentVideoLoopTime = loopTime;
-        editorVideoControls.SetLoopPoint();
+        simulationTimeline.Looptime = loopTime;
     }
 
     public void SetStartTimeToVideo(float value)
@@ -161,7 +160,6 @@ public class EditorVideoPlayer : MonoBehaviour
     void GetStartTimeFromVideo()
     {
         var startTime = nodeInspector.CurrentVideoNode.getStartTime();
-        timeSlider.Value = startTime;
         currentVideoStartTime = startTime;
         simulationTimeline.StartTime = startTime;
     }
@@ -175,7 +173,6 @@ public class EditorVideoPlayer : MonoBehaviour
     void GetEndTimeFromVideo()
     {
         var endTime = nodeInspector.CurrentVideoNode.getEndTime();
-        timeSlider.Value = endTime;
         currentVideoEndTime = endTime;
         simulationTimeline.EndTime = endTime;
     }

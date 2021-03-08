@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: SO_File Extensions
-  m_EditorClassIdentifier: GameScripts::SO_StringList
+  m_Script: {fileID: 11500000, guid: c8bdf141d0c76304fbcf0236252b7d70, type: 3}
+  m_Name: SO_ValidVideoFileExtensions
+  m_EditorClassIdentifier: 
   data:
   - webm

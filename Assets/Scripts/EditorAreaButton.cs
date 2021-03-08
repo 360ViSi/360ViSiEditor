@@ -35,9 +35,9 @@ public class EditorAreaButton : MonoBehaviour
     private void Update()
     {
         if (mouseOver && editing)
-            meshRenderer.material.SetColor("_Color", new Color(0, 1, 0, .25f));
+            meshRenderer.material.SetColor("_Color", new Color(0, 1, 0, .5f));
         else
-            meshRenderer.material.SetColor("_Color", new Color(0, 0, 0, .5f));
+            meshRenderer.material.SetColor("_Color", new Color(1, 1, 1, .5f));
     }
 
     public void Initialize(NodeInspector nodeInspector, Camera videoCamera, Vector3[] vertices = null, bool showVertices = true, bool enableConfirmButton = false)

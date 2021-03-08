@@ -65,7 +65,7 @@ public class EditorVideoControls : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, videoLayer, QueryTriggerInteraction.Collide))
         {
             NodeInspector.instance.CurrentActionNode.setWorldPosition(hit.point);
-            NodeInspector.instance.CreateWorldMarkers();
+            NodeInspector.instance.CreateWorldMarker(NodeInspector.instance.CurrentActionNode);
 
             PlacingWorldSpaceMarker = false;
 
@@ -95,11 +95,9 @@ public class EditorVideoControls : MonoBehaviour
     }
 
     #region Marker points
-    public void SetLoopPoint(bool setToVideo = false)
+    public void SetLoopPoint(float value)
     {
-        loopPointImageRect.anchoredPosition = sliderHandleRect.anchoredPosition;
-        if (setToVideo)
-            editorVideoPlayer.SetLoopTimeToVideo();
+        editorVideoPlayer.SetLoopTimeToVideo(value);
     }
     public void SetVideoStartPoint(float value)
     {
@@ -126,9 +124,11 @@ public class EditorVideoControls : MonoBehaviour
     #endregion
     public void SetCurrentControlsToVideo(bool value)
     {
-        var loop = NodeInspector.instance.CurrentVideoNode.getLoop();
-        loopButton.SetActive(loop);
-        loopPointImageRect.gameObject.SetActive(loop);
+
+        // Loop point stuff is draggable now, testing if that is fine or need manual button too
+        // var loop = NodeInspector.instance.CurrentVideoNode.getLoop();
+        // loopButton.SetActive(loop);
+        // loopPointImageRect.gameObject.SetActive(loop);
 
         if (NodeInspector.instance.CurrentActionNode != null)
         {

@@ -36,7 +36,7 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] GameObject worldButtonPrefab = null;
     [SerializeField] GameObject floorButtonPrefab = null;
     [SerializeField] GameObject areaButtonPrefab = null;
-    GameObject currentWorldMarker;
+    List<GameObject> currentWorldMarkers = new List<GameObject>();
 
     public VideoNode CurrentVideoNode => currentVideoNode;
     public ActionNode CurrentActionNode { get => currentActionNode; }
@@ -135,6 +135,8 @@ public class NodeInspector : MonoBehaviour
                       timeElementPrefab,
                       currentVideoNode.getEndTime(),
                       1);
+
+        CreateWorldMarkers();
     }
 
 
@@ -155,7 +157,7 @@ public class NodeInspector : MonoBehaviour
             CreateElement("Set Marker", buttonElementPrefab, StartWorldMarkerPositioning);
         if (currentActionNode.getActionType() == ActionType.WorldButton)
             CreateElement("Change Icon", buttonElementPrefab, OpenIconSelection);
-        if(currentActionNode.getActionType() == ActionType.AreaButton && currentActionNode.getAreaMarkerVertices() != null)
+        if (currentActionNode.getActionType() == ActionType.AreaButton && currentActionNode.getAreaMarkerVertices() != null)
             CreateElement("Edit Marker", buttonElementPrefab, EditAreaMarkerPositioning);
 
         if (!currentActionNode.getAutoEnd() && currentActionNode.getIsTimed())
@@ -172,42 +174,46 @@ public class NodeInspector : MonoBehaviour
                           currentActionNode.getEndTime(),
                           1);
         }
-        CreateWorldMarkers();
+        CreateWorldMarker(currentActionNode);
+    }
+
+    ///<summary>
+    /// Spawns markers for all the actions in the current video
+    ///</summary>
+    void CreateWorldMarkers()
+    {
+        foreach (var item in currentVideoNode.getActionNodeList())
+            CreateWorldMarker(item);
     }
 
     ///<summary>
     /// Spawns a marker in the world depending on the ActionType.
     /// Called from EditorVideoControls while setting a new position
     ///</summary>
-    public void CreateWorldMarkers(bool firstLoad = true)
+    public void CreateWorldMarker(ActionNode node, bool firstLoad = true)
     {
-        if (currentActionNode.getWorldPosition() == Vector3.zero)
+        if (node.getWorldPosition() == Vector3.zero)
         {
             worldInspector.gameObject.SetActive(false);
             return;
         }
-
-        if (currentWorldMarker != null)
-        {
-            Destroy(currentWorldMarker);
-            currentWorldMarker = null;
-        }
+        
         //Instantiate specific prefab
         GameObject go = null;
-        var type = currentActionNode.getActionType();
+        var type = node.getActionType();
         switch (type)
         {
             case ActionType.WorldButton:
                 go = Instantiate(worldButtonPrefab);
-                if (TryGetComponent(out EditorWorldButton editorWorldButton))
-                    editorWorldButton.Initialize(currentActionNode, icons.GetIconSprite(CurrentActionNode.getIconName()));
+                if (go.TryGetComponent(out EditorWorldButton editorWorldButton))
+                    editorWorldButton.Initialize(node, icons.GetIconSprite(node.getIconName()));
                 break;
             case ActionType.FloorButton:
                 go = Instantiate(floorButtonPrefab);
                 break;
             case ActionType.AreaButton:
                 go = Instantiate(areaButtonPrefab);
-                var vertices = currentActionNode.getAreaMarkerVertices();
+                var vertices = node.getAreaMarkerVertices();
                 go.GetComponent<EditorAreaButton>().Initialize(this, videoCamTransform.GetComponent<Camera>(), vertices, editingAreaMarker && !firstLoad, editingAreaMarker);
                 break;
             default:
@@ -218,20 +224,17 @@ public class NodeInspector : MonoBehaviour
 
         go.layer = 9;
 
-        go.transform.position = currentActionNode.getWorldPosition();
+        go.transform.position = node.getWorldPosition();
         var oldRotation = go.transform.rotation;
         go.transform.LookAt(videoCamTransform);
 
-        if (currentActionNode.getActionType() == ActionType.FloorButton)
+        if (node.getActionType() == ActionType.FloorButton)
         {
             go.transform.localEulerAngles = new Vector3(oldRotation.x, 0, oldRotation.z);
             go.transform.localScale = new Vector3(10, .5f, 10);
         }
 
-        currentWorldMarker = go;
-        //S NOTE activate worldinspector here if it is needed
-        //worldInspector.SetTarget(go, isCanvas);
-        //worldInspector.gameObject.SetActive(true);
+        currentWorldMarkers.Add(go);
     }
 
 
@@ -245,7 +248,7 @@ public class NodeInspector : MonoBehaviour
         if (key == ElementKey.ActionName)
         {
             currentActionNode.setActionText(value);
-            CreateWorldMarkers();
+            CreateWorldMarker(currentActionNode);
         }
     }
 
@@ -290,13 +293,13 @@ public class NodeInspector : MonoBehaviour
 
     public void StartWorldMarkerPositioning()
     {
-        if(editingAreaMarker)
+        if (editingAreaMarker)
             editorVideoControls.NodeCanvas.SetActive(false);
         else
             editorVideoControls.PlacingWorldSpaceMarker = true;
 
         editorVideoPlayer.VideoPlayer.Pause();
-        CreateWorldMarkers(firstLoad: false);
+        CreateWorldMarker(currentActionNode, firstLoad: false);
         editingAreaMarker = false;
 
     }
@@ -318,7 +321,7 @@ public class NodeInspector : MonoBehaviour
     public void SetIcon(string iconName)
     {
         CurrentActionNode.setIconName(iconName);
-        CreateWorldMarkers();
+        CreateWorldMarker(currentActionNode);
     }
 
     public float GetVideoLength() => (float)editorVideoPlayer.VideoPlayer.length;
@@ -373,12 +376,13 @@ public class NodeInspector : MonoBehaviour
     }
 
 
-    void NullCurrentNodes()
+    public void NullCurrentNodes()
     {
-        if (currentWorldMarker != null)
+        if (currentWorldMarkers.Count != 0)
         {
-            Destroy(currentWorldMarker);
-            currentWorldMarker = null;
+            foreach (var item in currentWorldMarkers)
+                Destroy(item);
+            currentWorldMarkers.Clear();
         }
         if (currentVideoNode != null)
         {

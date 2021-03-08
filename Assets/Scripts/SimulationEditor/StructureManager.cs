@@ -198,6 +198,8 @@ public class StructureManager : MonoBehaviour
     {
         for (int i = videoGameObjects.Count - 1; i > -1; i--)
             videoGameObjects[i].GetComponent<VideoNode>().deleteNode();
+
+        NodeInspector.instance.NullCurrentNodes();
     }
 
     public void removeVideoNode(GameObject nodeObject)

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -22,7 +23,8 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
     [SerializeField] Color hoverColor = Color.yellow;
     Color defaultColor;
     Image image;
-
+    [SerializeField] TimelineDraggable snapTarget;
+    [SerializeField] float snapThreshold;
     public UnityEvent OnHold;
     public UnityEventFloat OnRelease;
     public float Value
@@ -40,7 +42,7 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
     void Start()
     {
         //S NOTE - Expecting the canvas to be scaled to 1080p and the padding for the full bar to be 64 px
-        fullbarPadding = 64f * (Screen.width / 1920f); 
+        fullbarPadding = 64f * (Screen.width / 1920f);
         image = GetComponent<Image>();
         defaultColor = image.color;
         rectTransform = GetComponent<RectTransform>();
@@ -55,9 +57,17 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        //value = draggedPosition;
         value = (draggedPosition - fullbarPadding) / (Screen.width - fullbarPadding * 2);
+        if (snapTarget != null)
+            SnapToTarget();
         OnRelease?.Invoke(value);
+    }
+
+    void SnapToTarget()
+    {
+        var valueDifference = Mathf.Abs(value - snapTarget.value);
+        if (snapThreshold >= valueDifference)
+            value = snapTarget.value;
     }
 
     public void OnBeginDrag(PointerEventData eventData) => OnHold?.Invoke();
