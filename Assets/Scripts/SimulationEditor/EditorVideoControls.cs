@@ -42,6 +42,8 @@ public class EditorVideoControls : MonoBehaviour
         }
     }
 
+    public GameObject NodeCanvas { get => nodeCanvas; set => nodeCanvas = value; }
+
     private void Update()
     {
         if (placingWorldSpaceMarker)
@@ -65,15 +67,10 @@ public class EditorVideoControls : MonoBehaviour
             NodeInspector.instance.CurrentActionNode.setWorldPosition(hit.point);
             NodeInspector.instance.CreateWorldMarkers();
 
-            //if it's AreaButton, explicit confirmation is required due to setting of the vertices
-            //S LATER - confusing, setter is not called but want to stay in the UI-less view
-            if (NodeInspector.instance.CurrentActionNode.getActionType() == ActionType.AreaButton)
-            {
-                placingWorldSpaceMarker = false;
-                return;
-            }
-
             PlacingWorldSpaceMarker = false;
+
+            if (NodeInspector.instance.CurrentActionNode.getActionType() == ActionType.AreaButton)
+                NodeInspector.instance.EditAreaMarkerPositioning();
         }
     }
 

@@ -7,14 +7,21 @@ public class AreaButtonDragVertex : MonoBehaviour
 {
     EditorAreaButton areaButton;
     Camera videoCamera;
+    MeshRenderer meshRenderer;
     [SerializeField] LayerMask videoLayer;
+
     // Start is called before the first frame update
+    private void Start()
+    {
+        meshRenderer = GetComponent<MeshRenderer>();
+    }
 
     public void Initialize(EditorAreaButton areaButton, Camera cam)
     {
         this.areaButton = areaButton;
         this.videoCamera = cam;
     }
+
 
     private void OnMouseDrag()
     {
