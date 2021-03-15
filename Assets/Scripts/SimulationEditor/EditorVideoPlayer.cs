@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -98,7 +98,7 @@ public class EditorVideoPlayer : MonoBehaviour
             videoPlayer.prepareCompleted += PrepareVideo(videoPlayer, false);
 
         videoPlayer.Prepare();
-        RefreshMarkers();
+        RefreshTimeline();
         return true;
     }
 
@@ -114,7 +114,7 @@ public class EditorVideoPlayer : MonoBehaviour
     partly but not sure if worth the effort.
     */
     #region Markers
-    public void RefreshMarkers()
+    public void RefreshTimeline()
     {
         if (nodeInspector.CurrentActionNode != null)
         {

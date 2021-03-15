@@ -158,7 +158,7 @@ public class ActionNode : MonoBehaviour
   {
     if(loadedNextVideoID != -2)
       nodePort.CreateConnection(loadedNextVideoID);
-    else Debug.LogError("loadedNextVideoID was -2 and that's illegal (probably autoEnd node?)");
+    else Debug.LogError("loadedNextVideoID was -2 and that's illegal");
   }
 
   public NodePort getNodePort()

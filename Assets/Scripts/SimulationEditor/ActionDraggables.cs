@@ -11,6 +11,10 @@ public partial class ActionDraggables : MonoBehaviour
     [SerializeField] RectTransform videoControlsRect;
     [SerializeField] SO_Icons icons;
 
+    ///<summary>
+    /// Creates action start-end time sliders for each action of the video
+    /// Also sizes the background of VideoControls to fit all the actions
+    ///</summary>
     public void CreateActionDraggables(VideoNode videoNode)
     {
         //Clear old ones
@@ -43,6 +47,7 @@ public partial class ActionDraggables : MonoBehaviour
         draggable.start.Value = item.getStartTime();
         draggable.end.Value = item.getEndTime();
 
+        //S LATER change placeholder sprite to something else, according to ActionType (probably?)
         draggable.actionImage.sprite = icons.GetIconSprite("hand");
         draggable.actionText.text = item.getActionText();
 

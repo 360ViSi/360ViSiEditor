@@ -111,7 +111,7 @@ public class NodeInspector : MonoBehaviour
         else
         {
             CreateActionFields(editorVideoPlayer.VideoPlayer);
-            editorVideoPlayer.RefreshMarkers();
+            editorVideoPlayer.RefreshTimeline();
         }
     }
 
@@ -140,8 +140,6 @@ public class NodeInspector : MonoBehaviour
 
         CreateWorldMarkers();
     }
-
-
 
     private void CreateActionFields(VideoPlayer source)
     {
@@ -173,7 +171,7 @@ public class NodeInspector : MonoBehaviour
                           currentActionNode.getEndTime(),
                           1);
         }
-        CreateWorldMarker(currentActionNode);
+        CreateWorldMarker(currentActionNode, true);
     }
 
     ///<summary>
@@ -189,14 +187,11 @@ public class NodeInspector : MonoBehaviour
     /// Spawns a marker in the world depending on the ActionType.
     /// Called from EditorVideoControls while setting a new position
     ///</summary>
-    public void CreateWorldMarker(ActionNode node, bool firstLoad = true)
+    public void CreateWorldMarker(ActionNode node, bool removeOld = false)
     {
-        if (node.getWorldPosition() == Vector3.zero)
-        {
-            worldInspector.gameObject.SetActive(false);
-            return;
-        }
-        
+        if (removeOld)
+            RemoveMarkers();
+
         //Instantiate specific prefab
         GameObject go = null;
         var type = node.getActionType();
@@ -213,11 +208,10 @@ public class NodeInspector : MonoBehaviour
             case ActionType.AreaButton:
                 go = Instantiate(areaButtonPrefab);
                 var vertices = node.getAreaMarkerVertices();
-                go.GetComponent<EditorAreaButton>().Initialize(this, videoCamTransform.GetComponent<Camera>(), vertices, editingAreaMarker && !firstLoad, editingAreaMarker);
+                go.GetComponent<EditorAreaButton>().Initialize(this, videoCamTransform.GetComponent<Camera>(), editingAreaMarker, vertices);
                 break;
             default:
                 Destroy(go);
-                worldInspector.gameObject.SetActive(false);
                 return;
         }
 
@@ -247,7 +241,7 @@ public class NodeInspector : MonoBehaviour
         if (key == ElementKey.ActionName)
         {
             currentActionNode.setActionText(value);
-            CreateWorldMarker(currentActionNode);
+            CreateWorldMarker(currentActionNode, true);
         }
     }
 
@@ -267,7 +261,7 @@ public class NodeInspector : MonoBehaviour
             currentActionNode.setEndTime(1);
             CreateFields(currentActionNode, true);
         }
-        editorVideoPlayer.RefreshMarkers();
+        editorVideoPlayer.RefreshTimeline();
     }
 
     public void UpdateValue(ElementKey key, int value)
@@ -287,7 +281,8 @@ public class NodeInspector : MonoBehaviour
         if (key == ElementKey.ActionEndTime) currentActionNode.setEndTime(value);
 
         //These all SO FAR (5) need to refresh the timeline markers, so I'm just going to do it here for all of them
-        editorVideoPlayer.RefreshMarkers();
+        editorVideoPlayer.RefreshTimeline();
+    
     }
 
     public void StartWorldMarkerPositioning()
@@ -298,9 +293,7 @@ public class NodeInspector : MonoBehaviour
             editorVideoControls.PlacingWorldSpaceMarker = true;
 
         editorVideoPlayer.VideoPlayer.Pause();
-        CreateWorldMarker(currentActionNode, firstLoad: false);
         editingAreaMarker = false;
-
     }
     public void StopAreaMarkerPositioning(Vector3[] vertices)
     {
@@ -312,6 +305,7 @@ public class NodeInspector : MonoBehaviour
     public void EditAreaMarkerPositioning()
     {
         editingAreaMarker = true;
+        CreateWorldMarker(currentActionNode, true);
         StartWorldMarkerPositioning();
     }
 

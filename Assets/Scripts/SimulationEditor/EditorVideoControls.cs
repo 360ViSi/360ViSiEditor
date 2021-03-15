@@ -60,12 +60,12 @@ public class EditorVideoControls : MonoBehaviour
 
     private void SetWorldSpaceActionPosition()
     {
-        if (Input.GetMouseButtonDown(0) == false) return;
+        if (Input.GetMouseButtonDown(0) == false || placingWorldSpaceMarker == false) return;
         var ray = videoCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, videoLayer, QueryTriggerInteraction.Collide))
         {
             NodeInspector.instance.CurrentActionNode.setWorldPosition(hit.point);
-            NodeInspector.instance.CreateWorldMarker(NodeInspector.instance.CurrentActionNode);
+            NodeInspector.instance.CreateWorldMarker(NodeInspector.instance.CurrentActionNode, true);
 
             PlacingWorldSpaceMarker = false;
 

@@ -12,16 +12,9 @@ public class SimulationTimeline : MonoBehaviour
     [SerializeField] float endTime = 1;
     [Range(0, 1)]
     [SerializeField] float loopTime = 0;
-    [Range(0, 1)]
-    [SerializeField] float actionStartTime = 0;
-    [Range(0, 1)]
-    [SerializeField] float actionEndTime = 0;
     [SerializeField] TimelineDraggable startDraggable;
     [SerializeField] TimelineDraggable endDraggable;
     [SerializeField] TimelineDraggable loopDraggable;
-    [SerializeField] TimelineDraggable actionStartDraggable;
-    [SerializeField] TimelineDraggable actionEndDraggable;
-
     public float StartTime
     {
         get => startTime;

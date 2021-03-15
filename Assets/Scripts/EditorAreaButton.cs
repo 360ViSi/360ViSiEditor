@@ -29,7 +29,7 @@ public class EditorAreaButton : MonoBehaviour
         var vertices = points.Select(e => e.localPosition).ToArray();
         nodeInspector.StopAreaMarkerPositioning(vertices);
         confirmButtonObject.SetActive(false);
-        ShowVerticesAndHighlight(false);
+        ShowVertices(false);
     }
 
     private void Update()
@@ -40,34 +40,32 @@ public class EditorAreaButton : MonoBehaviour
             meshRenderer.material.SetColor("_Color", new Color(1, 1, 1, .5f));
     }
 
-    public void Initialize(NodeInspector nodeInspector, Camera videoCamera, Vector3[] vertices = null, bool showVertices = true, bool enableConfirmButton = false)
+    public void Initialize(NodeInspector nodeInspector, Camera videoCamera, bool editing, Vector3[] vertices = null)
     {
+        this.editing = editing;
         this.nodeInspector = nodeInspector;
         GetComponentInChildren<Canvas>().worldCamera = videoCamera;
 
         var confirmButton = GetComponentInChildren<Button>();
         confirmButtonObject = confirmButton.gameObject;
         confirmButton.onClick.AddListener(ConfirmAreaButtonVertices);
-        confirmButtonObject.SetActive(enableConfirmButton);
+        confirmButtonObject.SetActive(editing);
 
         foreach (var item in points)
             item.GetComponent<AreaButtonDragVertex>().Initialize(this, videoCamera);
 
-        if (vertices == null || vertices.Length == 0)
-            return;
+        ShowVertices(editing);
 
-        ShowVerticesAndHighlight(showVertices);
+        if (vertices == null || vertices.Length < 4) return;
 
         for (int i = 0; i < points.Length; i++)
             points[i].localPosition = vertices[i];
-    }   
+    }
 
-    void ShowVerticesAndHighlight(bool value)
+    void ShowVertices(bool value)
     {
-        editing = value;
-
         foreach (var item in points)
-            item.GetComponent<MeshRenderer>().enabled = value;
+            item.gameObject.SetActive(value);
     }
 
     internal void UpdateMesh()
