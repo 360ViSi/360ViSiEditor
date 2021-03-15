@@ -115,7 +115,7 @@ public class StructureManager : MonoBehaviour
         );
         var json = JsonUtility.ToJson(wrapper);
 
-        Debug.Log(json.ToString());
+        Debug.Log($"Saving to path: {path}\nContent: {json}");
 
         if (File.Exists(path))
             File.Delete(path);

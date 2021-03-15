@@ -17,18 +17,19 @@ public class EditorVideoControls : MonoBehaviour
     [SerializeField] Sprite playSprite;
     [SerializeField] Sprite pauseSprite;
 
-    [Header("Time Line Rects")]
+    [Header("Timeline stuff")]
+    [SerializeField] GameObject timeline;
     [SerializeField] RectTransform loopPointImageRect;
-    [SerializeField] RectTransform actionStartPointImageRect;
-    [SerializeField] RectTransform actionEndPointImageRect;
+    //[SerializeField] RectTransform actionStartPointImageRect;
+    //[SerializeField] RectTransform actionEndPointImageRect;
     [SerializeField] RectTransform sliderHandleRect; //S TODO replace with timeline's position
-
+    [SerializeField] GameObject actionSliders;
     [Header("Buttons")]
-    [SerializeField] GameObject loopButton;
-    [SerializeField] GameObject videoStartButton;
-    [SerializeField] GameObject videoEndButton;
-    [SerializeField] GameObject actionStartButton;
-    [SerializeField] GameObject actionEndButton;
+    // [SerializeField] GameObject loopButton;
+    // [SerializeField] GameObject videoStartButton;
+    // [SerializeField] GameObject videoEndButton;
+    // [SerializeField] GameObject actionStartButton;
+    // [SerializeField] GameObject actionEndButton;
 
     bool placingWorldSpaceMarker = false;
 
@@ -43,7 +44,6 @@ public class EditorVideoControls : MonoBehaviour
     }
 
     public GameObject NodeCanvas { get => nodeCanvas; set => nodeCanvas = value; }
-
     private void Update()
     {
         if (placingWorldSpaceMarker)
@@ -107,41 +107,27 @@ public class EditorVideoControls : MonoBehaviour
     {
         editorVideoPlayer.SetEndTimeToVideo(value);
     }
-
-    public void SetActionStartPoint(bool setToVideo = false)
-    {
-
-        actionStartPointImageRect.anchoredPosition = sliderHandleRect.anchoredPosition;
-        if (setToVideo)
-            editorVideoPlayer.SetStartTimeToAction();
-    }
-    public void SetActionEndPoint(bool setToVideo = false)
-    {
-        actionEndPointImageRect.anchoredPosition = sliderHandleRect.anchoredPosition;
-        if (setToVideo)
-            editorVideoPlayer.SetEndTimeToAction();
-    }
+    // public void SetActionStartPoint(float value)
+    // {
+    //     editorVideoPlayer.SetStartTimeToAction(value);
+    // }
+    // public void SetActionEndPoint(float value)
+    // {
+    //     editorVideoPlayer.SetEndTimeToAction(value);
+    // }
     #endregion
-    public void SetCurrentControlsToVideo(bool value)
+    public void SetCurrentControlsToVideo(bool isVideoNode)
     {
-
         // Loop point stuff is draggable now, testing if that is fine or need manual button too
-        // var loop = NodeInspector.instance.CurrentVideoNode.getLoop();
-        // loopButton.SetActive(loop);
-        // loopPointImageRect.gameObject.SetActive(loop);
+        var loop = NodeInspector.instance.CurrentVideoNode.getLoop();
+        loopPointImageRect.gameObject.SetActive(loop);
 
-        if (NodeInspector.instance.CurrentActionNode != null)
-        {
-            if (NodeInspector.instance.CurrentActionNode.getAutoEnd())
-                value = !value;
+        // if (NodeInspector.instance.CurrentActionNode != null)
+        // {
+        //     if (NodeInspector.instance.CurrentActionNode.getAutoEnd())
+        //         isVideoNode = !isVideoNode;
+        // }
 
-            if (!NodeInspector.instance.CurrentActionNode.getIsTimed())
-                return;
-        }
-
-        actionStartButton.SetActive(!value);
-        actionEndButton.SetActive(!value);
-        actionEndPointImageRect.gameObject.SetActive(!value);
-        actionStartPointImageRect.gameObject.SetActive(!value);
+        // actionSliders.SetActive(!isVideoNode);
     }
 }

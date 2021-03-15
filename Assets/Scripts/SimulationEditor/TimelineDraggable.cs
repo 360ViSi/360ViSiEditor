@@ -32,14 +32,24 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
         get => value;
         set
         {
+            //if setting the value before Start has chance to run
+            if (rectTransform == null)
+                Init();
+
             this.value = value;
             value = Mathf.Clamp(value, 0, 1);
             draggedPosition = value * (Screen.width - 2 * fullbarPadding) + fullbarPadding;
+
             rectTransform.position = new Vector2(draggedPosition, rectTransform.position.y);
         }
     }
 
     void Start()
+    {
+        Init();
+    }
+
+    void Init()
     {
         //S NOTE - Expecting the canvas to be scaled to 1080p and the padding for the full bar to be 64 px
         fullbarPadding = 64f * (Screen.width / 1920f);

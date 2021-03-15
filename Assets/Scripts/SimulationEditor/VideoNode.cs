@@ -69,6 +69,8 @@ public class VideoNode : MonoBehaviour
             autoEndAction = newActionGameObject;
             actionNode.setAutoEnd(true);
         }
+        if (startTime != 0 || endTime != 1)
+            actionNode.setIsTimed(true);
     }
 
     public void setVideoID(int newVideoID)

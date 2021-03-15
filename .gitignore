@@ -71,3 +71,11 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 .vscode/launch.json
 Assets/Art/Materials/360VideoMaterial.mat
+
+# Peek (Ask Sakari if wondering) - Editor plugin with personal seat, you can't use this without license
+/[Aa]ssets/Ludiq/Ludiq.PeekCore
+/[Aa]ssets/Ludiq/Ludiq.Peek
+/[Aa]ssets/Ludiq.Generated/
+/[Aa]ssets/Ludiq/
+/[Aa]ssets/Ludiq.Generated.meta
+/[Aa]ssets/Ludiq.meta
