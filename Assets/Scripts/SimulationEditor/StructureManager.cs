@@ -191,7 +191,8 @@ public class StructureManager : MonoBehaviour
                                      item.actionType,
                                      item.worldPosition,
                                      item.iconName,
-                                     item.areaMarkerVertices);
+                                     item.areaMarkerVertices,
+                                     item.interactable);
     }
 
     public void ClearStructure()

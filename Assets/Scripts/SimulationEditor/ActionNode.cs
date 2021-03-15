@@ -28,7 +28,7 @@ public class ActionNode : MonoBehaviour
   private Vector3 worldPosition = Vector3.zero;
   private string iconName = "walk";
   private Vector3[] areaMarkerVertices = null;
-  bool isTimed;
+  bool isInteractable;
   [SerializeField] GameObject removeButton = null;
 
   void Awake()
@@ -185,8 +185,14 @@ public class ActionNode : MonoBehaviour
   public void setIconName(string value) => iconName = value;
   public Vector3[] getAreaMarkerVertices() => areaMarkerVertices;
   public void setAreaMarkerVertices(Vector3[] value) => areaMarkerVertices = value;
-  public bool getIsTimed() => isTimed;
-  public void setIsTimed(bool value) => isTimed = value;
+  public bool getIsInteractable() => isInteractable;
+  public void setIsInteractable(bool value, bool startUp = true)
+  {
+    isInteractable = value;
+    if(!value)
+      nodePort.disconnect();
+    // nodePort.gameObject.SetActive(value);
+  }
 
   public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 

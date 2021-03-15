@@ -58,6 +58,7 @@ public class VideoJSONWrapper
             worldPosition = actionNode.getWorldPosition();
             iconName = actionNode.getIconName();
             areaMarkerVertices = actionNode.getAreaMarkerVertices();
+            interactable = actionNode.getIsInteractable();
         }
 
         public string actionText = "";
@@ -69,6 +70,7 @@ public class VideoJSONWrapper
         public Vector3 worldPosition = Vector3.zero;
         public string iconName = "hand";
         public Vector3[] areaMarkerVertices = null;
+        public bool interactable = false;
     }
     #endregion
 

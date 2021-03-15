@@ -145,10 +145,19 @@ public class NodeInspector : MonoBehaviour
     {
         editorVideoPlayer.VideoPlayer.prepareCompleted -= CreateActionFields;
         CreateElement("Action name", ElementKey.ActionName, textElementPrefab, currentActionNode.getActionText());
-        CreateElement("Video end action", ElementKey.ActionAutoEnd, toggleElementPrefab, currentActionNode.getAutoEnd());
 
-        if (!currentActionNode.getAutoEnd())
-            CreateElement("Action type", ElementKey.ActionType, dropdownElementPrefab, (int)currentActionNode.getActionType());
+        CreateElement("Is interactable", ElementKey.ActionIsInteractable, toggleElementPrefab, currentActionNode.getIsInteractable());
+
+        if (currentActionNode.getIsInteractable())
+            CreateElement("Video end action", ElementKey.ActionAutoEnd, toggleElementPrefab, currentActionNode.getAutoEnd());
+
+        if (currentActionNode.getAutoEnd() || currentActionNode.getIsInteractable() == false)
+        {
+            CreateWorldMarker(currentActionNode, true);
+            return;
+        }
+
+        CreateElement("Action type", ElementKey.ActionType, dropdownElementPrefab, (int)currentActionNode.getActionType());
 
         if (currentActionNode.getActionType() != ActionType.ScreenButton)
             CreateElement("Set Marker", buttonElementPrefab, StartWorldMarkerPositioning);
@@ -254,9 +263,11 @@ public class NodeInspector : MonoBehaviour
             //changing autoend changes what other fields are shown so need to redraw
             CreateFields(currentActionNode, true);
         }
-        if (key == ElementKey.ActionIsTimed)
+        if (key == ElementKey.ActionIsInteractable)
         {
-            currentActionNode.setIsTimed(value);
+            currentActionNode.setIsInteractable(value, false);
+            if (value) currentActionNode.setAutoEnd(false);
+
             currentActionNode.setStartTime(0);
             currentActionNode.setEndTime(1);
             CreateFields(currentActionNode, true);
@@ -282,7 +293,7 @@ public class NodeInspector : MonoBehaviour
 
         //These all SO FAR (5) need to refresh the timeline markers, so I'm just going to do it here for all of them
         editorVideoPlayer.RefreshTimeline();
-    
+
     }
 
     public void StartWorldMarkerPositioning()
@@ -405,7 +416,7 @@ public enum ElementKey
     ActionEndTime,
     ActionAutoEnd,
     ActionType,
-    ActionIsTimed,
+    ActionIsInteractable,
     VideoLoop,
     VideoLoopTime,
     VideoStartTime,
