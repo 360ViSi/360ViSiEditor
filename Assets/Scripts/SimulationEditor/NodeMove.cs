@@ -85,7 +85,7 @@ public class NodeMove : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
     //connections to video node
     VideoNode thisVideoNode = this.GetComponentInParent<VideoNode>();
-
+    if(thisVideoNode == null) return connectionManager.getConnections(null, null); //S ToolNode
     //if "Startnode"
     if(thisVideoNode==null)
     {

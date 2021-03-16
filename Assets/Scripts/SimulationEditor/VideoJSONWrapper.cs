@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,13 +8,14 @@ using UnityEngine;
 [System.Serializable]
 public class VideoJSONWrapper
 {
-    public VideoJSONWrapper(List<VideoNode> videoNodes, int startId)
+    public VideoJSONWrapper(List<VideoNode> videoNodes, List<ToolNode> toolNodes, int startId)
     {
-        videos = ConvertVideoNodeListToJSONFormat(videoNodes);
+        videos = ConvertVideoNodeListToJSON(videoNodes);
+        tools = ConvertToolNodeListToJSON(toolNodes);
         this.startId = startId;
     }
-
     public List<VideoJSONObject> videos;
+    public List<ToolJSONObject> tools;
     public int startId = -1;
 
     #region JSONObjects
@@ -66,15 +68,29 @@ public class VideoJSONWrapper
         public bool autoEnd = false;
         public float startTime = 0;
         public float endTime = 1;
-        public ActionType actionType = ActionType.ScreenButton; 
+        public ActionType actionType = ActionType.ScreenButton;
         public Vector3 worldPosition = Vector3.zero;
         public string iconName = "hand";
         public Vector3[] areaMarkerVertices = null;
         public bool interactable = false;
     }
+
+    [System.Serializable]
+    public class ToolJSONObject
+    {
+        public ToolJSONObject(ToolNode toolNode)
+        {
+            nodeId = toolNode.NodeId;
+            nextVideo = toolNode.OutPort.getNextVideoID();
+            position = toolNode.GetComponent<RectTransform>().anchoredPosition;
+        }
+        public int nodeId = -2;
+        public int nextVideo = -2;
+        public Vector2 position;
+    }
     #endregion
 
-    public List<VideoJSONObject> ConvertVideoNodeListToJSONFormat(List<VideoNode> videoNodes)
+    public List<VideoJSONObject> ConvertVideoNodeListToJSON(List<VideoNode> videoNodes)
     {
         var output = new List<VideoJSONObject>();
 
@@ -89,12 +105,22 @@ public class VideoJSONWrapper
 
     public List<ActionJSONObject> ConvertActionNodeListToJSONFormat(List<ActionNode> actionNodes)
     {
-        if(actionNodes.Count == 0)
+        if (actionNodes.Count == 0)
             return null;
 
         var output = new List<ActionJSONObject>();
         foreach (var item in actionNodes)
             output.Add(new ActionJSONObject(item));
+
+        return output;
+    }
+
+    public List<ToolJSONObject> ConvertToolNodeListToJSON(List<ToolNode> toolNodes)
+    {
+        if (toolNodes.Count == 0) return null;
+        var output = new List<ToolJSONObject>();
+        foreach (var item in toolNodes)
+            output.Add(new ToolJSONObject(item));
 
         return output;
     }

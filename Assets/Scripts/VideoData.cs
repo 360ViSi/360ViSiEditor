@@ -108,17 +108,22 @@ public class VideoData : MonoBehaviour
 public class VideoStructure
 {
   public VideoPart[] videos;
+  public Tool[] tools;
   public int startId;
   public VideoPart getVideoPart(int askedVideoID)
   {
     foreach (VideoPart vPart in videos)
-    {
-
       if (vPart.getVideoID() == askedVideoID)
-      {
         return vPart;
-      }
+
+    if(tools != null)
+    {
+      foreach (var item in tools)
+          if(item.nodeId == askedVideoID)
+            return getVideoPart(item.nextVideoId);
     }
+    else Debug.LogError("Tools == null");
+
     //Debug.Log("There is not a videoID "+askedVideoID);
     return null;
   }
@@ -223,4 +228,10 @@ public class Action
   public string getIconName() => iconName;
   public Vector3[] getAreaMarkerVertices() => areaMarkerVertices;
   public bool getIsInteractable() => interactable;
+}
+
+public class Tool
+{
+  public int nodeId;
+  public int nextVideoId;
 }
