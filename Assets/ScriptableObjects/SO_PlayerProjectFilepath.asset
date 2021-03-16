@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e8eceb7bf9a5bf04a0db5a0c0e869f8, type: 3}
-  m_Name: this_is_a_video_folder
-  m_EditorClassIdentifier: Assembly-CSharp::VideoPathPointer_OS
-  fileExtensions:
-  - webm
+  m_Script: {fileID: 11500000, guid: aa003ffcc7ce6fa4f964606f6e4d7ba9, type: 3}
+  m_Name: SO_PlayerProjectFilepath
+  m_EditorClassIdentifier: 
+  data: C:\Unity\solo.json

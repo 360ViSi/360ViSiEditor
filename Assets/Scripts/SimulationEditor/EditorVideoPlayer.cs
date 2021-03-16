@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -98,7 +98,7 @@ public class EditorVideoPlayer : MonoBehaviour
             videoPlayer.prepareCompleted += PrepareVideo(videoPlayer, false);
 
         videoPlayer.Prepare();
-        RefreshMarkers();
+        RefreshTimeline();
         return true;
     }
 
@@ -114,12 +114,12 @@ public class EditorVideoPlayer : MonoBehaviour
     partly but not sure if worth the effort.
     */
     #region Markers
-    public void RefreshMarkers()
+    public void RefreshTimeline()
     {
         if (nodeInspector.CurrentActionNode != null)
         {
-            GetStartTimeFromAction();
-            GetEndTimeFromAction();
+            //GetStartTimeFromAction();
+            //GetEndTimeFromAction();
             editorVideoControls.SetCurrentControlsToVideo(false);
         }
         else
@@ -135,19 +135,18 @@ public class EditorVideoPlayer : MonoBehaviour
     /// set to the current time, is there need for more customization 
     /// -> might get too complex for users
     ///</summary>
-    public void SetLoopTimeToVideo()
+    public void SetLoopTimeToVideo(float value)
     {
-        nodeInspector.CurrentVideoNode.setLoopTime(timeSlider.Value);
-        currentVideoLoopTime = timeSlider.Value;
+        nodeInspector.CurrentVideoNode.setLoopTime(value);
+        currentVideoLoopTime = value;
         nodeInspector.CreateFields(nodeInspector.CurrentVideoNode, true);
     }
 
     void GetLoopTimeFromVideo()
     {
         var loopTime = nodeInspector.CurrentVideoNode.getLoopTime();
-        timeSlider.Value = loopTime;
         currentVideoLoopTime = loopTime;
-        editorVideoControls.SetLoopPoint();
+        simulationTimeline.Looptime = loopTime;
     }
 
     public void SetStartTimeToVideo(float value)
@@ -161,7 +160,6 @@ public class EditorVideoPlayer : MonoBehaviour
     void GetStartTimeFromVideo()
     {
         var startTime = nodeInspector.CurrentVideoNode.getStartTime();
-        timeSlider.Value = startTime;
         currentVideoStartTime = startTime;
         simulationTimeline.StartTime = startTime;
     }
@@ -175,33 +173,32 @@ public class EditorVideoPlayer : MonoBehaviour
     void GetEndTimeFromVideo()
     {
         var endTime = nodeInspector.CurrentVideoNode.getEndTime();
-        timeSlider.Value = endTime;
         currentVideoEndTime = endTime;
         simulationTimeline.EndTime = endTime;
     }
 
-    public void SetStartTimeToAction()
-    {
-        nodeInspector.CurrentActionNode.setStartTime(timeSlider.Value);
-        nodeInspector.CreateFields(nodeInspector.CurrentActionNode, true);
-    }
-    void GetStartTimeFromAction()
-    {
-        var startTime = nodeInspector.CurrentActionNode.getStartTime();
-        timeSlider.Value = startTime;
-        editorVideoControls.SetActionStartPoint();
-    }
-    public void SetEndTimeToAction()
-    {
-        nodeInspector.CurrentActionNode.setEndTime(timeSlider.Value);
-        nodeInspector.CreateFields(nodeInspector.CurrentActionNode, true);
-    }
-    void GetEndTimeFromAction()
-    {
-        var endTime = nodeInspector.CurrentActionNode.getEndTime();
-        timeSlider.Value = endTime;
-        editorVideoControls.SetActionEndPoint();
-    }
+    // public void SetStartTimeToAction(float value)
+    // {
+    //     nodeInspector.CurrentActionNode.setStartTime(value);
+    //     simulationTimeline.ActionStartTime = value;
+    //     nodeInspector.CreateFields(nodeInspector.CurrentActionNode, true);
+    // }
+    // void GetStartTimeFromAction()
+    // {
+    //     var startTime = nodeInspector.CurrentActionNode.getStartTime();
+    //     simulationTimeline.ActionStartTime = startTime;
+    // }
+    // public void SetEndTimeToAction(float value)
+    // {
+    //     nodeInspector.CurrentActionNode.setEndTime(value);
+    //     simulationTimeline.ActionEndTime = value;
+    //     nodeInspector.CreateFields(nodeInspector.CurrentActionNode, true);
+    // }
+    // void GetEndTimeFromAction()
+    // {
+    //     var endTime = nodeInspector.CurrentActionNode.getEndTime();
+    //     simulationTimeline.ActionEndTime = endTime;
+    // }
 
     #endregion
 

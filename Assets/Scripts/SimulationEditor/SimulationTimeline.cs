@@ -10,9 +10,11 @@ public class SimulationTimeline : MonoBehaviour
     [SerializeField] float startTime = 0;
     [Range(0, 1)]
     [SerializeField] float endTime = 1;
+    [Range(0, 1)]
+    [SerializeField] float loopTime = 0;
     [SerializeField] TimelineDraggable startDraggable;
     [SerializeField] TimelineDraggable endDraggable;
-
+    [SerializeField] TimelineDraggable loopDraggable;
     public float StartTime
     {
         get => startTime;
@@ -34,6 +36,15 @@ public class SimulationTimeline : MonoBehaviour
         }
     }
 
+    public float Looptime
+    {
+        get => loopTime;
+        set
+        {
+            loopTime = value;
+            loopDraggable.Value = value;
+        }
+    }
     private void SetActiveBarVisual()
     {
         var width = fullbar.rect.width;

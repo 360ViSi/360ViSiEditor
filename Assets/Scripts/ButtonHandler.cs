@@ -33,6 +33,12 @@ public class ButtonHandler : MonoBehaviour
 
         foreach (var item in floorButtons)
             item.SetActive(currentTime);
+
+        foreach (var item in areaButtons)
+            item.SetActive(currentTime);
+            
+        foreach (var item in worldButtons)
+            item.SetActive(currentTime);
     }
     public void SetupActions()
     {

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+
+///<summary>
+/// Button in Icon Selection Panel, sends click event to through the panel to the NodeInspector
+///</summary>
 [RequireComponent(typeof(Button))]
 public class IconSelectButton : MonoBehaviour
 {

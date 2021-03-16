@@ -1,7 +1,9 @@
-﻿using System;
+﻿using System.Net.Mime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 //S LATER optimize through use of events, doesn't need to update all the time
 public class CanvasLine : MonoBehaviour
@@ -15,8 +17,10 @@ public class CanvasLine : MonoBehaviour
     [SerializeField] Vector2 endPosition;
     [Tooltip("Offsets both points but a set amount")]
     [SerializeField] Vector2 offset;
+    Image image;
     void Start()
     {
+        image = GetComponent<Image>();
         rectTransform = GetComponent<RectTransform>();
     }
 
@@ -27,14 +31,18 @@ public class CanvasLine : MonoBehaviour
 
         //S NOTE Expects canvas to be 1080p
         endPosition.x = endPosition.x / Screen.width * 1920;
-        if (startPosition == endPosition) enabled = false;
-
         CalculateLine();
     }
 
     public void CalculateLine()
     {
-        enabled = true;
+        if (startPosition == endPosition)
+        {
+            image.enabled = false;
+            return;
+        }
+        image.enabled = true;
+
         rectTransform.position = startPosition + offset;
 
         var difference = new Vector3(endPosition.x + offset.x, endPosition.y + offset.y, 0) - rectTransform.position;

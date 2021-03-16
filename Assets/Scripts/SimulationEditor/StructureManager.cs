@@ -115,7 +115,7 @@ public class StructureManager : MonoBehaviour
         );
         var json = JsonUtility.ToJson(wrapper);
 
-        Debug.Log(json.ToString());
+        Debug.Log($"Saving to path: {path}\nContent: {json}");
 
         if (File.Exists(path))
             File.Delete(path);
@@ -191,13 +191,16 @@ public class StructureManager : MonoBehaviour
                                      item.actionType,
                                      item.worldPosition,
                                      item.iconName,
-                                     item.areaMarkerVertices);
+                                     item.areaMarkerVertices,
+                                     item.interactable);
     }
 
     public void ClearStructure()
     {
         for (int i = videoGameObjects.Count - 1; i > -1; i--)
             videoGameObjects[i].GetComponent<VideoNode>().deleteNode();
+
+        NodeInspector.instance.NullCurrentNodes();
     }
 
     public void removeVideoNode(GameObject nodeObject)

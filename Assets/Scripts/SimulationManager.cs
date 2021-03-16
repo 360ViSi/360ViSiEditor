@@ -34,7 +34,7 @@ public class SimulationManager : MonoBehaviour
     {
       string startVideoFileName = videoData.getStartPart().getVideoFileName();
       currentVideoID = videoData.getStartPart().videoID;
-      videoTextureChanger.changeVideo(startVideoFileName);
+      videoTextureChanger.ChangeVideo(videoData.getFolderPath() + startVideoFileName);
       buttonHandler.SetupActions();
       videoPlayer.Play();
     }
@@ -85,7 +85,7 @@ public class SimulationManager : MonoBehaviour
       }
 
       currentVideoID=nextVideoID;
-      videoTextureChanger.changeVideo(nextVideoFileName);
+      videoTextureChanger.ChangeVideo(videoData.getFolderPath() + nextVideoFileName);
       buttonHandler.SetupActions();
       Debug.Log("Video is "+nextVideoFileName);
     }

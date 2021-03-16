@@ -23,6 +23,7 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] EditorVideoControls editorVideoControls = null;
     [SerializeField] WorldInspector worldInspector = null;
     [SerializeField] GameObject iconSelectionPanel = null;
+    [SerializeField] ActionDraggables actionDraggables = null;
     bool editingAreaMarker = false;
 
     [Header("UI Elements")]
@@ -36,18 +37,9 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] GameObject worldButtonPrefab = null;
     [SerializeField] GameObject floorButtonPrefab = null;
     [SerializeField] GameObject areaButtonPrefab = null;
-    GameObject currentWorldMarker;
+    List<GameObject> currentWorldMarkers = new List<GameObject>();
 
-    public VideoNode CurrentVideoNode
-    {
-        get
-        {
-            if (currentVideoNode == null)
-                Debug.LogError("NodeInspectors' currentVideoNode == null");
-            return currentVideoNode;
-        }
-    }
-
+    public VideoNode CurrentVideoNode => currentVideoNode;
     public ActionNode CurrentActionNode { get => currentActionNode; }
 
     private void Awake()
@@ -69,9 +61,9 @@ public class NodeInspector : MonoBehaviour
     ///</summary>
     public void CreateFields(VideoNode node, bool isUpdate = false)
     {
-
         NullCurrentNodes();
         currentVideoNode = node;
+        actionDraggables.CreateActionDraggables(node);
         currentVideoNode.GetComponent<Outline>().enabled = true;
 
         DestroyAllInspectorElements();
@@ -107,18 +99,19 @@ public class NodeInspector : MonoBehaviour
         currentActionNode = node;
         currentActionNode.GetComponent<Outline>().enabled = true;
         currentVideoNode = node.GetComponentInParent<VideoNode>();
+        actionDraggables.CreateActionDraggables(currentVideoNode);
+
 
         //Clicking on action that isnt from the same video as the previous one (or none)
         if (isUpdate == false && (oldVideoNode == null || currentVideoNode != oldVideoNode))
         {
             editorVideoPlayer.TryChangeVideo(currentVideoNode.getVideoFileName());
-            currentVideoNode = node.GetComponentInParent<VideoNode>();
             editorVideoPlayer.VideoPlayer.prepareCompleted += CreateActionFields;
         }
         else
         {
             CreateActionFields(editorVideoPlayer.VideoPlayer);
-            editorVideoPlayer.RefreshMarkers();
+            editorVideoPlayer.RefreshTimeline();
         }
     }
 
@@ -144,30 +137,36 @@ public class NodeInspector : MonoBehaviour
                       timeElementPrefab,
                       currentVideoNode.getEndTime(),
                       1);
+
+        CreateWorldMarkers();
     }
-
-
 
     private void CreateActionFields(VideoPlayer source)
     {
         editorVideoPlayer.VideoPlayer.prepareCompleted -= CreateActionFields;
         CreateElement("Action name", ElementKey.ActionName, textElementPrefab, currentActionNode.getActionText());
-        CreateElement("Video end action", ElementKey.ActionAutoEnd, toggleElementPrefab, currentActionNode.getAutoEnd());
 
-        if (!currentActionNode.getAutoEnd())
+        CreateElement("Is interactable", ElementKey.ActionIsInteractable, toggleElementPrefab, currentActionNode.getIsInteractable());
+
+        if (currentActionNode.getIsInteractable())
+            CreateElement("Video end action", ElementKey.ActionAutoEnd, toggleElementPrefab, currentActionNode.getAutoEnd());
+
+        if (currentActionNode.getAutoEnd() || currentActionNode.getIsInteractable() == false)
         {
-            CreateElement("Action type", ElementKey.ActionType, dropdownElementPrefab, (int)currentActionNode.getActionType());
-            CreateElement("Timed action", ElementKey.ActionIsTimed, toggleElementPrefab, currentActionNode.getIsTimed());
+            CreateWorldMarker(currentActionNode, true);
+            return;
         }
+
+        CreateElement("Action type", ElementKey.ActionType, dropdownElementPrefab, (int)currentActionNode.getActionType());
 
         if (currentActionNode.getActionType() != ActionType.ScreenButton)
             CreateElement("Set Marker", buttonElementPrefab, StartWorldMarkerPositioning);
         if (currentActionNode.getActionType() == ActionType.WorldButton)
             CreateElement("Change Icon", buttonElementPrefab, OpenIconSelection);
-        if(currentActionNode.getActionType() == ActionType.AreaButton && currentActionNode.getAreaMarkerVertices() != null)
+        if (currentActionNode.getActionType() == ActionType.AreaButton && currentActionNode.getAreaMarkerVertices() != null)
             CreateElement("Edit Marker", buttonElementPrefab, EditAreaMarkerPositioning);
 
-        if (!currentActionNode.getAutoEnd() && currentActionNode.getIsTimed())
+        if (!currentActionNode.getAutoEnd())
         {
             CreateElement("Action start time",
                           ElementKey.ActionStartTime,
@@ -181,66 +180,63 @@ public class NodeInspector : MonoBehaviour
                           currentActionNode.getEndTime(),
                           1);
         }
-        CreateWorldMarkers();
+        CreateWorldMarker(currentActionNode, true);
+    }
+
+    ///<summary>
+    /// Spawns markers for all the actions in the current video
+    ///</summary>
+    void CreateWorldMarkers()
+    {
+        foreach (var item in currentVideoNode.getActionNodeList())
+            CreateWorldMarker(item);
     }
 
     ///<summary>
     /// Spawns a marker in the world depending on the ActionType.
     /// Called from EditorVideoControls while setting a new position
     ///</summary>
-    public void CreateWorldMarkers(bool firstLoad = true)
+    public void CreateWorldMarker(ActionNode node, bool removeOld = false)
     {
-        if (currentActionNode.getWorldPosition() == Vector3.zero)
-        {
-            worldInspector.gameObject.SetActive(false);
-            return;
-        }
+        if (removeOld)
+            RemoveMarkers();
 
-        if (currentWorldMarker != null)
-        {
-            Destroy(currentWorldMarker);
-            currentWorldMarker = null;
-        }
         //Instantiate specific prefab
         GameObject go = null;
-        var type = currentActionNode.getActionType();
+        var type = node.getActionType();
         switch (type)
         {
             case ActionType.WorldButton:
                 go = Instantiate(worldButtonPrefab);
-                if (TryGetComponent(out EditorWorldButton editorWorldButton))
-                    editorWorldButton.Initialize(currentActionNode, icons.GetIconSprite(CurrentActionNode.getIconName()));
+                if (go.TryGetComponent(out EditorWorldButton editorWorldButton))
+                    editorWorldButton.Initialize(node, icons.GetIconSprite(node.getIconName()));
                 break;
             case ActionType.FloorButton:
                 go = Instantiate(floorButtonPrefab);
                 break;
             case ActionType.AreaButton:
                 go = Instantiate(areaButtonPrefab);
-                var vertices = currentActionNode.getAreaMarkerVertices();
-                go.GetComponent<EditorAreaButton>().Initialize(this, videoCamTransform.GetComponent<Camera>(), vertices, editingAreaMarker && !firstLoad, editingAreaMarker);
+                var vertices = node.getAreaMarkerVertices();
+                go.GetComponent<EditorAreaButton>().Initialize(this, videoCamTransform.GetComponent<Camera>(), editingAreaMarker, vertices);
                 break;
             default:
                 Destroy(go);
-                worldInspector.gameObject.SetActive(false);
                 return;
         }
 
         go.layer = 9;
 
-        go.transform.position = currentActionNode.getWorldPosition();
+        go.transform.position = node.getWorldPosition();
         var oldRotation = go.transform.rotation;
         go.transform.LookAt(videoCamTransform);
 
-        if (currentActionNode.getActionType() == ActionType.FloorButton)
+        if (node.getActionType() == ActionType.FloorButton)
         {
             go.transform.localEulerAngles = new Vector3(oldRotation.x, 0, oldRotation.z);
             go.transform.localScale = new Vector3(10, .5f, 10);
         }
 
-        currentWorldMarker = go;
-        //S NOTE activate worldinspector here if it is needed
-        //worldInspector.SetTarget(go, isCanvas);
-        //worldInspector.gameObject.SetActive(true);
+        currentWorldMarkers.Add(go);
     }
 
 
@@ -254,7 +250,7 @@ public class NodeInspector : MonoBehaviour
         if (key == ElementKey.ActionName)
         {
             currentActionNode.setActionText(value);
-            CreateWorldMarkers();
+            CreateWorldMarker(currentActionNode, true);
         }
     }
 
@@ -267,14 +263,16 @@ public class NodeInspector : MonoBehaviour
             //changing autoend changes what other fields are shown so need to redraw
             CreateFields(currentActionNode, true);
         }
-        if (key == ElementKey.ActionIsTimed)
+        if (key == ElementKey.ActionIsInteractable)
         {
-            currentActionNode.setIsTimed(value);
+            currentActionNode.setIsInteractable(value, false);
+            if (value) currentActionNode.setAutoEnd(false);
+
             currentActionNode.setStartTime(0);
             currentActionNode.setEndTime(1);
             CreateFields(currentActionNode, true);
         }
-        editorVideoPlayer.RefreshMarkers();
+        editorVideoPlayer.RefreshTimeline();
     }
 
     public void UpdateValue(ElementKey key, int value)
@@ -294,20 +292,19 @@ public class NodeInspector : MonoBehaviour
         if (key == ElementKey.ActionEndTime) currentActionNode.setEndTime(value);
 
         //These all SO FAR (5) need to refresh the timeline markers, so I'm just going to do it here for all of them
-        editorVideoPlayer.RefreshMarkers();
+        editorVideoPlayer.RefreshTimeline();
+
     }
 
     public void StartWorldMarkerPositioning()
     {
-        if(editingAreaMarker)
+        if (editingAreaMarker)
             editorVideoControls.NodeCanvas.SetActive(false);
         else
             editorVideoControls.PlacingWorldSpaceMarker = true;
 
         editorVideoPlayer.VideoPlayer.Pause();
-        CreateWorldMarkers(firstLoad: false);
         editingAreaMarker = false;
-
     }
     public void StopAreaMarkerPositioning(Vector3[] vertices)
     {
@@ -319,6 +316,7 @@ public class NodeInspector : MonoBehaviour
     public void EditAreaMarkerPositioning()
     {
         editingAreaMarker = true;
+        CreateWorldMarker(currentActionNode, true);
         StartWorldMarkerPositioning();
     }
 
@@ -326,13 +324,12 @@ public class NodeInspector : MonoBehaviour
 
     public void SetIcon(string iconName)
     {
+        RemoveMarkers();
         CurrentActionNode.setIconName(iconName);
-        Debug.Log(CurrentActionNode.getIconName());
-        CreateWorldMarkers();
+        CreateWorldMarker(currentActionNode);
     }
 
     public float GetVideoLength() => (float)editorVideoPlayer.VideoPlayer.length;
-
 
     #region NodeInspectorElementFactory
     void CreateElement(string header, ElementKey key, GameObject prefab, string value)
@@ -383,13 +380,9 @@ public class NodeInspector : MonoBehaviour
     }
 
 
-    void NullCurrentNodes()
+    public void NullCurrentNodes()
     {
-        if (currentWorldMarker != null)
-        {
-            Destroy(currentWorldMarker);
-            currentWorldMarker = null;
-        }
+        RemoveMarkers();
         if (currentVideoNode != null)
         {
             currentVideoNode.GetComponent<Outline>().enabled = false;
@@ -399,6 +392,16 @@ public class NodeInspector : MonoBehaviour
         {
             currentActionNode.GetComponent<Outline>().enabled = false;
             currentActionNode = null;
+        }
+    }
+
+    void RemoveMarkers()
+    {
+        if (currentWorldMarkers.Count != 0)
+        {
+            foreach (var item in currentWorldMarkers)
+                Destroy(item);
+            currentWorldMarkers.Clear();
         }
     }
 
@@ -413,7 +416,7 @@ public enum ElementKey
     ActionEndTime,
     ActionAutoEnd,
     ActionType,
-    ActionIsTimed,
+    ActionIsInteractable,
     VideoLoop,
     VideoLoopTime,
     VideoStartTime,

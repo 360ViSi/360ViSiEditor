@@ -36,9 +36,9 @@ public class AreaButton : MonoBehaviour
         actionTextPanel.SetActive(mouseOver);
 
         if (mouseOver)
-            meshRenderer.material.SetColor("_Color", new Color(0, 1, 0, .25f));
+            meshRenderer.material.SetColor("_Color", new Color(0, 1, 0, .5f));
         else
-            meshRenderer.material.SetColor("_Color", new Color(0, 0, 0, .25f));
+            meshRenderer.material.SetColor("_Color", new Color(1, 1, 1, .3f));
     }
 
     private void SetupMesh(Vector3[] points)

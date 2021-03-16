@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 3981504372250871257}
   - component: {fileID: 3981504372250871259}
   - component: {fileID: 8003154161611174379}
+  - component: {fileID: 642523596396207448}
   - component: {fileID: 2407102081657235}
   m_Layer: 5
   m_Name: ActionNode
@@ -228,6 +229,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &642523596396207448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3981504372250871263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.7019608}
+  m_EffectDistance: {x: 1.5, y: -1.5}
+  m_UseGraphicAlpha: 1
 --- !u!114 &2407102081657235
 MonoBehaviour:
   m_ObjectHideFlags: 0

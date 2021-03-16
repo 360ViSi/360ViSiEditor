@@ -14,6 +14,7 @@ public class EditorAreaButton : MonoBehaviour
     bool mouseOver;
     NodeInspector nodeInspector;
     GameObject confirmButtonObject;
+    bool editing;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,38 +34,38 @@ public class EditorAreaButton : MonoBehaviour
 
     private void Update()
     {
-        if (mouseOver)
-            meshRenderer.material.SetColor("_Color", new Color(0, 1, 0, .25f));
+        if (mouseOver && editing)
+            meshRenderer.material.SetColor("_Color", new Color(0, 1, 0, .5f));
         else
-            meshRenderer.material.SetColor("_Color", new Color(0, 0, 0, .25f));
+            meshRenderer.material.SetColor("_Color", new Color(1, 1, 1, .5f));
     }
 
-    public void Initialize(NodeInspector nodeInspector, Camera videoCamera, Vector3[] vertices = null, bool showVertices = true, bool enableConfirmButton = false)
+    public void Initialize(NodeInspector nodeInspector, Camera videoCamera, bool editing, Vector3[] vertices = null)
     {
+        this.editing = editing;
         this.nodeInspector = nodeInspector;
         GetComponentInChildren<Canvas>().worldCamera = videoCamera;
 
         var confirmButton = GetComponentInChildren<Button>();
         confirmButtonObject = confirmButton.gameObject;
         confirmButton.onClick.AddListener(ConfirmAreaButtonVertices);
-        confirmButtonObject.SetActive(enableConfirmButton);
+        confirmButtonObject.SetActive(editing);
 
         foreach (var item in points)
             item.GetComponent<AreaButtonDragVertex>().Initialize(this, videoCamera);
 
-        if (vertices == null || vertices.Length == 0)
-            return;
+        ShowVertices(editing);
 
-        ShowVertices(showVertices);
+        if (vertices == null || vertices.Length < 4) return;
 
         for (int i = 0; i < points.Length; i++)
             points[i].localPosition = vertices[i];
-    }   
+    }
 
     void ShowVertices(bool value)
     {
         foreach (var item in points)
-            item.GetComponent<MeshRenderer>().enabled = value;
+            item.gameObject.SetActive(value);
     }
 
     internal void UpdateMesh()

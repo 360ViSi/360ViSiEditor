@@ -1,1 +1,1 @@
-{"videos":[{"videoID":1,"loop":true,"videoFileName":"asking_video.webm","loopTime":0.0,"startTime":0.0,"endTime":1.0,"position":{"x":-24.08177375793457,"y":84.197998046875},"actions":[{"actionText":"action","nextVideo":-1,"autoEnd":false,"startTime":0.0,"endTime":1.0,"actionType":0,"worldPosition":{"x":0.0,"y":0.0,"z":0.0},"iconName":"hand","areaMarkerVertices":[]}]}],"startId":1}
+{"videos":[{"videoID":1,"loop":true,"videoFileName":"None","loopTime":0.0,"startTime":0.0,"endTime":1.0,"position":{"x":9.751077651977539,"y":197.00967407226563},"actions":[]}],"startId":-2}

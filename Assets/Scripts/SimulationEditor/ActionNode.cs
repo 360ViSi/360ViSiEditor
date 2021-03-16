@@ -28,7 +28,7 @@ public class ActionNode : MonoBehaviour
   private Vector3 worldPosition = Vector3.zero;
   private string iconName = "walk";
   private Vector3[] areaMarkerVertices = null;
-  bool isTimed;
+  bool isInteractable;
   [SerializeField] GameObject removeButton = null;
 
   void Awake()
@@ -158,7 +158,7 @@ public class ActionNode : MonoBehaviour
   {
     if(loadedNextVideoID != -2)
       nodePort.CreateConnection(loadedNextVideoID);
-    else Debug.LogError("loadedNextVideoID was -2 and that's illegal (probably autoEnd node?)");
+    else Debug.LogError("loadedNextVideoID was -2 and that's illegal");
   }
 
   public NodePort getNodePort()
@@ -185,8 +185,14 @@ public class ActionNode : MonoBehaviour
   public void setIconName(string value) => iconName = value;
   public Vector3[] getAreaMarkerVertices() => areaMarkerVertices;
   public void setAreaMarkerVertices(Vector3[] value) => areaMarkerVertices = value;
-  public bool getIsTimed() => isTimed;
-  public void setIsTimed(bool value) => isTimed = value;
+  public bool getIsInteractable() => isInteractable;
+  public void setIsInteractable(bool value, bool startUp = true)
+  {
+    isInteractable = value;
+    if(!value)
+      nodePort.disconnect();
+    // nodePort.gameObject.SetActive(value);
+  }
 
   public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 
