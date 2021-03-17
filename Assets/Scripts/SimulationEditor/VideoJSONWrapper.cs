@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -81,11 +82,11 @@ public class VideoJSONWrapper
         public ToolJSONObject(ToolNode toolNode)
         {
             nodeId = toolNode.NodeId;
-            nextVideo = toolNode.OutPort.getNextVideoID();
+            nextVideos = toolNode.GetNextVideos();
             position = toolNode.GetComponent<RectTransform>().anchoredPosition;
         }
         public int nodeId = -2;
-        public int nextVideo = -2;
+        public int[] nextVideos = new int[0];
         public Vector2 position;
     }
     #endregion

@@ -120,6 +120,8 @@ public class ConnectionManager : MonoBehaviour
     // Based on getConnections function
 
     List<Connection> selectedConnections = getConnections(fromPort,toPort);
+
+    if(selectedConnections.Count == 0) return;
     foreach(Connection connection in selectedConnections)
     {
       connection.redrawConnectionLine();
@@ -158,7 +160,13 @@ public class ConnectionManager : MonoBehaviour
     }
     return newConnectionLine;
   }
+
+  public void ReDrawAll()
+  {
+    redrawConnection(null, null);
+  }
 }
+
 
 [System.Serializable]
 public class Connection
@@ -198,6 +206,9 @@ public class Connection
 
   public void redrawConnectionLine()
   {
+    if(toNode == null)
+      return;
+
     connectionLine.redrawLine(fromNode.getPosition(),toNode.getPosition());
   }
 

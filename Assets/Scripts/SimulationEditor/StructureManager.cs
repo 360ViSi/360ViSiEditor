@@ -39,6 +39,7 @@ public class StructureManager : MonoBehaviour
             Debug.Log("There are no ConnectionManager as a child of " + name);
         }
     }
+    
     public void createNewVideoNode()
     {
         //Initialize new Video node from prefab and add it to the list
@@ -182,10 +183,11 @@ public class StructureManager : MonoBehaviour
                 action.CreateLoadedConnection();
                 action.setMode();
             }
-            foreach (var item in toolNodes)
-                item.OutPort.CreateConnection(item.NextVideo);
+        for (int i = 0; i < toolNodes.Count; i++)
+            for (int j = 0; j < toolNodes[i].OutPorts.Count; j++)
+                toolNodes[i].OutPorts[j].CreateConnection(toolNodes[i].NextVideos[j]);
 
-        connectionManager.redrawConnection(null, null);
+        //connectionManager.redrawConnection(null, null);
 
         var startNodePort = startNode.GetComponent<ActionNode>().getNodePort();
 
@@ -197,8 +199,13 @@ public class StructureManager : MonoBehaviour
 
         var firstVideoPort = GetVideoInNodePortWithId(wrapper.startId);
         connectionManager.createConnection(startNodePort, firstVideoPort);
-        connectionManager.redrawConnection(startNodePort, firstVideoPort);
         connectionManager.showConnectionLine(startNodePort, firstVideoPort, true);
+        StartCoroutine(ReDrawLinesAfterFrame());
+    }
+
+    IEnumerator ReDrawLinesAfterFrame(){
+        yield return new WaitForEndOfFrame();
+        connectionManager.redrawConnection(null, null);
     }
 
     private void LoadToolNode(VideoJSONWrapper.ToolJSONObject item)
@@ -206,8 +213,12 @@ public class StructureManager : MonoBehaviour
         var newToolObject = Instantiate(toolNodePrefab, transform);
         var node = newToolObject.GetComponent<ToolNode>();
         node.NodeId = item.nodeId;
-        node.NextVideo = item.nextVideo;
-        node.NodeName.text = item.nextVideo.ToString();
+        node.NextVideos = item.nextVideos.ToList();
+        node.NodeName.text = "Randomizer";
+        
+         for (int i = 2; i < node.NextVideos.Count; i++)
+             node.CreateOutPort(true);
+
         newToolObject.GetComponent<RectTransform>().anchoredPosition = item.position;
         toolNodes.Add(node);
     }

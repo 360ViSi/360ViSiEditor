@@ -45,11 +45,14 @@ public class VideoData : MonoBehaviour
         foreach (var item in videoStructure.tools)
             if (item.nodeId == askedVideoID)
             {
-                if (item.nextVideo == -1)
+        
+                var nextVideo = item.ProcessRandomTool();
+                Debug.Log("Randomed to " + nextVideo);
+                if (nextVideo == -1)
                 {
                     return null; // null will end sim
                 }
-                return getVideoPart(item.nextVideo);  //-1 brakes 
+                return getVideoPart(nextVideo);  //-1 brakes 
             }
 
 		return null; // null will end sim
@@ -247,5 +250,9 @@ public class Action
 public class Tool
 {
     public int nodeId;
-    public int nextVideo;
+    public int[] nextVideos;
+    public int ProcessRandomTool()
+    {
+        return nextVideos[Random.Range(0, nextVideos.Length)];
+    }
 }

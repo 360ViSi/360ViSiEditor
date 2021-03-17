@@ -640,6 +640,7 @@ GameObject:
   - component: {fileID: 129534974}
   - component: {fileID: 129534973}
   - component: {fileID: 129534975}
+  - component: {fileID: 129534976}
   m_Layer: 5
   m_Name: Managers
   m_TagString: Untagged
@@ -777,6 +778,33 @@ MonoBehaviour:
       - m_Target: {fileID: 129534974}
         m_MethodName: RemoveToolTip
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &129534976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129534968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88b3c2fb96bbb6d4d98974f10bf5459d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 67a2c12a072877148bf92b6ce3db6591, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 129534971}
+        m_MethodName: ReDrawAll
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

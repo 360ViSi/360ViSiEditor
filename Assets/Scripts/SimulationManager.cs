@@ -17,6 +17,7 @@ public class SimulationManager : MonoBehaviour
     [SerializeField] ButtonHandler buttonHandler;
     //private parameters
     private int currentVideoID=-2;
+    private VideoPart currentVideoPart;
 
     // Start is called before the first frame update
     void Start()
@@ -33,7 +34,8 @@ public class SimulationManager : MonoBehaviour
     void setStartVideo()
     {
       string startVideoFileName = videoData.getStartPart().getVideoFileName();
-      currentVideoID = videoData.getStartPart().videoID;
+      currentVideoPart = videoData.getStartPart();
+      currentVideoID = currentVideoPart.videoID;
       videoTextureChanger.ChangeVideo(videoData.getFolderPath() + startVideoFileName);
       buttonHandler.SetupActions();
       videoPlayer.Play();
@@ -47,8 +49,8 @@ public class SimulationManager : MonoBehaviour
 
     public VideoPart getCurrentVideoPart()
     {
-
-      return videoData.getVideoPart(currentVideoID);
+      //Debug.Log("GetCurrentVideoPart " + currentVideoID);
+      return currentVideoPart;
     }
 
     public void goToNextPart(int actionID)
@@ -59,19 +61,22 @@ public class SimulationManager : MonoBehaviour
 
     public void goToVideo(int nextVideoID)
     {
+      Debug.Log(nextVideoID);
+
       if (nextVideoID == -1)
         EndGame();
 
+      var videoPart = videoData.getVideoPart(nextVideoID);
       //No video or tool with that id is found -> EndGame
-      if(videoData.getVideoPart(nextVideoID) == null)
+      if(videoPart == null)
       {
         EndGame();
         return;
       }
+      currentVideoPart = videoPart;
+      string nextVideoFileName = videoPart.getVideoFileName();
 
-      string nextVideoFileName = videoData.getVideoPart(nextVideoID).getVideoFileName();
-
-      if (nextVideoFileName=="")
+      if (string.IsNullOrEmpty(nextVideoFileName))
       {
         Debug.Log("Something goes wrong");
         return;
@@ -85,6 +90,7 @@ public class SimulationManager : MonoBehaviour
       }
 
       currentVideoID=nextVideoID;
+      
       videoTextureChanger.ChangeVideo(videoData.getFolderPath() + nextVideoFileName);
       buttonHandler.SetupActions();
       Debug.Log("Video is "+nextVideoFileName);

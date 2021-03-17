@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -63,7 +64,6 @@ public class VideoTextureChanger : MonoBehaviour
         Debug.Log("video is ready");
         videoPlayer.time = videoPlayer.length * currentVideoStartTime;
         videoPlayer.Play();
-
     }
 
     public void ChangeVideo(string videoPath)

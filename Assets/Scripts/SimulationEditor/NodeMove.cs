@@ -85,16 +85,29 @@ public class NodeMove : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
     //connections to video node
     VideoNode thisVideoNode = this.GetComponentInParent<VideoNode>();
-    if(thisVideoNode == null) return connectionManager.getConnections(null, null); //S ToolNode
-    //if "Startnode"
+    ActionNode thisActionNode = this.GetComponentInParent<ActionNode>();
+
+    //if ToolNode
+    if(thisVideoNode == null && thisActionNode == null)
+    {
+      ToolNode thisToolNode = GetComponentInParent<ToolNode>(); 
+      for (int i = 0; i < thisToolNode.OutPorts.Count; i++)
+      {
+          if(thisToolNode.NextVideos[i] != -2)
+            nodeConnections.AddRange(connectionManager.getConnections(thisToolNode.OutPorts[i], null));
+      }
+      nodeConnections.AddRange(connectionManager.getConnections(null, thisToolNode.InPort));
+      return nodeConnections; //S ToolNode
+    } 
+
+    //if "Startnode" ?
     if(thisVideoNode==null)
     {
-      NodePort startNodePort = this.GetComponentInParent<ActionNode>().getNodePort();
+      NodePort startNodePort = thisActionNode.getNodePort();
       return connectionManager.getConnections(startNodePort,null);
     }
 
     // if VideoNode
-
     //add connections that are connected to this video node
     nodeConnections.AddRange(connectionManager.getConnections(null,thisVideoNode.getNodePort()));
 
