@@ -17,6 +17,7 @@ public class NodeInspector : MonoBehaviour
     public static NodeInspector instance;
     VideoNode currentVideoNode = null;
     ActionNode currentActionNode = null;
+    ToolNode currentToolNode = null;
     [SerializeField] SO_Icons icons;
     [SerializeField] Transform videoCamTransform = null;
     [SerializeField] EditorVideoPlayer editorVideoPlayer = null;
@@ -40,7 +41,8 @@ public class NodeInspector : MonoBehaviour
     List<GameObject> currentWorldMarkers = new List<GameObject>();
 
     public VideoNode CurrentVideoNode => currentVideoNode;
-    public ActionNode CurrentActionNode { get => currentActionNode; }
+    public ActionNode CurrentActionNode => currentActionNode;
+    public ToolNode CurrentToolNode => currentToolNode;
 
     private void Awake()
     {
@@ -113,6 +115,21 @@ public class NodeInspector : MonoBehaviour
             CreateActionFields(editorVideoPlayer.VideoPlayer);
             editorVideoPlayer.RefreshTimeline();
         }
+    }
+
+    ///<summary>
+    /// Overload for CreateFields that takes in a ToolNode instead
+    ///</summary>
+    public void CreateFields(ToolNode node, bool isUpdate = false)
+    {
+        editorVideoPlayer.VideoPlayer.Stop();
+        NullCurrentNodes();
+        DestroyAllInspectorElements();
+        currentToolNode = node;
+
+        currentToolNode.GetComponent<Outline>().enabled = true;
+
+        CreateElement("Tool", ElementKey.ToolType, dropdownElementPrefab, (int)node.ToolType);
     }
 
     private void CreateVideoFields(VideoPlayer source)
@@ -277,8 +294,12 @@ public class NodeInspector : MonoBehaviour
 
     public void UpdateValue(ElementKey key, int value)
     {
+        if (key == ElementKey.ToolType){
+            currentToolNode.ToolType = (ToolType)value;
+            return;
+        } 
+        
         if (key == ElementKey.ActionType) currentActionNode.setActionType((ActionType)value);
-
         CreateFields(currentActionNode, true);
     }
 
@@ -393,6 +414,11 @@ public class NodeInspector : MonoBehaviour
             currentActionNode.GetComponent<Outline>().enabled = false;
             currentActionNode = null;
         }
+        if (currentToolNode != null)
+        {
+            currentToolNode.GetComponent<Outline>().enabled = false;
+            currentToolNode = null;
+        }
     }
 
     void RemoveMarkers()
@@ -420,5 +446,6 @@ public enum ElementKey
     VideoLoop,
     VideoLoopTime,
     VideoStartTime,
-    VideoEndTime
+    VideoEndTime,
+    ToolType
 }
