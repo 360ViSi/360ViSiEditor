@@ -55,6 +55,7 @@ public class ButtonHandler : MonoBehaviour
 
 
         var currentVideoPart = simulationManager.getCurrentVideoPart();
+        if(currentVideoPart == null) return;
 
         var buttonActions = currentVideoPart.actions
             .Where(e => e.autoEnd == false

@@ -27,7 +27,7 @@ public class SimulationManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      getCurrentVideoPart();
+      //getCurrentVideoPart();
     }
 
     void setStartVideo()
@@ -59,13 +59,13 @@ public class SimulationManager : MonoBehaviour
 
     public void goToVideo(int nextVideoID)
     {
-      
       if (nextVideoID == -1)
+        EndGame();
+
+      //No video or tool with that id is found -> EndGame
+      if(videoData.getVideoPart(nextVideoID) == null)
       {
-        endPanel.SetActive(true);
-        videoPlayer.Stop();
-        currentVideoID=nextVideoID;
-        Debug.Log("Game ended");
+        EndGame();
         return;
       }
 
@@ -107,5 +107,11 @@ public class SimulationManager : MonoBehaviour
     {
       endPanel.SetActive(false);
       setStartVideo();    
+    }
+
+    public void EndGame()
+    {
+      endPanel.SetActive(true);
+      videoPlayer.Stop();
     }
 }

@@ -70,6 +70,8 @@ public class VideoNode : MonoBehaviour
             autoEndAction = newActionGameObject;
             actionNode.setAutoEnd(true);
         }
+
+        //NodeInspector.instance.CreateFields(actionNode);
     }
 
     public void setVideoID(int newVideoID)
