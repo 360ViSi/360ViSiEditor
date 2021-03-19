@@ -248,10 +248,7 @@ public class Tool
         }
     }
 
-    private void ProcessQuestionTool(Action<int> goToNode)
-    {
-        throw new NotImplementedException();
-    }
+    private void ProcessQuestionTool(Action<int> goToNode) => PlayerQuestionManager.instance.OpenQuestionPanel(this);
 
     void ProcessRandomTool(Action<int> goToNode)
     {

@@ -47,12 +47,11 @@ public class QuizCreator : MonoBehaviour
         isMultiplechoiceToggle.isOn = question.multipleChoice;
     }
 
-    public GameObject AddAnswer()
+    public void AddAnswer()
     {
         var go = Instantiate(answerPrefab, layoutTransform);
         answerInputs.Add(go.GetComponentInChildren<TMP_InputField>());
         correctToggles.Add(go.GetComponentInChildren<Toggle>());
-        return go;
     }
 
     public void RemoveLastAnswer()
@@ -60,7 +59,7 @@ public class QuizCreator : MonoBehaviour
         var answer = answerInputs[answerInputs.Count - 1];
         answerInputs.Remove(answer);
         correctToggles.Remove(correctToggles[correctToggles.Count - 1]);
-        Destroy(answer.gameObject);
+        Destroy(answer.transform.parent.gameObject);
     }
 
     public void CreateQuestion()
