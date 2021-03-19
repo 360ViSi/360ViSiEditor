@@ -34,7 +34,7 @@ public class FloorButton : MonoBehaviour
             meshRenderer.material.SetColor("_Color", Color.white);
     }
 
-    public void Activate() => simulationManager.goToVideo(nextVideoID);
+    public void Activate() => simulationManager.GoToNode(nextVideoID);
     public void SetActive(double currentTime) => gameObject.SetActive(currentTime > startTime && currentTime <= endTime);
     private void OnMouseDown() => Activate();
     private void OnMouseEnter() => mouseOver = true;

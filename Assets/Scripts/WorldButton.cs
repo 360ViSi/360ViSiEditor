@@ -50,6 +50,6 @@ public class WorldButton : MonoBehaviour
         }
     }
 
-    public void Activate() => simulationManager.goToVideo(nextVideoID);
+    public void Activate() => simulationManager.GoToNode(nextVideoID);
     public void SetActive(double currentTime) => gameObject.SetActive(currentTime > startTime && currentTime <= endTime);
 }

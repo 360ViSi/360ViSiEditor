@@ -8,6 +8,7 @@ public class ToolNode : MonoBehaviour
 {
     int nodeId = -2;
     ToolType toolType;
+    Question question;
     [SerializeField] List<int> nextVideos = new List<int>();
     [SerializeField] NodePort inPort;
     [SerializeField] List<NodePort> outPorts;
@@ -15,6 +16,7 @@ public class ToolNode : MonoBehaviour
     [SerializeField] GameObject nodePortPrefab;
     [SerializeField] Transform outPortLayout;
     [SerializeField] GameEvent redrawLinesEvent;
+    [SerializeField] GameObject[] outPortAmountButtons;
     public int NodeId { get => nodeId; set => nodeId = value; }
     public TMP_Text NodeName { get => nodeName; set => nodeName = value; }
     public NodePort InPort { get => inPort; set => inPort = value; }
@@ -28,10 +30,14 @@ public class ToolNode : MonoBehaviour
             toolType = value;
             nodeName.text = value.ToString();
 
-            if (value == ToolType.MultichoiceTask)
+            if (value == ToolType.QuestionTask)
                 RemoveAllExcessOutPorts();
+
+            SetOutPortAmountButtonsActive(toolType == ToolType.Random);
         }
     }
+
+    public Question Question { get => question; set => question = value; }
 
     internal int[] GetNextVideos()
     {
@@ -97,11 +103,18 @@ public class ToolNode : MonoBehaviour
         Destroy(gameObject);
     }
     public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
+
+
+    void SetOutPortAmountButtonsActive(bool value)
+    {
+        for (int i = 0; i < outPortAmountButtons.Length; i++)
+            outPortAmountButtons[i].SetActive(value);
+    }
 }
 
 
 public enum ToolType
 {
     Random,
-    MultichoiceTask
+    QuestionTask
 }

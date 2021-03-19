@@ -17,7 +17,7 @@ public class ActionButton : MonoBehaviour
         this.endTime = action.getEndTime();
     }
 
-    public void Activate() => simulationManager.goToVideo(nextVideoID);
+    public void Activate() => simulationManager.GoToNode(nextVideoID);
 
     public void SetActive(double currentTime)
     {

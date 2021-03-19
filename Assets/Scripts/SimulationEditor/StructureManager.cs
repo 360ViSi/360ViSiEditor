@@ -215,6 +215,8 @@ public class StructureManager : MonoBehaviour
         node.NodeId = item.nodeId;
         node.NextVideos = item.nextVideos.ToList();
         node.NodeName.text = "Randomizer";
+        node.ToolType = (ToolType)item.toolTypeInt;
+        node.Question = item.question;
         
          for (int i = 2; i < node.NextVideos.Count; i++)
              node.CreateOutPort(true);

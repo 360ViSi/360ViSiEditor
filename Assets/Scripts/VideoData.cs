@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,54 +14,32 @@ public class VideoData : MonoBehaviour
     //private variables
     private VideoStructure videoStructure;
 
+    public VideoStructure VideoStructure { get => videoStructure; set => videoStructure = value; }
+
     //awake is called before start
     void Awake()
     {
         var fileString = File.ReadAllText(projectFilePath.data);
-        videoStructure = JsonUtility.FromJson<VideoStructure>(fileString);
+        VideoStructure = JsonUtility.FromJson<VideoStructure>(fileString);
 
         //debuging print video filenames
-        foreach (VideoPart video in videoStructure.videos)
+        foreach (VideoPart video in VideoStructure.videos)
         {
             Debug.Log(video.getVideoFileName());
         }
-        print($"Is valid structure: {isVideoIDsValid(videoStructure)}");
+        print($"Is valid structure: {isVideoIDsValid(VideoStructure)}");
     }
 
     //public functions
 
     public VideoPart getVideoPart(int askedVideoID)
     {
-        var video = videoStructure.getVideoPart(askedVideoID);
-
-        if (video != null)
-            return video;
-
-        if (videoStructure.tools == null)
-        {
-            Debug.LogError("Tools == null");
-            return null; // null will end sim
-        }
-
-        foreach (var item in videoStructure.tools)
-            if (item.nodeId == askedVideoID)
-            {
-        
-                var nextVideo = item.ProcessRandomTool();
-                Debug.Log("Randomed to " + nextVideo);
-                if (nextVideo == -1)
-                {
-                    return null; // null will end sim
-                }
-                return getVideoPart(nextVideo);  //-1 brakes 
-            }
-
-		return null; // null will end sim
+        return VideoStructure.getVideoPart(askedVideoID);
     }
 
     public VideoPart getStartPart()
     {
-        return videoStructure.getStartPart();
+        return VideoStructure.getStartPart();
     }
 
     public string getFolderPath()
@@ -221,7 +200,7 @@ public class VideoPart
     }
 }
 
-[System.Serializable]
+[Serializable]
 public class Action
 {
     public string actionText;
@@ -246,13 +225,38 @@ public class Action
     public bool getIsInteractable() => interactable;
 }
 
-[System.Serializable]
+[Serializable]
 public class Tool
 {
     public int nodeId;
     public int[] nextVideos;
-    public int ProcessRandomTool()
+    public int toolTypeInt;
+    public Question question;
+
+    internal void ProcessTool(Action<int> goToNode)
     {
-        return nextVideos[Random.Range(0, nextVideos.Length)];
+        ToolType toolType = (ToolType)toolTypeInt;
+
+        switch (toolType)
+        {
+            case ToolType.Random:
+                ProcessRandomTool(goToNode);
+                break;
+            case ToolType.QuestionTask:
+                ProcessQuestionTool(goToNode);
+                break;
+        }
+    }
+
+    private void ProcessQuestionTool(Action<int> goToNode)
+    {
+        throw new NotImplementedException();
+    }
+
+    void ProcessRandomTool(Action<int> goToNode)
+    {
+        var rnd = nextVideos[UnityEngine.Random.Range(0, nextVideos.Length)];
+        Debug.Log("Randomed to " + rnd);
+        goToNode?.Invoke(rnd);
     }
 }

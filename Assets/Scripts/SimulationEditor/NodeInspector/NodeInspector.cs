@@ -24,6 +24,7 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] EditorVideoControls editorVideoControls = null;
     [SerializeField] WorldInspector worldInspector = null;
     [SerializeField] GameObject iconSelectionPanel = null;
+    [SerializeField] GameObject questionCreatorPanel = null;
     [SerializeField] ActionDraggables actionDraggables = null;
     bool editingAreaMarker = false;
 
@@ -130,7 +131,16 @@ public class NodeInspector : MonoBehaviour
         currentToolNode.GetComponent<Outline>().enabled = true;
 
         CreateElement("Tool", ElementKey.ToolType, dropdownElementPrefab, (int)node.ToolType);
+        if (node.ToolType == ToolType.QuestionTask)
+        {
+            if (node.Question == null)
+                CreateElement("Create Question", buttonElementPrefab, OpenQuestionCreator);
+            else
+                CreateElement("Edit Question", buttonElementPrefab, OpenQuestionCreator);
+        }
     }
+
+
 
     private void CreateVideoFields(VideoPlayer source)
     {
@@ -294,11 +304,13 @@ public class NodeInspector : MonoBehaviour
 
     public void UpdateValue(ElementKey key, int value)
     {
-        if (key == ElementKey.ToolType){
+        if (key == ElementKey.ToolType)
+        {
             currentToolNode.ToolType = (ToolType)value;
+            CreateFields(currentToolNode, true);
             return;
-        } 
-        
+        }
+
         if (key == ElementKey.ActionType) currentActionNode.setActionType((ActionType)value);
         CreateFields(currentActionNode, true);
     }
@@ -348,6 +360,10 @@ public class NodeInspector : MonoBehaviour
         RemoveMarkers();
         CurrentActionNode.setIconName(iconName);
         CreateWorldMarker(currentActionNode);
+    }
+    void OpenQuestionCreator()
+    {
+        questionCreatorPanel.SetActive(true);
     }
 
     public float GetVideoLength() => (float)editorVideoPlayer.VideoPlayer.length;

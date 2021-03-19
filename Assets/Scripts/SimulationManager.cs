@@ -41,59 +41,62 @@ public class SimulationManager : MonoBehaviour
       videoPlayer.Play();
     }
 
-    public void actionSelected(int actionID)
-    {
-      //Debug.Log("button clicked " + actionID);
-      goToNextPart(actionID);
-    }
-
     public VideoPart getCurrentVideoPart()
     {
       //Debug.Log("GetCurrentVideoPart " + currentVideoID);
       return currentVideoPart;
     }
 
-    public void goToNextPart(int actionID)
+    public void GoToNode(int nextNodeID)
     {
-      int nextVideoID = videoData.getVideoPart(currentVideoID).getNextVideoID(actionID);
-      goToVideo(nextVideoID);
+      Debug.Log(nextNodeID);
+
+      if (nextNodeID == -1)
+          EndGame();
+
+      var videoPart = videoData.getVideoPart(nextNodeID);
+      //No video or tool with that id is found -> EndGame
+      if (videoPart != null)
+      {
+          GoToVideo(nextNodeID, videoPart);
+          return;
+      }
+
+      if (videoPart == null && videoData.VideoStructure.tools == null)
+      {
+          Debug.LogError("no tools");
+          EndGame();
+          return;
+      }
+
+      foreach (var item in videoData.VideoStructure.tools)
+          if (item.nodeId == nextNodeID)
+              item.ProcessTool(GoToNode);
     }
 
-    public void goToVideo(int nextVideoID)
+    private void GoToVideo(int nextNodeID, VideoPart videoPart)
     {
-      Debug.Log(nextVideoID);
+        currentVideoPart = videoPart;
+        string nextVideoFileName = videoPart.getVideoFileName();
 
-      if (nextVideoID == -1)
-        EndGame();
+        if (string.IsNullOrEmpty(nextVideoFileName))
+        {
+            Debug.Log("Something goes wrong");
+            return;
+        }
 
-      var videoPart = videoData.getVideoPart(nextVideoID);
-      //No video or tool with that id is found -> EndGame
-      if(videoPart == null)
-      {
-        EndGame();
-        return;
-      }
-      currentVideoPart = videoPart;
-      string nextVideoFileName = videoPart.getVideoFileName();
+        if (nextVideoFileName == "None")
+        {
+            currentVideoID = nextNodeID;
+            Debug.LogError("This part is without video file.");
+            return;
+        }
 
-      if (string.IsNullOrEmpty(nextVideoFileName))
-      {
-        Debug.Log("Something goes wrong");
-        return;
-      }
+        currentVideoID = nextNodeID;
 
-      if (nextVideoFileName=="None")
-      {
-        currentVideoID=nextVideoID;
-        Debug.Log("This part is without video file.");
-        return;
-      }
-
-      currentVideoID=nextVideoID;
-      
-      videoTextureChanger.ChangeVideo(videoData.getFolderPath() + nextVideoFileName);
-      buttonHandler.SetupActions();
-      Debug.Log("Video is "+nextVideoFileName);
+        videoTextureChanger.ChangeVideo(videoData.getFolderPath() + nextVideoFileName);
+        buttonHandler.SetupActions();
+        Debug.Log("Video is " + nextVideoFileName);
     }
 
     public void AutoEnd()
@@ -106,7 +109,7 @@ public class SimulationManager : MonoBehaviour
       Debug.Log("autoEnds.Count" + autoEnds.Count());
 
       if(autoEnds.Count() > 0)
-        goToVideo(autoEnds.FirstOrDefault().nextVideo);
+        GoToNode(autoEnds.FirstOrDefault().nextVideo);
     }
 
     public void ResetSimulation()

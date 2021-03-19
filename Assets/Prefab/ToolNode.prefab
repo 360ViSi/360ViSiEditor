@@ -252,6 +252,9 @@ MonoBehaviour:
     type: 3}
   outPortLayout: {fileID: 8596981531301629000}
   redrawLinesEvent: {fileID: 11400000, guid: 67a2c12a072877148bf92b6ce3db6591, type: 2}
+  outPortAmountButtons:
+  - {fileID: 8442381522623825515}
+  - {fileID: 1525773984195226424}
 --- !u!114 &530367096985163191
 MonoBehaviour:
   m_ObjectHideFlags: 0
