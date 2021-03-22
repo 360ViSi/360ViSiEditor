@@ -79,8 +79,6 @@ public class PlayerQuestionManager : MonoBehaviour
             }
         }
 
-
-
         SubmitAnswer(true);
     }
 

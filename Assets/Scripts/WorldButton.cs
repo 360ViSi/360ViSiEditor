@@ -15,6 +15,7 @@ public class WorldButton : MonoBehaviour
     bool mouseOver;
     [SerializeField] GameObject tooltipPanel;
     [SerializeField] TMP_Text tmpText;
+    bool interactable;
 
     public bool MouseOver { get => mouseOver; set => mouseOver = value; }
 
@@ -50,6 +51,10 @@ public class WorldButton : MonoBehaviour
         }
     }
 
-    public void Activate() => simulationManager.GoToNode(nextVideoID);
+    public void Activate()
+    {
+        simulationManager.GoToNode(nextVideoID);
+    }
+
     public void SetActive(double currentTime) => gameObject.SetActive(currentTime > startTime && currentTime <= endTime);
 }

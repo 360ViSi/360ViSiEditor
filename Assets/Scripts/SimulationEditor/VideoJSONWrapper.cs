@@ -86,13 +86,14 @@ public class VideoJSONWrapper
             position = toolNode.GetComponent<RectTransform>().anchoredPosition;
             toolTypeInt = (int)toolNode.ToolType;
             question = toolNode.Question;
-            
+            infoText = toolNode.InfoText;
         }
         public int nodeId = -2;
         public int[] nextVideos = new int[0];
         public Vector2 position;
         public int toolTypeInt;
         public Question question;
+        public string infoText;
     }
     #endregion
 

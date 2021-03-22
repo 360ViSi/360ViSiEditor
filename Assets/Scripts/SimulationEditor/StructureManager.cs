@@ -217,6 +217,7 @@ public class StructureManager : MonoBehaviour
         node.NodeName.text = "Randomizer";
         node.ToolType = (ToolType)item.toolTypeInt;
         node.Question = item.question;
+        node.InfoText = item.infoText;  
         
          for (int i = 2; i < node.NextVideos.Count; i++)
              node.CreateOutPort(true);
@@ -249,8 +250,7 @@ public class StructureManager : MonoBehaviour
                                      item.actionType,
                                      item.worldPosition,
                                      item.iconName,
-                                     item.areaMarkerVertices,
-                                     item.interactable);
+                                     item.areaMarkerVertices);
     }
 
     public void ClearStructure()

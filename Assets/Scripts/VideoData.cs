@@ -232,6 +232,7 @@ public class Tool
     public int[] nextVideos;
     public int toolTypeInt;
     public Question question;
+    public string infoText;
 
     internal void ProcessTool(Action<int> goToNode)
     {
@@ -245,10 +246,14 @@ public class Tool
             case ToolType.QuestionTask:
                 ProcessQuestionTool();
                 break;
+            case ToolType.Info:
+                ProcessInfoTool();
+                break;
         }
     }
 
     private void ProcessQuestionTool() => PlayerQuestionManager.instance.OpenQuestionPanel(this);
+    private void ProcessInfoTool() => PlayerInfoManager.instance.OpenInfoPanel(this);
 
     void ProcessRandomTool(Action<int> goToNode)
     {

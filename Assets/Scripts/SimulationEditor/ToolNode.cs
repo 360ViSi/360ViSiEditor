@@ -9,6 +9,7 @@ public class ToolNode : MonoBehaviour
     int nodeId = -2;
     ToolType toolType;
     Question question;
+    string infoText;
     [SerializeField] List<int> nextVideos = new List<int>();
     [SerializeField] NodePort inPort;
     [SerializeField] List<NodePort> outPorts;
@@ -30,14 +31,27 @@ public class ToolNode : MonoBehaviour
             toolType = value;
             nodeName.text = value.ToString();
 
-            if (value == ToolType.QuestionTask)
-                RemoveAllExcessOutPorts();
+            switch (value)
+            {
+                case ToolType.Random:
+                    RemoveAllExcessOutPorts(2);
+                    break;
+                case ToolType.QuestionTask:
+                    RemoveAllExcessOutPorts(2);
+                    break;
+                case ToolType.Info:
+                    RemoveAllExcessOutPorts(0);
+                    break;
+            }
+
+
 
             SetOutPortAmountButtonsActive(toolType == ToolType.Random);
         }
     }
 
     public Question Question { get => question; set => question = value; }
+    public string InfoText { get => infoText; set => infoText = value; }
 
     internal int[] GetNextVideos()
     {
@@ -78,19 +92,26 @@ public class ToolNode : MonoBehaviour
         redrawLinesEvent?.Raise();
     }
 
-    public void RemoveAllExcessOutPorts()
+    public void RemoveAllExcessOutPorts(int portCount = 2)
     {
-        var count = OutPorts.Count - 2;
-        for (int i = 0; i < count; i++)
-        {
-            OutPorts[OutPorts.Count - 1].disconnect();
+        var count = OutPorts.Count - portCount;
+        if (count > 0)
+            for (int i = 0; i < count; i++)
+            {
 
-            //child count doesnt refresh OnDestroy, only on Update
-            Destroy(outPortLayout.GetChild(outPortLayout.childCount - 1 - i).gameObject);
+                OutPorts[OutPorts.Count - 1].disconnect();
 
-            OutPorts.RemoveAt(OutPorts.Count - 1);
-            NextVideos.RemoveAt(NextVideos.Count - 1);
-        }
+                //child count doesnt refresh OnDestroy, only on Update
+                Destroy(outPortLayout.GetChild(outPortLayout.childCount - 1 - i).gameObject);
+
+                OutPorts.RemoveAt(OutPorts.Count - 1);
+
+                if (NextVideos.Count - 1 >= 0)
+                NextVideos.RemoveAt(NextVideos.Count - 1);
+            }
+        else
+            for (int i = 0; i < Mathf.Abs(count); i++)
+                CreateOutPort(false);
 
         redrawLinesEvent?.Raise();
     }
@@ -116,5 +137,6 @@ public class ToolNode : MonoBehaviour
 public enum ToolType
 {
     Random,
-    QuestionTask
+    QuestionTask,
+    Info
 }

@@ -22,9 +22,9 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] Transform videoCamTransform = null;
     [SerializeField] EditorVideoPlayer editorVideoPlayer = null;
     [SerializeField] EditorVideoControls editorVideoControls = null;
-    [SerializeField] WorldInspector worldInspector = null;
     [SerializeField] GameObject iconSelectionPanel = null;
     [SerializeField] GameObject questionCreatorPanel = null;
+    [SerializeField] GameObject infoCreatorPanel = null;
     [SerializeField] ActionDraggables actionDraggables = null;
     bool editingAreaMarker = false;
 
@@ -138,6 +138,13 @@ public class NodeInspector : MonoBehaviour
             else
                 CreateElement("Edit Question", buttonElementPrefab, OpenQuestionCreator);
         }
+        else if (node.ToolType == ToolType.Info)
+        {
+            if (string.IsNullOrEmpty(node.InfoText))
+                CreateElement("Create Info Text", buttonElementPrefab, OpenInfoCreator);
+            else
+                CreateElement("Edit Info Text", buttonElementPrefab, OpenInfoCreator);
+        }
     }
 
 
@@ -173,12 +180,11 @@ public class NodeInspector : MonoBehaviour
         editorVideoPlayer.VideoPlayer.prepareCompleted -= CreateActionFields;
         CreateElement("Action name", ElementKey.ActionName, textElementPrefab, currentActionNode.getActionText());
 
-        CreateElement("Is interactable", ElementKey.ActionIsInteractable, toggleElementPrefab, currentActionNode.getIsInteractable());
+        //CreateElement("Is interactable", ElementKey.ActionIsInteractable, toggleElementPrefab, currentActionNode.getIsInteractable());
 
-        if (currentActionNode.getIsInteractable())
-            CreateElement("Video end action", ElementKey.ActionAutoEnd, toggleElementPrefab, currentActionNode.getAutoEnd());
+        CreateElement("Video end action", ElementKey.ActionAutoEnd, toggleElementPrefab, currentActionNode.getAutoEnd());
 
-        if (currentActionNode.getAutoEnd() || currentActionNode.getIsInteractable() == false)
+        if (currentActionNode.getAutoEnd())
         {
             CreateWorldMarker(currentActionNode, true);
             return;
@@ -364,6 +370,11 @@ public class NodeInspector : MonoBehaviour
     void OpenQuestionCreator()
     {
         questionCreatorPanel.SetActive(true);
+    }
+
+    void OpenInfoCreator()
+    {
+        infoCreatorPanel.SetActive(true);
     }
 
     public float GetVideoLength() => (float)editorVideoPlayer.VideoPlayer.length;
