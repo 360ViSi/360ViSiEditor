@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class AreaButton : MonoBehaviour
 {
@@ -33,12 +34,17 @@ public class AreaButton : MonoBehaviour
 
     private void Update()
     {
-        actionTextPanel.SetActive(mouseOver);
 
-        if (mouseOver)
+        if (mouseOver && EventSystem.current.IsPointerOverGameObject() == false)
+        {
             meshRenderer.material.SetColor("_Color", new Color(0, 1, 0, .5f));
-        else
-            meshRenderer.material.SetColor("_Color", new Color(1, 1, 1, .3f));
+            actionTextPanel.SetActive(true);
+            return;
+        }
+
+        meshRenderer.material.SetColor("_Color", new Color(1, 1, 1, .3f));
+        actionTextPanel.SetActive(false);
+
     }
 
     private void SetupMesh(Vector3[] points)

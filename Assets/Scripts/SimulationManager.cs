@@ -49,8 +49,6 @@ public class SimulationManager : MonoBehaviour
 
     public void GoToNode(int nextNodeID)
     {
-      Debug.Log(nextNodeID);
-
       if (nextNodeID == -1)
           EndGame();
 
