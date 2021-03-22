@@ -138,20 +138,10 @@ public class VideoPart
     public float loopTime;
     public float startTime;
     public float endTime;
-
-    public string getVideoFileName()
-    {
-        return videoFileName;
-    }
-    public int getVideoID()
-    {
-        return videoID;
-    }
-
-    public int getActionCount()
-    {
-        return actions.Count;
-    }
+    public Vector3 videoStartRotation;
+    public string getVideoFileName() => videoFileName;
+    public int getVideoID() => videoID;
+    public int getActionCount() => actions.Count;
 
     public string getActionText(int askedActionID)
     {
@@ -167,10 +157,10 @@ public class VideoPart
     }
 
     public bool getLoop() => loop;
-
     public float getLoopTime() => loopTime;
     public float getStartTime() => startTime;
     public float getEndTime() => endTime;
+    public Vector3 getVideoStartRotation() => videoStartRotation;
 
     public int getNextVideoID(int askedActionID)
     {

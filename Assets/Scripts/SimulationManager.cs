@@ -12,71 +12,74 @@ public class SimulationManager : MonoBehaviour
     VideoData videoData;
     [SerializeField]
     VideoTextureChanger videoTextureChanger;
-    [SerializeField] GameObject endPanel; 
+    [SerializeField] GameObject endPanel;
     [SerializeField] VideoPlayer videoPlayer;
+    [SerializeField] Transform videoCameraTransform;
     [SerializeField] ButtonHandler buttonHandler;
     //private parameters
-    private int currentVideoID=-2;
+    private int currentVideoID = -2;
     private VideoPart currentVideoPart;
 
     // Start is called before the first frame update
     void Start()
     {
-      setStartVideo(); //changed from invoke sith 2s delay
+        setStartVideo(); //changed from invoke sith 2s delay
     }
 
     // Update is called once per frame
     void Update()
     {
-      //getCurrentVideoPart();
+        //getCurrentVideoPart();
     }
 
-    public void SetVideoPauseState(bool value){
-      if(value)
-        videoPlayer.Pause();
-      else
-        videoPlayer.Play();
+    public void SetVideoPauseState(bool value)
+    {
+        if (value)
+            videoPlayer.Pause();
+        else
+            videoPlayer.Play();
     }
 
     void setStartVideo()
     {
-      string startVideoFileName = videoData.getStartPart().getVideoFileName();
-      currentVideoPart = videoData.getStartPart();
-      currentVideoID = currentVideoPart.videoID;
-      videoTextureChanger.ChangeVideo(videoData.getFolderPath() + startVideoFileName);
-      buttonHandler.SetupActions();
-      videoPlayer.Play();
+        string startVideoFileName = videoData.getStartPart().getVideoFileName();
+        currentVideoPart = videoData.getStartPart();
+        currentVideoID = currentVideoPart.videoID;
+        videoCameraTransform.localEulerAngles = currentVideoPart.getVideoStartRotation();
+        videoTextureChanger.ChangeVideo(videoData.getFolderPath() + startVideoFileName);
+        buttonHandler.SetupActions();
+        videoPlayer.Play();
     }
 
     public VideoPart getCurrentVideoPart()
     {
-      //Debug.Log("GetCurrentVideoPart " + currentVideoID);
-      return currentVideoPart;
+        //Debug.Log("GetCurrentVideoPart " + currentVideoID);
+        return currentVideoPart;
     }
 
     public void GoToNode(int nextNodeID)
     {
-      if (nextNodeID == -1)
-          EndGame();
+        if (nextNodeID == -1)
+            EndGame();
 
-      var videoPart = videoData.getVideoPart(nextNodeID);
-      //No video or tool with that id is found -> EndGame
-      if (videoPart != null)
-      {
-          GoToVideo(nextNodeID, videoPart);
-          return;
-      }
+        var videoPart = videoData.getVideoPart(nextNodeID);
+        //No video or tool with that id is found -> EndGame
+        if (videoPart != null)
+        {
+            GoToVideo(nextNodeID, videoPart);
+            return;
+        }
 
-      if (videoPart == null && videoData.VideoStructure.tools == null)
-      {
-          Debug.LogError("no tools");
-          EndGame();
-          return;
-      }
+        if (videoPart == null && videoData.VideoStructure.tools == null)
+        {
+            Debug.LogError("no tools");
+            EndGame();
+            return;
+        }
 
-      foreach (var item in videoData.VideoStructure.tools)
-          if (item.nodeId == nextNodeID)
-              item.ProcessTool(GoToNode);
+        foreach (var item in videoData.VideoStructure.tools)
+            if (item.nodeId == nextNodeID)
+                item.ProcessTool(GoToNode);
     }
 
     private void GoToVideo(int nextNodeID, VideoPart videoPart)
@@ -98,7 +101,7 @@ public class SimulationManager : MonoBehaviour
         }
 
         currentVideoID = nextNodeID;
-
+        videoCameraTransform.localEulerAngles = currentVideoPart.getVideoStartRotation();
         videoTextureChanger.ChangeVideo(videoData.getFolderPath() + nextVideoFileName);
         buttonHandler.SetupActions();
         Debug.Log("Video is " + nextVideoFileName);
@@ -106,26 +109,26 @@ public class SimulationManager : MonoBehaviour
 
     public void AutoEnd()
     {
-      Debug.Log("AutoEnd");
-      var videoPart = getCurrentVideoPart();
+        Debug.Log("AutoEnd");
+        var videoPart = getCurrentVideoPart();
 
-      var autoEnds = videoPart.actions.Where(e => e.autoEnd);
+        var autoEnds = videoPart.actions.Where(e => e.autoEnd);
 
-      Debug.Log("autoEnds.Count" + autoEnds.Count());
+        Debug.Log("autoEnds.Count" + autoEnds.Count());
 
-      if(autoEnds.Count() > 0)
-        GoToNode(autoEnds.FirstOrDefault().nextVideo);
+        if (autoEnds.Count() > 0)
+            GoToNode(autoEnds.FirstOrDefault().nextVideo);
     }
 
     public void ResetSimulation()
     {
-      endPanel.SetActive(false);
-      setStartVideo();    
+        endPanel.SetActive(false);
+        setStartVideo();
     }
 
     public void EndGame()
     {
-      endPanel.SetActive(true);
-      videoPlayer.Stop();
+        endPanel.SetActive(true);
+        videoPlayer.Stop();
     }
 }

@@ -33,6 +33,7 @@ public class VideoJSONWrapper
             loopTime = videoNode.getLoopTime();
             startTime = videoNode.getStartTime();
             endTime = videoNode.getEndTime();
+            videoStartRotation = videoNode.getVideoStartRotation();
 
             if (actionJSONObjects != null)
                 actions = actionJSONObjects;
@@ -45,6 +46,7 @@ public class VideoJSONWrapper
         public float endTime = 1;
         public Vector2 position = Vector2.zero;
         public List<ActionJSONObject> actions;
+        public Vector3 videoStartRotation = Vector3.zero;
     }
 
     [System.Serializable]

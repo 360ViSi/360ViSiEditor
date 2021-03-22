@@ -20,6 +20,7 @@ public class VideoNode : MonoBehaviour
     private bool loopingVideo = true;
     private float loopTime = 0; //loopTime is 0-1 of the video length
     private GameObject autoEndAction = null;
+    private Vector3 videoStartRotation = Vector3.zero;
 
     void Awake()
     {
@@ -98,6 +99,8 @@ public class VideoNode : MonoBehaviour
     public void setEndTime(float value) => endTime = value;
     public float getStartTime() => startTime;
     public void setStartTime(float value) => startTime = value;
+    public Vector3 getVideoStartRotation() => videoStartRotation;
+    public void setVideoStartRotation(Vector3 value) => videoStartRotation = value;
 
     public List<ActionNode> getActionNodeList()
     {

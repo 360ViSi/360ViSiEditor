@@ -69,6 +69,7 @@ public class NodeInspector : MonoBehaviour
         actionDraggables.CreateActionDraggables(node);
         currentVideoNode.GetComponent<Outline>().enabled = true;
 
+        videoCamTransform.localEulerAngles = currentVideoNode.getVideoStartRotation();
         DestroyAllInspectorElements();
 
         //Put bg to video
@@ -104,6 +105,7 @@ public class NodeInspector : MonoBehaviour
         currentVideoNode = node.GetComponentInParent<VideoNode>();
         actionDraggables.CreateActionDraggables(currentVideoNode);
 
+        videoCamTransform.localEulerAngles = currentVideoNode.getVideoStartRotation();
 
         //Clicking on action that isnt from the same video as the previous one (or none)
         if (isUpdate == false && (oldVideoNode == null || currentVideoNode != oldVideoNode))
@@ -171,9 +173,13 @@ public class NodeInspector : MonoBehaviour
                       timeElementPrefab,
                       currentVideoNode.getEndTime(),
                       1);
+        CreateElement("Set current rotation as starting rotation",
+        buttonElementPrefab, SetCurrentRotationAsStartRotation);
 
         CreateWorldMarkers();
     }
+
+
 
     private void CreateActionFields(VideoPlayer source)
     {
@@ -367,15 +373,11 @@ public class NodeInspector : MonoBehaviour
         CurrentActionNode.setIconName(iconName);
         CreateWorldMarker(currentActionNode);
     }
-    void OpenQuestionCreator()
-    {
-        questionCreatorPanel.SetActive(true);
-    }
+    void OpenQuestionCreator() => questionCreatorPanel.SetActive(true);
 
-    void OpenInfoCreator()
-    {
-        infoCreatorPanel.SetActive(true);
-    }
+    void OpenInfoCreator() => infoCreatorPanel.SetActive(true);
+
+    private void SetCurrentRotationAsStartRotation() => CurrentVideoNode.setVideoStartRotation(videoCamTransform.localEulerAngles);
 
     public float GetVideoLength() => (float)editorVideoPlayer.VideoPlayer.length;
 

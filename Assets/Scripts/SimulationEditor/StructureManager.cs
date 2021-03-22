@@ -229,8 +229,6 @@ public class StructureManager : MonoBehaviour
     public void LoadVideoNode(VideoJSONWrapper.VideoJSONObject videoJSONObject)
     {
         var newVideoObject = Instantiate(videoNodePrefab, transform);
-        //generatedVideoID++;//initialized to zero so first used will be 1
-        //setVideoID(newVideoObject, generatedVideoID);
         var node = newVideoObject.GetComponent<VideoNode>();
         node.setVideoID(videoJSONObject.videoID);
         node.setVideoFileName(videoJSONObject.videoFileName);
@@ -238,6 +236,7 @@ public class StructureManager : MonoBehaviour
         node.setLoopTime(videoJSONObject.loopTime);
         node.setStartTime(videoJSONObject.startTime);
         node.setEndTime(videoJSONObject.endTime);
+        node.setVideoStartRotation(videoJSONObject.videoStartRotation);
         newVideoObject.GetComponent<RectTransform>().anchoredPosition = videoJSONObject.position;
         videoGameObjects.Add(newVideoObject);
 

@@ -325,6 +325,7 @@ MonoBehaviour:
   videoTextureChanger: {fileID: 757786608}
   endPanel: {fileID: 1016711823}
   videoPlayer: {fileID: 757786606}
+  videoCameraTransform: {fileID: 534669905}
   buttonHandler: {fileID: 1406188673}
 --- !u!4 &11482227
 Transform:
@@ -3700,9 +3701,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f318ad7d30697274a8f262361a43fa50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  simulationManager: {fileID: 0}
+  simulationManager: {fileID: 11482226}
   infoText: {fileID: 109947397}
-  infoPanel: {fileID: 11482225}
+  infoPanel: {fileID: 1854194762}
 --- !u!4 &2036457153
 Transform:
   m_ObjectHideFlags: 0
