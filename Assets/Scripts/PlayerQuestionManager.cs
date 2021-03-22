@@ -27,6 +27,8 @@ public class PlayerQuestionManager : MonoBehaviour
     public void OpenQuestionPanel(Tool tool)
     {
         //Setup
+        simulationManager.SetVideoPauseState(true);
+
         panel.SetActive(true);
         currentTool = tool;
         submitButton.SetActive(currentTool.question.multipleChoice);
@@ -86,6 +88,7 @@ public class PlayerQuestionManager : MonoBehaviour
     {
         //S TODO maybe a message and short delay to showcase?
         panel.SetActive(false);
+        simulationManager.SetVideoPauseState(false);
 
         if (isCorrect)
             simulationManager.GoToNode(currentTool.nextVideos[0]);

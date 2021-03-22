@@ -31,6 +31,13 @@ public class SimulationManager : MonoBehaviour
       //getCurrentVideoPart();
     }
 
+    public void SetVideoPauseState(bool value){
+      if(value)
+        videoPlayer.Pause();
+      else
+        videoPlayer.Play();
+    }
+
     void setStartVideo()
     {
       string startVideoFileName = videoData.getStartPart().getVideoFileName();
