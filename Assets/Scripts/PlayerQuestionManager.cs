@@ -64,13 +64,19 @@ public class PlayerQuestionManager : MonoBehaviour
     ///</summary>
     public void CheckAnswers()
     {
-        if(answers.Count != currentTool.question.answers.Count)
+        if (answers.Count != currentTool.question.correctAnswers.Count)
+        {
             SubmitAnswer(false);
+            return;
+        }
 
         for (int i = 0; i < currentTool.question.correctAnswers.Count; i++)
         {
             if (answers.Contains(currentTool.question.correctAnswers[i]) == false)
+            {
                 SubmitAnswer(false);
+                return;
+            }
         }
 
 

@@ -243,12 +243,12 @@ public class Tool
                 ProcessRandomTool(goToNode);
                 break;
             case ToolType.QuestionTask:
-                ProcessQuestionTool(goToNode);
+                ProcessQuestionTool();
                 break;
         }
     }
 
-    private void ProcessQuestionTool(Action<int> goToNode) => PlayerQuestionManager.instance.OpenQuestionPanel(this);
+    private void ProcessQuestionTool() => PlayerQuestionManager.instance.OpenQuestionPanel(this);
 
     void ProcessRandomTool(Action<int> goToNode)
     {
