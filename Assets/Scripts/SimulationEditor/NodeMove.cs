@@ -93,7 +93,7 @@ public class NodeMove : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
       ToolNode thisToolNode = GetComponentInParent<ToolNode>(); 
       for (int i = 0; i < thisToolNode.OutPorts.Count; i++)
       {
-          if(thisToolNode.NextVideos[i] != -2)
+          //if(thisToolNode.NextVideos[i] != -2)
             nodeConnections.AddRange(connectionManager.getConnections(thisToolNode.OutPorts[i], null));
       }
       nodeConnections.AddRange(connectionManager.getConnections(null, thisToolNode.InPort));

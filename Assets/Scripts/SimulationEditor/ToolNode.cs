@@ -10,7 +10,7 @@ public class ToolNode : MonoBehaviour
     ToolType toolType;
     Question question;
     string infoText;
-    [SerializeField] List<int> nextVideos = new List<int>();
+    [SerializeField] List<int> nextVideos = new List<int>(); //ummmmmmm only used for loading?
     [SerializeField] NodePort inPort;
     [SerializeField] List<NodePort> outPorts;
     [SerializeField] TMP_Text nodeName;
