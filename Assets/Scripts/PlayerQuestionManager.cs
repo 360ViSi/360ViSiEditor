@@ -57,7 +57,7 @@ public class PlayerQuestionManager : MonoBehaviour
         }
 
         if (answers.Contains(answerId))
-            answers.Contains(answerId);
+            answers.Remove(answerId);
         else answers.Add(answerId);
     }
 

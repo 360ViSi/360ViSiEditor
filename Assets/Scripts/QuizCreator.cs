@@ -14,15 +14,14 @@ public class QuizCreator : MonoBehaviour
     [SerializeField] Toggle isMultiplechoiceToggle;
     List<TMP_InputField> answerInputs = new List<TMP_InputField>();
     List<Toggle> correctToggles = new List<Toggle>();
+    
     // Start is called before the first frame update
     void OnEnable()
     {
         questionInput.text = "";
-        for (int i = 1; i < answerInputs.Count; i++)
+        for (int i = 0; i < layoutTransform.childCount; i++)
         {
-            var answer = answerInputs[i];
-            answerInputs.Remove(answer);
-            Destroy(answer.gameObject);
+            Destroy(layoutTransform.GetChild(i).gameObject);
         }
 
         answerInputs.Clear();
@@ -31,16 +30,20 @@ public class QuizCreator : MonoBehaviour
         LoadQuestionFromNodeToCreator();
     }
 
-    public void LoadQuestionFromNodeToCreator(){
+    public void LoadQuestionFromNodeToCreator()
+    {
         var question = NodeInspector.instance.CurrentToolNode.Question;
+
+        if (question == null) return;
+
         questionInput.text = question.questionText;
         for (int i = 0; i < question.answers.Count; i++)
         {
             AddAnswer();
-            
+
             answerInputs[i].text = question.answers[i];
 
-            if(question.correctAnswers.Contains(i))
+            if (question.correctAnswers.Contains(i))
                 correctToggles[i].isOn = true;
         }
 

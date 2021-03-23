@@ -106,8 +106,9 @@ public class ConnectionManager : MonoBehaviour
     //based on getConnectionIndex function
 
     int[] connectionIndexes=getConnectionIndex(fromPort,toPort);
-    foreach(int connectIndex in connectionIndexes)
+    for (int i = 1; i < connectionIndexes.Length + 1; i++)
     {
+      int connectIndex = connectionIndexes[connectionIndexes.Length - i];
       Destroy(connections[connectIndex].getConnectionLine().gameObject);
       connections.RemoveAt(connectIndex);
     }

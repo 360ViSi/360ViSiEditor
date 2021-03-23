@@ -6,7 +6,7 @@ using System;
 
 public class ToolNode : MonoBehaviour
 {
-    int nodeId = -2;
+    [SerializeField] int nodeId = -2;
     ToolType toolType;
     Question question;
     string infoText;
@@ -120,6 +120,8 @@ public class ToolNode : MonoBehaviour
     {
         foreach (var item in OutPorts)
             item.disconnect();
+
+        inPort.disconnect();
 
         Destroy(gameObject);
     }

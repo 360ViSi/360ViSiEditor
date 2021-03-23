@@ -10,7 +10,7 @@ public class VideoNode : MonoBehaviour
     [SerializeField] private List<GameObject> actionGameObjects = new List<GameObject>();
 
     // video structure parameters
-    private int videoID = -2; //no ID -2 should give error when parsing
+    [SerializeField] private int videoID = -2; //no ID -2 should give error when parsing
     private string videoFileName = "None"; //no video file
     private NodePort nodePort;
     private StructureManager structureManager;
