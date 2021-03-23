@@ -295,10 +295,32 @@ public class NodeInspector : MonoBehaviour
 
     public void UpdateValue(ElementKey key, bool value)
     {
-        if (key == ElementKey.VideoLoop) currentVideoNode.setLoop(value);
+        if (key == ElementKey.VideoLoop)
+        {
+            currentVideoNode.setLoop(value);
+            //If video will loop, none of the actions can autoend
+            if (value)
+            {
+                foreach (var item in currentVideoNode.getActionNodeList())
+                    item.setAutoEnd(false);
+            }
+        }
+
         if (key == ElementKey.ActionAutoEnd)
         {
             currentActionNode.setAutoEnd(value);
+            //If set one action as autoend, remove that from others
+            //And set video to NOT loop (would override autoend)
+            if (value)
+            {
+                foreach (var item in currentVideoNode.getActionNodeList())
+                {
+                    if (item != currentActionNode)
+                        item.setAutoEnd(false);
+                }
+
+                currentVideoNode.setLoop(false);
+            }
             //changing autoend changes what other fields are shown so need to redraw
             CreateFields(currentActionNode, true);
         }

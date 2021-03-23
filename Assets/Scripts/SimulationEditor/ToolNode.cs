@@ -10,6 +10,7 @@ public class ToolNode : MonoBehaviour
     ToolType toolType;
     Question question;
     string infoText;
+    StructureManager structureManager;
     [SerializeField] List<int> nextVideos = new List<int>(); //ummmmmmm only used for loading?
     [SerializeField] NodePort inPort;
     [SerializeField] List<NodePort> outPorts;
@@ -52,6 +53,7 @@ public class ToolNode : MonoBehaviour
 
     public Question Question { get => question; set => question = value; }
     public string InfoText { get => infoText; set => infoText = value; }
+    public StructureManager StructureManager { get => structureManager; set => structureManager = value; }
 
     internal int[] GetNextVideos()
     {
@@ -123,6 +125,7 @@ public class ToolNode : MonoBehaviour
 
         inPort.disconnect();
 
+        structureManager.RemoveToolNode(this);       
         Destroy(gameObject);
     }
     public void InspectorOpen() => NodeInspector.instance.CreateFields(this);

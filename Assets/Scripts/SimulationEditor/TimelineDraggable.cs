@@ -24,6 +24,8 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
     Color defaultColor;
     Image image;
     [SerializeField] TimelineDraggable snapTarget;
+    [SerializeField] TimelineDraggable minClamp;
+    [SerializeField] TimelineDraggable maxClamp;
     [SerializeField] float snapThreshold;
     public UnityEvent OnHold;
     public UnityEventFloat OnRelease;
@@ -68,6 +70,11 @@ public class TimelineDraggable : MonoBehaviour, IDragHandler, IEndDragHandler, I
     public void OnEndDrag(PointerEventData eventData)
     {
         value = (draggedPosition - fullbarPadding) / (Screen.width - fullbarPadding * 2);
+        
+        //S NOTE requires both to function, is there a case for otherwise?
+        if(minClamp != null && maxClamp != null)
+            value = Mathf.Clamp(value, minClamp.Value, maxClamp.Value);
+            
         if (snapTarget != null)
             SnapToTarget();
         OnRelease?.Invoke(value);

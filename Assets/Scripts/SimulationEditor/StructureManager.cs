@@ -1,3 +1,4 @@
+using System.Data;
 using System.ComponentModel;
 using System.Threading;
 using System.Linq;
@@ -59,6 +60,7 @@ public class StructureManager : MonoBehaviour
         var newVideoID = generatedNodeID;
 
         newToolNode.NodeId = getFreeNodeID();
+        newToolNode.StructureManager = this;
     }
 
     public GameObject getActionNodePrefab()
@@ -134,6 +136,8 @@ public class StructureManager : MonoBehaviour
 
         return null;
     }
+
+    
 
     public void SimulationToJson(string path)
     {
@@ -218,6 +222,7 @@ public class StructureManager : MonoBehaviour
         node.ToolType = (ToolType)item.toolTypeInt;
         node.Question = item.question;
         node.InfoText = item.infoText;  
+        node.StructureManager = this;
         
          for (int i = 2; i < node.NextVideos.Count; i++)
              node.CreateOutPort(true);
@@ -263,5 +268,10 @@ public class StructureManager : MonoBehaviour
     public void removeVideoNode(GameObject nodeObject)
     {
         videoGameObjects.Remove(nodeObject);
+    }
+
+    internal void RemoveToolNode(ToolNode node)
+    {
+        toolNodes.Remove(node);
     }
 }
