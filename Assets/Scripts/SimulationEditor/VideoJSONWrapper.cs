@@ -9,15 +9,19 @@ using UnityEngine;
 [System.Serializable]
 public class VideoJSONWrapper
 {
-    public VideoJSONWrapper(List<VideoNode> videoNodes, List<ToolNode> toolNodes, int startId)
+    public VideoJSONWrapper(List<VideoNode> videoNodes, List<ToolNode> toolNodes, int startId, Vector2 startNodePosition, Vector2 endNodePosition)
     {
         videos = ConvertVideoNodeListToJSON(videoNodes);
         tools = ConvertToolNodeListToJSON(toolNodes);
         this.startId = startId;
+        this.startNodePosition = startNodePosition;
+        this.endNodePosition = endNodePosition;
     }
     public List<VideoJSONObject> videos;
     public List<ToolJSONObject> tools;
     public int startId = -1;
+    public Vector2 startNodePosition;
+    public Vector2 endNodePosition;
 
     #region JSONObjects
 

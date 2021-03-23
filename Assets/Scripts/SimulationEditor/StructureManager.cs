@@ -28,7 +28,7 @@ public class StructureManager : MonoBehaviour
     private List<ToolNode> toolNodes = new List<ToolNode>();
     private int generatedNodeID = 0;
     private ConnectionManager connectionManager;
-    
+
 
     // Start is called before the first frame update
     void Start()
@@ -40,7 +40,7 @@ public class StructureManager : MonoBehaviour
             Debug.Log("There are no ConnectionManager as a child of " + name);
         }
     }
-    
+
     public void createNewVideoNode()
     {
         //Initialize new Video node from prefab and add it to the list
@@ -137,14 +137,16 @@ public class StructureManager : MonoBehaviour
         return null;
     }
 
-    
+
 
     public void SimulationToJson(string path)
     {
         VideoJSONWrapper wrapper = new VideoJSONWrapper(
             getVideoNodeList(),
             toolNodes,
-            startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID()
+            startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID(),
+            startNode.GetComponent<RectTransform>().anchoredPosition,
+            endNode.GetComponent<RectTransform>().anchoredPosition
         );
         var json = JsonUtility.ToJson(wrapper);
 
@@ -204,10 +206,13 @@ public class StructureManager : MonoBehaviour
         var firstVideoPort = GetVideoInNodePortWithId(wrapper.startId);
         connectionManager.createConnection(startNodePort, firstVideoPort);
         connectionManager.showConnectionLine(startNodePort, firstVideoPort, true);
+        startNode.GetComponent<RectTransform>().anchoredPosition = wrapper.startNodePosition;
+        endNode.GetComponent<RectTransform>().anchoredPosition = wrapper.endNodePosition;
         StartCoroutine(ReDrawLinesAfterFrame());
     }
 
-    IEnumerator ReDrawLinesAfterFrame(){
+    IEnumerator ReDrawLinesAfterFrame()
+    {
         yield return new WaitForEndOfFrame();
         connectionManager.redrawConnection(null, null);
     }
@@ -221,11 +226,11 @@ public class StructureManager : MonoBehaviour
         node.NodeName.text = "Randomizer";
         node.ToolType = (ToolType)item.toolTypeInt;
         node.Question = item.question;
-        node.InfoText = item.infoText;  
+        node.InfoText = item.infoText;
         node.StructureManager = this;
-        
-         for (int i = 2; i < node.NextVideos.Count; i++)
-             node.CreateOutPort(true);
+
+        for (int i = 2; i < node.NextVideos.Count; i++)
+            node.CreateOutPort(true);
 
         newToolObject.GetComponent<RectTransform>().anchoredPosition = item.position;
         toolNodes.Add(node);
