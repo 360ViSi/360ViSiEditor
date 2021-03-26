@@ -91,8 +91,8 @@ public class PlayerQuestionManager : MonoBehaviour
         simulationManager.SetVideoPauseState(false);
 
         if (isCorrect)
-            simulationManager.GoToNode(currentTool.nextVideos[0]);
+            simulationManager.GoToNode(currentTool.nextNodes[0]);
         else
-            simulationManager.GoToNode(currentTool.nextVideos[1]);
+            simulationManager.GoToNode(currentTool.nextNodes[1]);
     }
 }

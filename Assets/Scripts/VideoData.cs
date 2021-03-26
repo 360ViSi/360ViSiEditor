@@ -57,7 +57,7 @@ public class VideoData : MonoBehaviour
         //check that all video IDs are positive (not negative)
         for (int i = 0; i < structure.videos.Length; i++)
         {
-            videoIDs[i] = structure.videos[i].getVideoID();
+            videoIDs[i] = structure.videos[i].getNodeId();
 
             if (videoIDs[i] < 0)
             {
@@ -83,13 +83,13 @@ public class VideoData : MonoBehaviour
                 {
 
                     //ID -1 is "end action"
-                    if (action.getNextVideo() == -1)
+                    if (action.getNextNode() == -1)
                     {
                         break;
                     }
 
                     //video ID matches
-                    if (action.getNextVideo() == videoIDs[i])
+                    if (action.getNextNode() == videoIDs[i])
                     {
                         break;
                     }
@@ -97,7 +97,7 @@ public class VideoData : MonoBehaviour
                     //No matching video ID in videoIDs list
                     if (i == videoIDs.Length - 1)
                     {
-                        Debug.Log("No such video ID " + action.getNextVideo() + ". Action " + action.getActionText() + " in videoPart (ID) " + videoPart.getVideoID());
+                        Debug.Log("No such video ID " + action.getNextNode() + ". Action " + action.getActionText() + " in videoPart (ID) " + videoPart.getNodeId());
                         return false;
                     }
                 }
@@ -117,7 +117,7 @@ public class VideoStructure
     public VideoPart getVideoPart(int askedVideoID)
     {
         foreach (VideoPart vPart in videos)
-            if (vPart.getVideoID() == askedVideoID)
+            if (vPart.getNodeId() == askedVideoID)
                 return vPart;
         //Debug.Log("There is not a videoID "+askedVideoID);
         return null;
@@ -132,7 +132,7 @@ public class VideoStructure
 public class VideoPart
 {
     public string videoFileName;
-    public int videoID;
+    public int nodeId;
     public List<Action> actions;
     public bool loop;
     public float loopTime;
@@ -140,7 +140,7 @@ public class VideoPart
     public float endTime;
     public Vector3 videoStartRotation;
     public string getVideoFileName() => videoFileName;
-    public int getVideoID() => videoID;
+    public int getNodeId() => nodeId;
     public int getActionCount() => actions.Count;
 
     public string getActionText(int askedActionID)
@@ -167,7 +167,7 @@ public class VideoPart
         Action action = getAction(askedActionID);
         if (action != null)
         {
-            return action.getNextVideo();
+            return action.getNextNode();
         }
         else
         {
@@ -194,7 +194,7 @@ public class VideoPart
 public class Action
 {
     public string actionText;
-    public int nextVideo;
+    public int nextNode;
     public bool autoEnd;
     public float startTime;
     public float endTime;
@@ -204,7 +204,7 @@ public class Action
     public Vector3[] areaMarkerVertices;
     public bool interactable;
     public string getActionText() => actionText;
-    public int getNextVideo() => nextVideo;
+    public int getNextNode() => nextNode;
     public bool getAutoEnd() => autoEnd;
     public float getStartTime() => startTime;
     public float getEndTime() => endTime;
@@ -219,7 +219,7 @@ public class Action
 public class Tool
 {
     public int nodeId;
-    public int[] nextVideos;
+    public int[] nextNodes;
     public int toolTypeInt;
     public Question question;
     public string infoText;
@@ -247,7 +247,7 @@ public class Tool
 
     void ProcessRandomTool(Action<int> goToNode)
     {
-        var rnd = nextVideos[UnityEngine.Random.Range(0, nextVideos.Length)];
+        var rnd = nextNodes[UnityEngine.Random.Range(0, nextNodes.Length)];
         Debug.Log("Randomed to " + rnd);
         goToNode?.Invoke(rnd);
     }

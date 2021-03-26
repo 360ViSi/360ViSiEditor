@@ -222,7 +222,7 @@ public class StructureManager : MonoBehaviour
         var newToolObject = Instantiate(toolNodePrefab, transform);
         var node = newToolObject.GetComponent<ToolNode>();
         node.NodeId = item.nodeId;
-        node.NextVideos = item.nextVideos.ToList();
+        node.NextVideos = item.nextNodes.ToList();
         node.NodeName.text = "Randomizer";
         node.ToolType = (ToolType)item.toolTypeInt;
         node.Question = item.question;
@@ -232,7 +232,7 @@ public class StructureManager : MonoBehaviour
         for (int i = 2; i < node.NextVideos.Count; i++)
             node.CreateOutPort(true);
 
-        newToolObject.GetComponent<RectTransform>().anchoredPosition = item.position;
+        newToolObject.GetComponent<RectTransform>().anchoredPosition = item.nodePosition;
         toolNodes.Add(node);
     }
 
@@ -240,20 +240,20 @@ public class StructureManager : MonoBehaviour
     {
         var newVideoObject = Instantiate(videoNodePrefab, transform);
         var node = newVideoObject.GetComponent<VideoNode>();
-        node.setVideoID(videoJSONObject.videoID);
+        node.setVideoID(videoJSONObject.nodeId);
         node.setVideoFileName(videoJSONObject.videoFileName);
         node.setLoop(videoJSONObject.loop);
         node.setLoopTime(videoJSONObject.loopTime);
         node.setStartTime(videoJSONObject.startTime);
         node.setEndTime(videoJSONObject.endTime);
         node.setVideoStartRotation(videoJSONObject.videoStartRotation);
-        newVideoObject.GetComponent<RectTransform>().anchoredPosition = videoJSONObject.position;
+        newVideoObject.GetComponent<RectTransform>().anchoredPosition = videoJSONObject.nodePosition;
         videoGameObjects.Add(newVideoObject);
 
         foreach (var item in videoJSONObject.actions)
             node.CreateNewActionNode(item.actionText,
                                      item.autoEnd,
-                                     item.nextVideo,
+                                     item.nextNode,
                                      item.startTime,
                                      item.endTime,
                                      item.actionType,

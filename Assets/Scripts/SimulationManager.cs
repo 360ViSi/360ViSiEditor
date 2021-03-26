@@ -44,7 +44,7 @@ public class SimulationManager : MonoBehaviour
     {
         string startVideoFileName = videoData.getStartPart().getVideoFileName();
         currentVideoPart = videoData.getStartPart();
-        currentVideoID = currentVideoPart.videoID;
+        currentVideoID = currentVideoPart.getNodeId();
         videoCameraTransform.localEulerAngles = currentVideoPart.getVideoStartRotation();
         videoTextureChanger.ChangeVideo(videoData.getFolderPath() + startVideoFileName);
         buttonHandler.SetupActions();
@@ -117,7 +117,7 @@ public class SimulationManager : MonoBehaviour
         Debug.Log("autoEnds.Count" + autoEnds.Count());
 
         if (autoEnds.Count() > 0)
-            GoToNode(autoEnds.FirstOrDefault().nextVideo);
+            GoToNode(autoEnds.FirstOrDefault().getNextNode());
     }
 
     public void ResetSimulation()

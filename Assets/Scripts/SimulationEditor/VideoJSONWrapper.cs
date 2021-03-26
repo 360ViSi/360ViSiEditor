@@ -30,9 +30,9 @@ public class VideoJSONWrapper
     {
         public VideoJSONObject(VideoNode videoNode, List<ActionJSONObject> actionJSONObjects = null)
         {
-            videoID = videoNode.getVideoID();
+            nodeId = videoNode.getVideoID();
             videoFileName = videoNode.getVideoFileName();
-            position = videoNode.GetComponent<RectTransform>().anchoredPosition;
+            nodePosition = videoNode.GetComponent<RectTransform>().anchoredPosition;
             loop = videoNode.getLoop();
             loopTime = videoNode.getLoopTime();
             startTime = videoNode.getStartTime();
@@ -42,15 +42,15 @@ public class VideoJSONWrapper
             if (actionJSONObjects != null)
                 actions = actionJSONObjects;
         }
-        public int videoID = -2;
-        public bool loop = false;
+        public int nodeId = -2;
         public string videoFileName = "";
-        public float loopTime = 0;
         public float startTime = 0;
         public float endTime = 1;
-        public Vector2 position = Vector2.zero;
-        public List<ActionJSONObject> actions;
+        public bool loop = false;
+        public float loopTime = 0;
         public Vector3 videoStartRotation = Vector3.zero;
+        public Vector2 nodePosition = Vector2.zero;
+        public List<ActionJSONObject> actions;
     }
 
     [System.Serializable]
@@ -59,7 +59,7 @@ public class VideoJSONWrapper
         public ActionJSONObject(ActionNode actionNode)
         {
             actionText = actionNode.getActionText();
-            nextVideo = actionNode.getNextVideoID();
+            nextNode = actionNode.getNextVideoID();
             autoEnd = actionNode.getAutoEnd();
             startTime = actionNode.getStartTime();
             endTime = actionNode.getEndTime();
@@ -67,11 +67,10 @@ public class VideoJSONWrapper
             worldPosition = actionNode.getWorldPosition();
             iconName = actionNode.getIconName();
             areaMarkerVertices = actionNode.getAreaMarkerVertices();
-            interactable = actionNode.getIsInteractable();
         }
 
         public string actionText = "";
-        public int nextVideo = -2;
+        public int nextNode = -2;
         public bool autoEnd = false;
         public float startTime = 0;
         public float endTime = 1;
@@ -79,7 +78,6 @@ public class VideoJSONWrapper
         public Vector3 worldPosition = Vector3.zero;
         public string iconName = "hand";
         public Vector3[] areaMarkerVertices = null;
-        public bool interactable = false;
     }
 
     [System.Serializable]
@@ -88,15 +86,15 @@ public class VideoJSONWrapper
         public ToolJSONObject(ToolNode toolNode)
         {
             nodeId = toolNode.NodeId;
-            nextVideos = toolNode.GetNextVideos();
-            position = toolNode.GetComponent<RectTransform>().anchoredPosition;
+            nextNodes = toolNode.GetNextVideos();
+            nodePosition = toolNode.GetComponent<RectTransform>().anchoredPosition;
             toolTypeInt = (int)toolNode.ToolType;
             question = toolNode.Question;
             infoText = toolNode.InfoText;
         }
         public int nodeId = -2;
-        public int[] nextVideos = new int[0];
-        public Vector2 position;
+        public int[] nextNodes = new int[0];
+        public Vector2 nodePosition;
         public int toolTypeInt;
         public Question question;
         public string infoText;

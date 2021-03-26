@@ -3026,7 +3026,7 @@ MonoBehaviour:
   videoPlayer: {fileID: 757786606}
   worldButtonPrefab: {fileID: 7096832405384579042, guid: 9bd981b9d4382aa4ba2bfac4928877a9,
     type: 3}
-  floorButtonPrefab: {fileID: 6512121361242140342, guid: 66560fc3864547549ba8fae3edd9cb5f,
+  floorButtonPrefab: {fileID: 6512121361242140342, guid: 7f09d67a1d987d34a9d8f679ec236118,
     type: 3}
   areaButtonPrefab: {fileID: 162763176130015082, guid: 92c82d7a74cee254a871b205626630eb,
     type: 3}

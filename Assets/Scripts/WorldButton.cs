@@ -27,7 +27,7 @@ public class WorldButton : MonoBehaviour
 
     public void SetAction(Action action, SimulationManager simulationManager)
     {
-        this.nextVideoID = action.getNextVideo();
+        this.nextVideoID = action.getNextNode();
         this.startTime = action.getStartTime();
         this.endTime = action.getEndTime();
         this.simulationManager = simulationManager;

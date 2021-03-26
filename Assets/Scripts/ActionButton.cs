@@ -12,7 +12,7 @@ public class ActionButton : MonoBehaviour
     public void SetAction(Action action)
     {
         buttonText.text = action.getActionText();
-        this.nextVideoID = action.getNextVideo();
+        this.nextVideoID = action.getNextNode();
         this.startTime = action.getStartTime();
         this.endTime = action.getEndTime();
     }
