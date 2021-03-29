@@ -76,10 +76,8 @@ public class StructureManager : MonoBehaviour
         //and asign it to video node
         var newNodeId = 0;
         while (!isNodeIDFree(newNodeId))
-        {
-            Debug.Log("Node ID is already in use: " + newNodeId);
             newNodeId++;
-        }
+            
         return newNodeId;
     }
 

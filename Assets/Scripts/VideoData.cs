@@ -200,7 +200,7 @@ public class Action
     public float endTime;
     public ActionType actionType;
     public Vector3 worldPosition;
-    public string iconName = "hand";
+    public string iconName = "touch";
     public Vector3[] areaMarkerVertices;
     public bool interactable;
     public string getActionText() => actionText;

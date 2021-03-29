@@ -37,7 +37,7 @@ public class VideoNode : MonoBehaviour
     public void CreateNewActionNode()
     {
         //This setups the defaults for a new action node, called from the button of a videoNode
-        CreateNewActionNode("action", false, -2, 0, 1, ActionType.ScreenButton, Vector3.zero, "hand", null);
+        CreateNewActionNode("action", false, -2, 0, 1, ActionType.ScreenButton, Vector3.zero, "touch", null);
     }
 
     public void CreateNewActionNode(string actionText, bool isAutoEnd, int nextVideoId, float startTime,

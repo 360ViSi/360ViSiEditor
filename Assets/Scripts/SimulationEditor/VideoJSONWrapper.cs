@@ -76,7 +76,7 @@ public class VideoJSONWrapper
         public float endTime = 1;
         public ActionType actionType = ActionType.ScreenButton;
         public Vector3 worldPosition = Vector3.zero;
-        public string iconName = "hand";
+        public string iconName = "touch";
         public Vector3[] areaMarkerVertices = null;
     }
 

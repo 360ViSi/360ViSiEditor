@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: SO_Icons
   m_EditorClassIdentifier: 
   icons:
-  - iconName: walk
+  - iconName: moving
     sprite: {fileID: 21300000, guid: 512a7a923239b9c4e824658343521e07, type: 3}
   - iconName: done
     sprite: {fileID: 21300000, guid: a49e9c96621016f4abc2e18c7e0cb452, type: 3}
-  - iconName: hand
+  - iconName: touch
     sprite: {fileID: 21300000, guid: 8d5210121414f934bbf1d0a4ce894162, type: 3}
   - iconName: speak
     sprite: {fileID: 21300000, guid: 11234a8744e56c846bc4822ced9c5c34, type: 3}
