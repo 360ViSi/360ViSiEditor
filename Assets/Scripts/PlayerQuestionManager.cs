@@ -31,7 +31,7 @@ public class PlayerQuestionManager : MonoBehaviour
 
         panel.SetActive(true);
         currentTool = tool;
-        submitButton.SetActive(currentTool.question.multipleChoice);
+        submitButton.SetActive(currentTool.question.correctAnswers.Count > 1);
         questionText.text = currentTool.question.questionText;
         answers.Clear();
 
@@ -49,7 +49,7 @@ public class PlayerQuestionManager : MonoBehaviour
 
     public void SelectAnswer(int answerId)
     {
-        if (currentTool.question.multipleChoice == false)
+        if (currentTool.question.correctAnswers.Count == 1)
         {
             answers = new List<int> { answerId };
             CheckAnswers();

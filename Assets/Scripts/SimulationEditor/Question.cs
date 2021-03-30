@@ -8,12 +8,10 @@ public class Question
     {
         this.questionText = questionText;
         this.answers = answers;
-        this.multipleChoice = multipleChoice;
         this.correctAnswers = correctAnswers;
     }
 
-    //Fields are public to avoid creating json version
-    public bool multipleChoice;
+    //Fields are public to avoid creating json wrapper for the class
     public string questionText;
     public List<string> answers = new List<string>();
     public List<int> correctAnswers = new List<int>();

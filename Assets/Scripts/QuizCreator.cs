@@ -46,8 +46,6 @@ public class QuizCreator : MonoBehaviour
             if (question.correctAnswers.Contains(i))
                 correctToggles[i].isOn = true;
         }
-
-        isMultiplechoiceToggle.isOn = question.multipleChoice;
     }
 
     public void AddAnswer()
