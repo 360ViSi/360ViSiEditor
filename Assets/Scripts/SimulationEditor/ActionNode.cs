@@ -31,7 +31,10 @@ public class ActionNode : MonoBehaviour
   bool isInteractable;
   [SerializeField] GameObject removeButton = null;
 
-  void Awake()
+  Color nodeColor;
+  public Color NodeColor { get => nodeColor;}
+
+    void Awake()
   {
 
     // get NodePort
@@ -65,13 +68,13 @@ public class ActionNode : MonoBehaviour
     var connections = connectionManager.getEveryPortConnection(nodePort);
     if(connections.Count == 0) 
     {
-      thisImage.color=notConnectedColor;
+      SetColor(notConnectedColor);
       return;
     }
     NodePort connectedPort = connections[0].getToNode();
     if (connectedPort==null)
     {
-      thisImage.color=notConnectedColor;
+      SetColor(notConnectedColor);
       return;
     }
     VideoNode connectedVideoNode = connectedPort.GetComponentInParent<VideoNode>();
@@ -84,19 +87,24 @@ public class ActionNode : MonoBehaviour
       //empty connection list == not connected
       if (portConnections.Count==0)
       {
-        thisImage.color=notConnectedColor;
+        SetColor(notConnectedColor);
         return;
       }
       // get connection "to" node and its VideoNode
       //VideoNode connectedVideoNode = portConnections[0].getToNode().getParentVideoNode();
       if (connectedVideoNode!=null && connectedVideoNode.getVideoID()==-1)
       {
-        thisImage.color=endActionColor;
+        SetColor(endActionColor);
         return;
       }
-      thisImage.color=connectedColor;
+      SetColor(connectedColor);
     }
-    thisImage.color=connectedColor;
+    SetColor(connectedColor);
+  } 
+
+  void SetColor(Color color){
+    nodeColor = color;
+    thisImage.color = color;
   }
   public void setAutoEnd(bool value)
   {

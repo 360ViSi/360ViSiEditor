@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public partial class ActionDraggables : MonoBehaviour
 {
@@ -41,6 +42,12 @@ public partial class ActionDraggables : MonoBehaviour
         var draggableRect = draggableGo.GetComponent<RectTransform>();
         draggableRect.SetParent(transform, false);
         draggableRect.localPosition = position;
+
+        //Set colors
+        var draggableImages = draggableGo.GetComponentsInChildren<Image>();
+        foreach (var image in draggableImages)
+            image.color = item.NodeColor;
+
 
         var draggable = draggableGo.GetComponent<ActionDraggable>();
         //Apply initial values
