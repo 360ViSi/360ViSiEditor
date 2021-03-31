@@ -15,6 +15,8 @@ public class ActionNode : MonoBehaviour
   private Color notConnectedColor;
   [SerializeField]
   private Color endActionColor;
+    [SerializeField]
+  private Color toolColor;
 
   private NodePort nodePort;
   private ConnectionManager connectionManager;
@@ -97,14 +99,18 @@ public class ActionNode : MonoBehaviour
         SetColor(endActionColor);
         return;
       }
-      SetColor(connectedColor);
     }
-    SetColor(connectedColor);
+    if(connectedVideoNode == null)
+      SetColor(toolColor);
+    else
+      SetColor(connectedColor);
   } 
 
   void SetColor(Color color){
     nodeColor = color;
     thisImage.color = color;
+    if(NodeInspector.instance.ActionDraggables != null)
+      NodeInspector.instance.ActionDraggables.Refresh();
   }
   public void setAutoEnd(bool value)
   {

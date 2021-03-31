@@ -173,8 +173,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   connectedColor: {r: 1, g: 0.6088505, b: 0.26415092, a: 1}
-  notConnectedColor: {r: 1, g: 0.32048076, b: 0.26274514, a: 1}
-  endActionColor: {r: 0.8805962, g: 0.26274514, b: 1, a: 1}
+  notConnectedColor: {r: 0.122641504, g: 0.122641504, b: 0.122641504, a: 1}
+  endActionColor: {r: 1, g: 0.10283645, b: 0, a: 1}
+  toolColor: {r: 0.88235295, g: 0.2627451, b: 1, a: 1}
   removeButton: {fileID: 4065068586800076695}
 --- !u!114 &8003154161611174379
 MonoBehaviour:

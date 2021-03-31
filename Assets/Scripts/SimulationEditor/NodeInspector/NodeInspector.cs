@@ -44,6 +44,7 @@ public class NodeInspector : MonoBehaviour
     public VideoNode CurrentVideoNode => currentVideoNode;
     public ActionNode CurrentActionNode => currentActionNode;
     public ToolNode CurrentToolNode => currentToolNode;
+    public ActionDraggables ActionDraggables => actionDraggables;
 
     private void Awake()
     {
@@ -185,8 +186,7 @@ public class NodeInspector : MonoBehaviour
     {
         editorVideoPlayer.VideoPlayer.prepareCompleted -= CreateActionFields;
         CreateElement("Action name", ElementKey.ActionName, textElementPrefab, currentActionNode.getActionText());
-
-        //CreateElement("Is interactable", ElementKey.ActionIsInteractable, toggleElementPrefab, currentActionNode.getIsInteractable());
+        CreateElement("Change Icon", buttonElementPrefab, OpenIconSelection);
 
         CreateElement("Video end action", ElementKey.ActionAutoEnd, toggleElementPrefab, currentActionNode.getAutoEnd());
 
@@ -200,8 +200,6 @@ public class NodeInspector : MonoBehaviour
 
         if (currentActionNode.getActionType() != ActionType.ScreenButton)
             CreateElement("Set Marker", buttonElementPrefab, StartWorldMarkerPositioning);
-        if (currentActionNode.getActionType() == ActionType.WorldButton)
-            CreateElement("Change Icon", buttonElementPrefab, OpenIconSelection);
         if (currentActionNode.getActionType() == ActionType.AreaButton && currentActionNode.getAreaMarkerVertices() != null)
             CreateElement("Edit Marker", buttonElementPrefab, EditAreaMarkerPositioning);
 
@@ -394,6 +392,7 @@ public class NodeInspector : MonoBehaviour
         RemoveMarkers();
         CurrentActionNode.setIconName(iconName);
         CreateWorldMarker(currentActionNode);
+        actionDraggables.Refresh();
     }
     void OpenQuestionCreator() => questionCreatorPanel.SetActive(true);
 

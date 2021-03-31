@@ -2284,7 +2284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollSpeed: 1
   _maxZoom: 15
-  _minZoom: 1
+  _minZoom: -1
   canvasRectTransform: {fileID: 452938063}
 --- !u!1 &803232621
 GameObject:
