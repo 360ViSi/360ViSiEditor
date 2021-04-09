@@ -30,7 +30,11 @@ public class CanvasLine : MonoBehaviour
         if (endPoint) endPosition = endPoint.position;
 
         //S NOTE Expects canvas to be 1080p
+        var oldPos = startPosition.x;
+        startPosition.x = startPosition.x / Screen.width * 1920;
         endPosition.x = endPosition.x / Screen.width * 1920;
+        offset = new Vector2(oldPos - startPosition.x, 0);
+
         CalculateLine();
     }
 

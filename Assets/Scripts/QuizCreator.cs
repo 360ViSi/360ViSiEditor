@@ -111,6 +111,8 @@ public class QuizCreator : MonoBehaviour
 
     public void HandleMultichoiceToggle(bool isMulti)
     {
+        NodeInspector.instance.CurrentToolNode.SetOutPortAmountButtonsActive(!isMulti);
+        
         if (isMulti)
         {
             for (int i = 0; i < outPortInputs.Count; i++)
@@ -121,6 +123,8 @@ public class QuizCreator : MonoBehaviour
             }
             return;
         }
+
+        NodeInspector.instance.CurrentToolNode.RemoveAllExcessOutPorts(2);
 
         for (int i = 0; i < outPortInputs.Count; i++)
         {

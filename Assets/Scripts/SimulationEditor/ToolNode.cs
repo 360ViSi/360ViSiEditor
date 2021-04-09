@@ -46,7 +46,9 @@ public class ToolNode : MonoBehaviour
             }
 
 
-            SetOutPortAmountButtonsActive(toolType != ToolType.Info);
+            SetOutPortAmountButtonsActive(
+                toolType == ToolType.Random
+                || toolType == ToolType.QuestionTask && question != null && question.multichoice);
         }
     }
 
@@ -108,7 +110,7 @@ public class ToolNode : MonoBehaviour
                 OutPorts.RemoveAt(OutPorts.Count - 1);
 
                 if (NextVideos.Count - 1 >= 0)
-                NextVideos.RemoveAt(NextVideos.Count - 1);
+                    NextVideos.RemoveAt(NextVideos.Count - 1);
             }
         else
             for (int i = 0; i < Mathf.Abs(count); i++)
@@ -124,13 +126,13 @@ public class ToolNode : MonoBehaviour
 
         inPort.disconnect();
 
-        structureManager.RemoveToolNode(this);       
+        structureManager.RemoveToolNode(this);
         Destroy(gameObject);
     }
     public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 
 
-    void SetOutPortAmountButtonsActive(bool value)
+    public void SetOutPortAmountButtonsActive(bool value)
     {
         for (int i = 0; i < outPortAmountButtons.Length; i++)
             outPortAmountButtons[i].SetActive(value);
