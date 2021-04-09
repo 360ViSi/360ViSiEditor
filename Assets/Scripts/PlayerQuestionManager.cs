@@ -31,7 +31,7 @@ public class PlayerQuestionManager : MonoBehaviour
 
         panel.SetActive(true);
         currentTool = tool;
-        submitButton.SetActive(currentTool.question.correctAnswers.Count > 1);
+        submitButton.SetActive(currentTool.question.multichoice);
         questionText.text = currentTool.question.questionText;
         answers.Clear();
 
@@ -49,10 +49,10 @@ public class PlayerQuestionManager : MonoBehaviour
 
     public void SelectAnswer(int answerId)
     {
-        if (currentTool.question.correctAnswers.Count == 1)
+        if (currentTool.question.multichoice == false)
         {
             answers = new List<int> { answerId };
-            CheckAnswers();
+            CheckAnswers(answerId);
             return;
         }
 
@@ -64,17 +64,22 @@ public class PlayerQuestionManager : MonoBehaviour
     ///<summary>
     /// Check that all the question.correctAnswers exist also in the answers that the user selected
     ///</summary>
-    public void CheckAnswers()
+    public void CheckAnswers(int answerId)
     {
-        if (answers.Count != currentTool.question.correctAnswers.Count)
+        if (!currentTool.question.multichoice)
         {
-            SubmitAnswer(false);
+            SubmitAnswer(answerId);
             return;
         }
 
         for (int i = 0; i < currentTool.question.correctAnswers.Count; i++)
         {
-            if (answers.Contains(currentTool.question.correctAnswers[i]) == false)
+            if (currentTool.question.correctAnswers[i] == 0 && !answers.Contains(i))
+            {
+                SubmitAnswer(false);
+                return;
+            }
+            else if (currentTool.question.correctAnswers[i] == 1 && answers.Contains(i))
             {
                 SubmitAnswer(false);
                 return;
@@ -86,7 +91,6 @@ public class PlayerQuestionManager : MonoBehaviour
 
     private void SubmitAnswer(bool isCorrect)
     {
-        //S TODO maybe a message and short delay to showcase?
         panel.SetActive(false);
         simulationManager.SetVideoPauseState(false);
 
@@ -94,5 +98,13 @@ public class PlayerQuestionManager : MonoBehaviour
             simulationManager.GoToNode(currentTool.nextNodes[0]);
         else
             simulationManager.GoToNode(currentTool.nextNodes[1]);
+    }
+
+    void SubmitAnswer(int answerId)
+    {
+        panel.SetActive(false);
+        simulationManager.SetVideoPauseState(false);
+
+        simulationManager.GoToNode(currentTool.nextNodes[currentTool.question.correctAnswers[answerId]]);
     }
 }

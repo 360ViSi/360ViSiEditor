@@ -46,8 +46,7 @@ public class ToolNode : MonoBehaviour
             }
 
 
-
-            SetOutPortAmountButtonsActive(toolType == ToolType.Random);
+            SetOutPortAmountButtonsActive(toolType != ToolType.Info);
         }
     }
 
