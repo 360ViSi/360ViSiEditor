@@ -37,12 +37,12 @@ public class VideoNode : MonoBehaviour
     public void CreateNewActionNode()
     {
         //This setups the defaults for a new action node, called from the button of a videoNode
-        CreateNewActionNode("action", false, -2, 0, 1, ActionType.ScreenButton, Vector3.zero, "touch", null);
+        CreateNewActionNode("action", false, -2, 0, 1, ActionType.ScreenButton, Vector3.zero, "touch", null, 0);
     }
 
     public void CreateNewActionNode(string actionText, bool isAutoEnd, int nextVideoId, float startTime,
                                     float endTime, ActionType actionType, Vector3 worldPosition, string iconName,
-                                    Vector3[] areaMarkerVertices)
+                                    Vector3[] areaMarkerVertices, float timer)
     {
         //get prefab from structureManager and initilize that
         //add action node to the list and position it in UI
@@ -64,14 +64,13 @@ public class VideoNode : MonoBehaviour
         actionNode.setWorldPosition(worldPosition);
         actionNode.setIconName(iconName);
         actionNode.setAreaMarkerVertices(areaMarkerVertices);
+        actionNode.setActionTimer(timer);
 
         if (isAutoEnd)
         {
             autoEndAction = newActionGameObject;
             actionNode.setAutoEnd(true);
         }
-
-        //NodeInspector.instance.CreateFields(actionNode);
     }
 
     public void setVideoID(int newVideoID)

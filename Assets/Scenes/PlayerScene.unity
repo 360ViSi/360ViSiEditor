@@ -326,7 +326,7 @@ MonoBehaviour:
   endPanel: {fileID: 1016711823}
   videoPlayer: {fileID: 757786606}
   videoCameraTransform: {fileID: 534669905}
-  buttonHandler: {fileID: 1406188673}
+  actionHandler: {fileID: 1406188673}
 --- !u!4 &11482227
 Transform:
   m_ObjectHideFlags: 0
@@ -2998,7 +2998,7 @@ GameObject:
   - component: {fileID: 1406188674}
   - component: {fileID: 1406188673}
   m_Layer: 0
-  m_Name: ButtonHandler
+  m_Name: ActionHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3013,15 +3013,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1406188672}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5f6db7c0faf3e9b8978370d7b5aa40d, type: 3}
+  m_Script: {fileID: 11500000, guid: da8b3b304df658f48abea86964e38f36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenButtons:
-  - {fileID: 837409890006125834}
-  - {fileID: 452945155}
-  - {fileID: 620969972}
-  - {fileID: 320589162}
-  - {fileID: 428401059}
+  screenButtons: []
   simulationManager: {fileID: 11482226}
   videoPlayer: {fileID: 757786606}
   worldButtonPrefab: {fileID: 7096832405384579042, guid: 9bd981b9d4382aa4ba2bfac4928877a9,

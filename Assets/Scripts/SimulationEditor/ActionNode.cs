@@ -30,8 +30,8 @@ public class ActionNode : MonoBehaviour
     private Vector3 worldPosition = Vector3.zero;
     private string iconName = "walk";
     private Vector3[] areaMarkerVertices = null;
-    bool isInteractable;
     [SerializeField] GameObject removeButton = null;
+    float actionTimer = 0;
 
     Color nodeColor;
     public Color NodeColor { get => nodeColor; }
@@ -201,15 +201,8 @@ public class ActionNode : MonoBehaviour
     public void setIconName(string value) => iconName = value;
     public Vector3[] getAreaMarkerVertices() => areaMarkerVertices;
     public void setAreaMarkerVertices(Vector3[] value) => areaMarkerVertices = value;
-    public bool getIsInteractable() => isInteractable;
-    public void setIsInteractable(bool value, bool startUp = true)
-    {
-        isInteractable = value;
-        if (!value)
-            nodePort.disconnect();
-        // nodePort.gameObject.SetActive(value);
-    }
-
+    public float getActionTimer() => actionTimer;
+    public void setActionTimer(float value) => actionTimer = value;
     public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 
     ///<summary>
@@ -220,8 +213,9 @@ public class ActionNode : MonoBehaviour
 }
 public enum ActionType
 {
-    ScreenButton, // In VR this would be the panel in front of the player
-    WorldButton, //somewhere in world - commonly PoI in other 360 tour programs
-    FloorButton, //Marker rotated on the floor
-    AreaButton, //this will not be included in a while
+    ScreenButton,   // In VR this would be the panel in front of the player
+    WorldButton,    //somewhere in world - commonly PoI in other 360 tour programs
+    FloorButton,    //Marker rotated on the floor
+    AreaButton,     //this will not be included in a while
+    Timer,          //triggered after specified amount of seconds are elapsed after video's start
 }

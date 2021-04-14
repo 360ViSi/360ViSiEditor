@@ -15,7 +15,7 @@ public class SimulationManager : MonoBehaviour
     [SerializeField] GameObject endPanel;
     [SerializeField] VideoPlayer videoPlayer;
     [SerializeField] Transform videoCameraTransform;
-    [SerializeField] ButtonHandler buttonHandler;
+    [SerializeField] ActionHandler actionHandler;
     //private parameters
     private int currentVideoID = -2;
     private VideoPart currentVideoPart;
@@ -47,7 +47,7 @@ public class SimulationManager : MonoBehaviour
         currentVideoID = currentVideoPart.getNodeId();
         videoCameraTransform.localEulerAngles = currentVideoPart.getVideoStartRotation();
         videoTextureChanger.ChangeVideo(videoData.getFolderPath() + startVideoFileName);
-        buttonHandler.SetupActions();
+        actionHandler.SetupActions();
         videoPlayer.Play();
     }
 
@@ -103,7 +103,7 @@ public class SimulationManager : MonoBehaviour
         currentVideoID = nextNodeID;
         videoCameraTransform.localEulerAngles = currentVideoPart.getVideoStartRotation();
         videoTextureChanger.ChangeVideo(videoData.getFolderPath() + nextVideoFileName);
-        buttonHandler.SetupActions();
+        actionHandler.SetupActions();
         Debug.Log("Video is " + nextVideoFileName);
     }
 

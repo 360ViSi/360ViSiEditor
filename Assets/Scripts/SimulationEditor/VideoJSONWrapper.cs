@@ -67,6 +67,7 @@ public class VideoJSONWrapper
             worldPosition = actionNode.getWorldPosition();
             iconName = actionNode.getIconName();
             areaMarkerVertices = actionNode.getAreaMarkerVertices();
+            timer = actionNode.getActionTimer();
         }
 
         public string actionText = "";
@@ -78,6 +79,7 @@ public class VideoJSONWrapper
         public Vector3 worldPosition = Vector3.zero;
         public string iconName = "touch";
         public Vector3[] areaMarkerVertices = null;
+        public float timer = 0;
     }
 
     [System.Serializable]

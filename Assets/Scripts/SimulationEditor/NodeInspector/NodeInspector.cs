@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Linq;
 using System.Collections;
@@ -198,6 +199,12 @@ public class NodeInspector : MonoBehaviour
 
         CreateElement("Action type", ElementKey.ActionType, dropdownElementPrefab, (int)currentActionNode.getActionType());
 
+        if (currentActionNode.getActionType() == ActionType.Timer)
+        {
+            CreateElement("Time to trigger", ElementKey.Timer, textElementPrefab, currentActionNode.getActionTimer().ToString("0.0"));
+            return;
+        }
+
         if (currentActionNode.getActionType() != ActionType.ScreenButton)
             CreateElement("Set Marker", buttonElementPrefab, StartWorldMarkerPositioning);
         if (currentActionNode.getActionType() == ActionType.AreaButton && currentActionNode.getAreaMarkerVertices() != null)
@@ -289,6 +296,12 @@ public class NodeInspector : MonoBehaviour
             currentActionNode.setActionText(value);
             CreateWorldMarker(currentActionNode, true);
         }
+        if (key == ElementKey.Timer)
+        {
+            if(float.TryParse(value, out float result))
+                currentActionNode.setActionTimer(result);
+            else Debug.LogError("Time is in the wrong format!");
+        }
     }
 
     public void UpdateValue(ElementKey key, bool value)
@@ -320,15 +333,6 @@ public class NodeInspector : MonoBehaviour
                 currentVideoNode.setLoop(false);
             }
             //changing autoend changes what other fields are shown so need to redraw
-            CreateFields(currentActionNode, true);
-        }
-        if (key == ElementKey.ActionIsInteractable)
-        {
-            currentActionNode.setIsInteractable(value, false);
-            if (value) currentActionNode.setAutoEnd(false);
-
-            currentActionNode.setStartTime(0);
-            currentActionNode.setEndTime(1);
             CreateFields(currentActionNode, true);
         }
         editorVideoPlayer.RefreshTimeline();
@@ -492,10 +496,10 @@ public enum ElementKey
     ActionEndTime,
     ActionAutoEnd,
     ActionType,
-    ActionIsInteractable,
     VideoLoop,
     VideoLoopTime,
     VideoStartTime,
     VideoEndTime,
-    ToolType
+    ToolType,
+    Timer
 }
