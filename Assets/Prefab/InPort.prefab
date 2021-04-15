@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 2d1ecd5e226194e47ac6ccf35a57b735, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -89,5 +89,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isOutPort: 0
   isInPort: 1
-  connectionLinePrefab: {fileID: 7364462528716453485, guid: e5a655df5c8765c33a0bf156b6656c74,
-    type: 3}

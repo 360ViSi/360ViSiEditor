@@ -13,4 +13,6 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData) 
         => toolTipExit?.Raise(toolTipText);
+
+    private void OnDestroy() => toolTipExit?.Raise(toolTipText);
 }

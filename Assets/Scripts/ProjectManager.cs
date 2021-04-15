@@ -34,7 +34,7 @@ public class ProjectManager : MonoBehaviour
 
     private void Start()
     {
-        OpenProject(@"C:\Unity\solo.json");
+        OpenProject(@"C:\Unity\solo.json"); //S TODO (save most recent to playerprefs and load on start)
     }
 
     public void NewProject()

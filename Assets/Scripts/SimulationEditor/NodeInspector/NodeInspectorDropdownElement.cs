@@ -11,16 +11,32 @@ public class NodeInspectorDropdownElement : NodeInspectorElement
         elementName.text = header;
 
         var options = new List<TMP_Dropdown.OptionData>();
-        if(key == ElementKey.ActionType)
+
+        switch (key)
         {
-            foreach (var item in Utilities.GetValues<ActionType>())
-            {
-                var option = new TMP_Dropdown.OptionData
+            case ElementKey.ActionType:
+                foreach (var item in Utilities.GetValues<ActionType>())
                 {
-                    text = item.ToString()
-                };
-                options.Add(option);
-            }
+                    var option = new TMP_Dropdown.OptionData
+                    {
+                        text = item.ToString()
+                    };
+                    options.Add(option);
+                }
+                break;
+            case ElementKey.ToolType:
+                foreach (var item in Utilities.GetValues<ToolType>())
+                {
+                    var option = new TMP_Dropdown.OptionData
+                    {
+                        text = item.ToString()
+                    };
+                    options.Add(option);
+                }
+                break;
+            default:
+                Debug.Log("Not implemented");
+                break;
         }
 
         elementValue.AddOptions(options);

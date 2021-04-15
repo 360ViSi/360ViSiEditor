@@ -76,9 +76,21 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
       var indexList = connectionManager.getConnections(this, null);
       
 
-      if(indexList.Count > 0)
-        return indexList[0].getToNode().getParentVideoNode().getVideoID();
+      if(indexList.Count <= 0) return -2;
 
+
+      var nodePort = indexList[0].getToNode(); //.getParentVideoNode().getVideoID();
+
+      try
+      {
+        var video = nodePort.GetComponentInParent<VideoNode>();
+        var tool = nodePort.GetComponentInParent<ToolNode>();
+
+        if(video != null) return video.getVideoID();
+        else if(tool != null) return tool.NodeId; //S ToolNode
+      }
+      catch{}
+      
       return -2;
     }
 
@@ -124,7 +136,20 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
       try
       {
-        NodePort dropPort = dropNode.GetComponentInParent<VideoNode>().getNodePort();
+        NodePort dropPort = null;
+        var video = dropNode.GetComponentInParent<VideoNode>();
+        var tool = dropNode.GetComponentInParent<ToolNode>();
+        //S ToolNode
+        if(video != null)
+          dropPort = dropNode.GetComponentInParent<VideoNode>().getNodePort();
+        else if(tool != null) 
+          dropPort = dropNode.GetComponentInParent<ToolNode>().InPort;
+        else{
+          Debug.Log("No in port found");
+          connectionManager.deleteConnection(this,null);
+          return;
+        }
+
         Debug.Log("DropPort: "+dropPort);
         if (dropPort.isInPort)
         {
@@ -151,10 +176,9 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
     public void CreateConnection(int nextVideoId)
     {
-      var targetVideoNode = structureManager.GetVideoNodeWithId(nextVideoId);
-      var targetPort = targetVideoNode.getNodePort();
-      connectionManager.createConnection(this, targetPort);
-      connectionManager.showConnectionLine(this, targetPort, true);
+      var targetNodePort = structureManager.GetVideoInNodePortWithId(nextVideoId);
+      connectionManager.createConnection(this, targetNodePort);
+      connectionManager.showConnectionLine(this, targetNodePort, true);
     }
     ///<summary>
     ///Deletes connections from connectionManager

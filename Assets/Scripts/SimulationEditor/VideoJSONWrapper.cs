@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,14 +9,19 @@ using UnityEngine;
 [System.Serializable]
 public class VideoJSONWrapper
 {
-    public VideoJSONWrapper(List<VideoNode> videoNodes, int startId)
+    public VideoJSONWrapper(List<VideoNode> videoNodes, List<ToolNode> toolNodes, int startId, Vector2 startNodePosition, Vector2 endNodePosition)
     {
-        videos = ConvertVideoNodeListToJSONFormat(videoNodes);
+        videos = ConvertVideoNodeListToJSON(videoNodes);
+        tools = ConvertToolNodeListToJSON(toolNodes);
         this.startId = startId;
+        this.startNodePosition = startNodePosition;
+        this.endNodePosition = endNodePosition;
     }
-
     public List<VideoJSONObject> videos;
+    public List<ToolJSONObject> tools;
     public int startId = -1;
+    public Vector2 startNodePosition;
+    public Vector2 endNodePosition;
 
     #region JSONObjects
 
@@ -23,24 +30,26 @@ public class VideoJSONWrapper
     {
         public VideoJSONObject(VideoNode videoNode, List<ActionJSONObject> actionJSONObjects = null)
         {
-            videoID = videoNode.getVideoID();
+            nodeId = videoNode.getVideoID();
             videoFileName = videoNode.getVideoFileName();
-            position = videoNode.GetComponent<RectTransform>().anchoredPosition;
+            nodePosition = videoNode.GetComponent<RectTransform>().anchoredPosition;
             loop = videoNode.getLoop();
             loopTime = videoNode.getLoopTime();
             startTime = videoNode.getStartTime();
             endTime = videoNode.getEndTime();
+            videoStartRotation = videoNode.getVideoStartRotation();
 
             if (actionJSONObjects != null)
                 actions = actionJSONObjects;
         }
-        public int videoID = -2;
-        public bool loop = false;
+        public int nodeId = -2;
         public string videoFileName = "";
-        public float loopTime = 0;
         public float startTime = 0;
         public float endTime = 1;
-        public Vector2 position = Vector2.zero;
+        public bool loop = false;
+        public float loopTime = 0;
+        public Vector3 videoStartRotation = Vector3.zero;
+        public Vector2 nodePosition = Vector2.zero;
         public List<ActionJSONObject> actions;
     }
 
@@ -50,7 +59,7 @@ public class VideoJSONWrapper
         public ActionJSONObject(ActionNode actionNode)
         {
             actionText = actionNode.getActionText();
-            nextVideo = actionNode.getNextVideoID();
+            nextNode = actionNode.getNextVideoID();
             autoEnd = actionNode.getAutoEnd();
             startTime = actionNode.getStartTime();
             endTime = actionNode.getEndTime();
@@ -58,23 +67,43 @@ public class VideoJSONWrapper
             worldPosition = actionNode.getWorldPosition();
             iconName = actionNode.getIconName();
             areaMarkerVertices = actionNode.getAreaMarkerVertices();
-            interactable = actionNode.getIsInteractable();
+            timer = actionNode.getActionTimer();
         }
 
         public string actionText = "";
-        public int nextVideo = -2;
+        public int nextNode = -2;
         public bool autoEnd = false;
         public float startTime = 0;
         public float endTime = 1;
-        public ActionType actionType = ActionType.ScreenButton; 
+        public ActionType actionType = ActionType.ScreenButton;
         public Vector3 worldPosition = Vector3.zero;
-        public string iconName = "hand";
+        public string iconName = "touch";
         public Vector3[] areaMarkerVertices = null;
-        public bool interactable = false;
+        public float timer = 0;
+    }
+
+    [System.Serializable]
+    public class ToolJSONObject
+    {
+        public ToolJSONObject(ToolNode toolNode)
+        {
+            nodeId = toolNode.NodeId;
+            nextNodes = toolNode.GetNextVideos();
+            nodePosition = toolNode.GetComponent<RectTransform>().anchoredPosition;
+            toolTypeInt = (int)toolNode.ToolType;
+            question = toolNode.Question;
+            infoText = toolNode.InfoText;
+        }
+        public int nodeId = -2;
+        public int[] nextNodes = new int[0];
+        public Vector2 nodePosition;
+        public int toolTypeInt;
+        public Question question;
+        public string infoText;
     }
     #endregion
 
-    public List<VideoJSONObject> ConvertVideoNodeListToJSONFormat(List<VideoNode> videoNodes)
+    public List<VideoJSONObject> ConvertVideoNodeListToJSON(List<VideoNode> videoNodes)
     {
         var output = new List<VideoJSONObject>();
 
@@ -89,12 +118,22 @@ public class VideoJSONWrapper
 
     public List<ActionJSONObject> ConvertActionNodeListToJSONFormat(List<ActionNode> actionNodes)
     {
-        if(actionNodes.Count == 0)
+        if (actionNodes.Count == 0)
             return null;
 
         var output = new List<ActionJSONObject>();
         foreach (var item in actionNodes)
             output.Add(new ActionJSONObject(item));
+
+        return output;
+    }
+
+    public List<ToolJSONObject> ConvertToolNodeListToJSON(List<ToolNode> toolNodes)
+    {
+        if (toolNodes.Count == 0) return null;
+        var output = new List<ToolJSONObject>();
+        foreach (var item in toolNodes)
+            output.Add(new ToolJSONObject(item));
 
         return output;
     }

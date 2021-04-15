@@ -25,6 +25,8 @@ public class AreaButtonDragVertex : MonoBehaviour
 
     private void OnMouseDrag()
     {
+        if(areaButton == null) return;
+
         var ray = videoCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, videoLayer, QueryTriggerInteraction.Collide) && hit.collider.gameObject != gameObject)
             transform.position = hit.point;

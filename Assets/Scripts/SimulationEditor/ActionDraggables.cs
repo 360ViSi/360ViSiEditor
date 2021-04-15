@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public partial class ActionDraggables : MonoBehaviour
 {
@@ -42,13 +43,19 @@ public partial class ActionDraggables : MonoBehaviour
         draggableRect.SetParent(transform, false);
         draggableRect.localPosition = position;
 
+        //Set colors
+        var draggableImages = draggableGo.GetComponentsInChildren<Image>();
+        foreach (var image in draggableImages)
+            image.color = item.NodeColor;
+
+
         var draggable = draggableGo.GetComponent<ActionDraggable>();
         //Apply initial values
         draggable.start.Value = item.getStartTime();
         draggable.end.Value = item.getEndTime();
 
         //S LATER change placeholder sprite to something else, according to ActionType (probably?)
-        draggable.actionImage.sprite = icons.GetIconSprite("hand");
+        draggable.actionImage.sprite = icons.GetIconSprite(item.getIconName());
         draggable.actionText.text = item.getActionText();
 
         //Set OnRelease event listeners
@@ -66,5 +73,12 @@ public partial class ActionDraggables : MonoBehaviour
     {
         node.setEndTime(value);
         NodeInspector.instance.CreateFields(node, true);
+    }
+
+    internal void Refresh()
+    {
+        if(NodeInspector.instance.CurrentVideoNode == null) return;
+        
+        CreateActionDraggables(NodeInspector.instance.CurrentVideoNode);
     }
 }

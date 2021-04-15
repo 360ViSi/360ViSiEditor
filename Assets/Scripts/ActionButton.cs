@@ -12,12 +12,12 @@ public class ActionButton : MonoBehaviour
     public void SetAction(Action action)
     {
         buttonText.text = action.getActionText();
-        this.nextVideoID = action.getNextVideo();
+        this.nextVideoID = action.getNextNode();
         this.startTime = action.getStartTime();
         this.endTime = action.getEndTime();
     }
 
-    public void Activate() => simulationManager.goToVideo(nextVideoID);
+    public void Activate() => simulationManager.GoToNode(nextVideoID);
 
     public void SetActive(double currentTime)
     {

@@ -10,7 +10,7 @@ public class VideoNode : MonoBehaviour
     [SerializeField] private List<GameObject> actionGameObjects = new List<GameObject>();
 
     // video structure parameters
-    private int videoID = -2; //no ID -2 should give error when parsing
+    [SerializeField] private int videoID = -2; //no ID -2 should give error when parsing
     private string videoFileName = "None"; //no video file
     private NodePort nodePort;
     private StructureManager structureManager;
@@ -20,6 +20,7 @@ public class VideoNode : MonoBehaviour
     private bool loopingVideo = true;
     private float loopTime = 0; //loopTime is 0-1 of the video length
     private GameObject autoEndAction = null;
+    private Vector3 videoStartRotation = Vector3.zero;
 
     void Awake()
     {
@@ -36,12 +37,12 @@ public class VideoNode : MonoBehaviour
     public void CreateNewActionNode()
     {
         //This setups the defaults for a new action node, called from the button of a videoNode
-        CreateNewActionNode("action", false, -2, 0, 1, ActionType.ScreenButton, Vector3.zero, "hand", null, false);
+        CreateNewActionNode("action", false, -2, 0, 1, ActionType.ScreenButton, Vector3.zero, "touch", null, 0);
     }
 
     public void CreateNewActionNode(string actionText, bool isAutoEnd, int nextVideoId, float startTime,
                                     float endTime, ActionType actionType, Vector3 worldPosition, string iconName,
-                                    Vector3[] areaMarkerVertices, bool interactable)
+                                    Vector3[] areaMarkerVertices, float timer)
     {
         //get prefab from structureManager and initilize that
         //add action node to the list and position it in UI
@@ -63,7 +64,7 @@ public class VideoNode : MonoBehaviour
         actionNode.setWorldPosition(worldPosition);
         actionNode.setIconName(iconName);
         actionNode.setAreaMarkerVertices(areaMarkerVertices);
-        actionNode.setIsInteractable(interactable);
+        actionNode.setActionTimer(timer);
 
         if (isAutoEnd)
         {
@@ -97,7 +98,10 @@ public class VideoNode : MonoBehaviour
     public void setEndTime(float value) => endTime = value;
     public float getStartTime() => startTime;
     public void setStartTime(float value) => startTime = value;
+    public Vector3 getVideoStartRotation() => videoStartRotation;
+    public void setVideoStartRotation(Vector3 value) => videoStartRotation = value;
 
+    #region Actions
     public List<ActionNode> getActionNodeList()
     {
         List<ActionNode> actionNodes = new List<ActionNode>();
@@ -148,6 +152,8 @@ public class VideoNode : MonoBehaviour
         Vector2 realDimensions = new Vector2(newNodeRect.width * newNodeScale.x, newNodeRect.height * newNodeScale.y);
         return new Vector2(realDimensions.x / 2, -realDimensions.y * (position - 0.5f));
     }
+
+    #endregion
 
     public void deleteNode()
     {
