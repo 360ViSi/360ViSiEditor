@@ -41,6 +41,17 @@ public class StructureManager : MonoBehaviour
         }
     }
 
+    public void ButtonCreateNewVideoNode()
+    {
+        //Initialize new Video node from prefab and add it to the list
+        //With Unique video ID (setVideoID handles testing)
+
+        GameObject newVideoObject = Instantiate(videoNodePrefab, transform);
+        var newVideoNode = newVideoObject.GetComponent<VideoNode>();
+        newVideoNode.setVideoID(getFreeNodeID());
+        videoGameObjects.Add(newVideoObject);
+        newVideoNode.InspectorOpen();
+    }
     public VideoNode CreateNewVideoNode()
     {
         //Initialize new Video node from prefab and add it to the list
@@ -53,7 +64,16 @@ public class StructureManager : MonoBehaviour
         newVideoNode.InspectorOpen();
         return newVideoNode;
     }
+    public void ButtonCreateNewToolNode()
+    {
+        ToolNode newToolNode = Instantiate(toolNodePrefab, transform).GetComponent<ToolNode>();
+        toolNodes.Add(newToolNode);
 
+        var newVideoID = generatedNodeID;
+
+        newToolNode.NodeId = getFreeNodeID();
+        newToolNode.StructureManager = this;
+    }
     public ToolNode CreateNewToolNode()
     {
         ToolNode newToolNode = Instantiate(toolNodePrefab, transform).GetComponent<ToolNode>();

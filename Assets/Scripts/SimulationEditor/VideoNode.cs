@@ -3,7 +3,7 @@ using UnityEngine;
 using TMPro;
 
 [System.Serializable]
-public class VideoNode : MonoBehaviour
+public class VideoNode : MonoBehaviour, INodeCopyPaste
 {
     [SerializeField]
     private int defaultVideoID = -2;

@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using System;
 
-public class ToolNode : MonoBehaviour
+public class ToolNode : MonoBehaviour, INodeCopyPaste
 {
     [SerializeField] int nodeId = -2;
     ToolType toolType;
@@ -45,10 +45,9 @@ public class ToolNode : MonoBehaviour
                     break;
             }
 
-
             SetOutPortAmountButtonsActive(
                 toolType == ToolType.Random
-                || toolType == ToolType.QuestionTask && question != null && question.multichoice);
+                || toolType == ToolType.QuestionTask && question != null && !question.multichoice);
         }
     }
 
