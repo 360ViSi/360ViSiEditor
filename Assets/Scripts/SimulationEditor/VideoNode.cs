@@ -38,6 +38,7 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste
     {
         //This setups the defaults for a new action node, called from the button of a videoNode
         CreateNewActionNode("action", false, -2, 0, 1, ActionType.ScreenButton, Vector3.zero, "touch", null, 0);
+        UndoRedoHandler.instance.SaveState();
     }
 
     public void CreateNewActionNode(string actionText, bool isAutoEnd, int nextVideoId, float startTime,
@@ -120,6 +121,7 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste
         Destroy(actionGameObject);
 
         repositionActionNodes();
+        UndoRedoHandler.instance.SaveState();
     }
     public void repositionActionNodes()
     {
@@ -155,7 +157,7 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste
 
     #endregion
 
-    public void deleteNode()
+    public void deleteNode(bool fullclear = false)
     {
         //delete connections to this video node & remove from simulation structure
         nodePort.disconnect();
@@ -170,6 +172,9 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste
 
         //delete this node only when it's not connected to anything
         Destroy(gameObject);
+        
+        if (!fullclear)
+            UndoRedoHandler.instance.SaveState();
     }
 
     public void InspectorOpen() => NodeInspector.instance.CreateFields(this);

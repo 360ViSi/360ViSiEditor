@@ -281,9 +281,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 39558395}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b0fe177d06cc614088d02aa63c01377, type: 3}
+  m_Script: {fileID: 11500000, guid: 85b6fa0f91fe6784f8592d39f46ed167, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inspector: {fileID: 592401124}
+  structureManager: {fileID: 129534970}
 --- !u!4 &39558397
 Transform:
   m_ObjectHideFlags: 0
@@ -4216,7 +4218,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 129534970}
-        m_MethodName: CreateNewToolNode
+        m_MethodName: ButtonCreateNewToolNode
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4263,6 +4265,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409739108}
   m_CullTransparentMesh: 0
+--- !u!1 &1536484596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1536484598}
+  - component: {fileID: 1536484597}
+  m_Layer: 0
+  m_Name: Undo Redo Handler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1536484597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536484596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5af038b5e9a91e4ea951f8555942f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  structureManager: {fileID: 129534970}
+  undoCount: 20
+--- !u!4 &1536484598
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536484596}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1650445421
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6230,7 +6277,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 129534970}
-        m_MethodName: createNewVideoNode
+        m_MethodName: ButtonCreateNewVideoNode
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

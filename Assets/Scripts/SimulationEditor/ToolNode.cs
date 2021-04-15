@@ -118,7 +118,7 @@ public class ToolNode : MonoBehaviour, INodeCopyPaste
         redrawLinesEvent?.Raise();
     }
 
-    public void RemoveToolNode()
+    public void RemoveToolNode(bool fullClear = false)
     {
         foreach (var item in OutPorts)
             item.disconnect();
@@ -127,6 +127,9 @@ public class ToolNode : MonoBehaviour, INodeCopyPaste
 
         structureManager.RemoveToolNode(this);
         Destroy(gameObject);
+
+        if(!fullClear)
+            UndoRedoHandler.instance.SaveState();
     }
     public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 

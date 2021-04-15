@@ -50,6 +50,7 @@ public class CopyPasteHandler : MonoBehaviour
                 newTool.CreateOutPort(false);
 
             return;
+            UndoRedoHandler.instance.SaveState();
         }
 
         var video = (VideoNode)node;
@@ -76,7 +77,7 @@ public class CopyPasteHandler : MonoBehaviour
                 item.getAreaMarkerVertices(),
                 item.getActionTimer());
         }
-
+        UndoRedoHandler.instance.SaveState();
     }
 
     private INodeCopyPaste Copy()

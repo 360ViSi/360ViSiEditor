@@ -107,6 +107,7 @@ public class QuizCreator : MonoBehaviour
         var question = new Question(questionInput.text, multichoiceToggle.isOn, answers, correctAnswers);
         NodeInspector.instance.CurrentToolNode.Question = question;
         gameObject.SetActive(false);
+        UndoRedoHandler.instance.SaveState();
     }
 
     public void HandleMultichoiceToggle(bool isMulti)

@@ -73,7 +73,7 @@ public class NodeMove : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
 
   public void OnEndDrag(PointerEventData eventData)
   {
-
+    UndoRedoHandler.instance.SaveState();
   }
 
   private List<Connection> getInvolvedConnections()

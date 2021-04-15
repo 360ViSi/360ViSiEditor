@@ -55,7 +55,7 @@ public class NodeInspector : MonoBehaviour
         DestroyAllInspectorElements();
     }
 
-    
+
 
     void DestroyAllInspectorElements()
     {
@@ -304,6 +304,8 @@ public class NodeInspector : MonoBehaviour
                 currentActionNode.setActionTimer(result);
             else Debug.LogError("Time is in the wrong format!");
         }
+        UndoRedoHandler.instance.SaveState();
+
     }
 
     public void UpdateValue(ElementKey key, bool value)
@@ -338,6 +340,8 @@ public class NodeInspector : MonoBehaviour
             CreateFields(currentActionNode, true);
         }
         editorVideoPlayer.RefreshTimeline();
+        UndoRedoHandler.instance.SaveState();
+
     }
 
     public void UpdateValue(ElementKey key, int value)
@@ -346,11 +350,15 @@ public class NodeInspector : MonoBehaviour
         {
             currentToolNode.ToolType = (ToolType)value;
             CreateFields(currentToolNode, true);
+            UndoRedoHandler.instance.SaveState();
+
             return;
         }
 
         if (key == ElementKey.ActionType) currentActionNode.setActionType((ActionType)value);
         CreateFields(currentActionNode, true);
+        UndoRedoHandler.instance.SaveState();
+
     }
 
     public void UpdateValue(ElementKey key, float value)
@@ -364,7 +372,7 @@ public class NodeInspector : MonoBehaviour
 
         //These all SO FAR (5) need to refresh the timeline markers, so I'm just going to do it here for all of them
         editorVideoPlayer.RefreshTimeline();
-
+        UndoRedoHandler.instance.SaveState();
     }
 
     public void StartWorldMarkerPositioning()

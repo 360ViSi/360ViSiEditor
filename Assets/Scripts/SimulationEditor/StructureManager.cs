@@ -51,6 +51,7 @@ public class StructureManager : MonoBehaviour
         newVideoNode.setVideoID(getFreeNodeID());
         videoGameObjects.Add(newVideoObject);
         newVideoNode.InspectorOpen();
+        UndoRedoHandler.instance.SaveState();
     }
     public VideoNode CreateNewVideoNode()
     {
@@ -62,6 +63,7 @@ public class StructureManager : MonoBehaviour
         newVideoNode.setVideoID(getFreeNodeID());
         videoGameObjects.Add(newVideoObject);
         newVideoNode.InspectorOpen();
+        UndoRedoHandler.instance.SaveState();
         return newVideoNode;
     }
     public void ButtonCreateNewToolNode()
@@ -73,6 +75,7 @@ public class StructureManager : MonoBehaviour
 
         newToolNode.NodeId = getFreeNodeID();
         newToolNode.StructureManager = this;
+        UndoRedoHandler.instance.SaveState();
     }
     public ToolNode CreateNewToolNode()
     {
@@ -83,6 +86,7 @@ public class StructureManager : MonoBehaviour
 
         newToolNode.NodeId = getFreeNodeID();
         newToolNode.StructureManager = this;
+        UndoRedoHandler.instance.SaveState();
         return newToolNode;
     }
 
@@ -179,6 +183,57 @@ public class StructureManager : MonoBehaviour
         File.WriteAllText(path, json);
     }
 
+    public VideoJSONWrapper CreateSaveState()
+    {
+        return new VideoJSONWrapper(
+                getVideoNodeList(),
+                toolNodes,
+                startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID(),
+                startNode.GetComponent<RectTransform>().anchoredPosition,
+                endNode.GetComponent<RectTransform>().anchoredPosition
+            );
+    }
+
+    public void LoadSaveState(VideoJSONWrapper wrapper)
+    {
+        ClearStructure();
+
+        //Create nodes
+        foreach (var item in wrapper.videos)
+            LoadVideoNode(item);
+
+        foreach (var item in wrapper.tools)
+            LoadToolNode(item);
+
+        //Create connections
+        foreach (var item in getVideoNodeList())
+            foreach (var action in item.getActionNodeList())
+            {
+                action.CreateLoadedConnection();
+                action.setMode();
+            }
+        for (int i = 0; i < toolNodes.Count; i++)
+            for (int j = 0; j < toolNodes[i].OutPorts.Count; j++)
+                toolNodes[i].OutPorts[j].CreateConnection(toolNodes[i].NextVideos[j]);
+
+        connectionManager.redrawConnection(null, null);
+
+        var startNodePort = startNode.GetComponent<ActionNode>().getNodePort();
+
+        if (wrapper.startId == -2)
+        {
+            Debug.LogWarning("No video connected to the start");
+            return;
+        }
+
+        var firstVideoPort = GetVideoInNodePortWithId(wrapper.startId);
+        connectionManager.createConnection(startNodePort, firstVideoPort);
+        connectionManager.showConnectionLine(startNodePort, firstVideoPort, true);
+        startNode.GetComponent<RectTransform>().anchoredPosition = wrapper.startNodePosition;
+        endNode.GetComponent<RectTransform>().anchoredPosition = wrapper.endNodePosition;
+        StartCoroutine(ReDrawLinesAfterFrame());
+    }
+
     public void JsonToSimulation()
     {
         //S TODO Filebrowser
@@ -230,6 +285,7 @@ public class StructureManager : MonoBehaviour
         startNode.GetComponent<RectTransform>().anchoredPosition = wrapper.startNodePosition;
         endNode.GetComponent<RectTransform>().anchoredPosition = wrapper.endNodePosition;
         StartCoroutine(ReDrawLinesAfterFrame());
+        UndoRedoHandler.instance.SaveState();
     }
 
     IEnumerator ReDrawLinesAfterFrame()
@@ -287,7 +343,9 @@ public class StructureManager : MonoBehaviour
     public void ClearStructure()
     {
         for (int i = videoGameObjects.Count - 1; i > -1; i--)
-            videoGameObjects[i].GetComponent<VideoNode>().deleteNode();
+            videoGameObjects[i].GetComponent<VideoNode>().deleteNode(true);
+        for (int i = toolNodes.Count - 1; i >= 0; i--)
+            toolNodes[i].RemoveToolNode(true);
 
         NodeInspector.instance.NullCurrentNodes();
     }
