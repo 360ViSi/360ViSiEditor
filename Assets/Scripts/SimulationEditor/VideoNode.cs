@@ -101,6 +101,7 @@ public class VideoNode : MonoBehaviour
     public Vector3 getVideoStartRotation() => videoStartRotation;
     public void setVideoStartRotation(Vector3 value) => videoStartRotation = value;
 
+    #region Actions
     public List<ActionNode> getActionNodeList()
     {
         List<ActionNode> actionNodes = new List<ActionNode>();
@@ -151,6 +152,8 @@ public class VideoNode : MonoBehaviour
         Vector2 realDimensions = new Vector2(newNodeRect.width * newNodeScale.x, newNodeRect.height * newNodeScale.y);
         return new Vector2(realDimensions.x / 2, -realDimensions.y * (position - 0.5f));
     }
+
+    #endregion
 
     public void deleteNode()
     {

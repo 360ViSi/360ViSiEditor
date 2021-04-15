@@ -55,6 +55,8 @@ public class NodeInspector : MonoBehaviour
         DestroyAllInspectorElements();
     }
 
+    
+
     void DestroyAllInspectorElements()
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -298,7 +300,7 @@ public class NodeInspector : MonoBehaviour
         }
         if (key == ElementKey.Timer)
         {
-            if(float.TryParse(value, out float result))
+            if (float.TryParse(value, out float result))
                 currentActionNode.setActionTimer(result);
             else Debug.LogError("Time is in the wrong format!");
         }

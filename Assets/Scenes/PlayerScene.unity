@@ -580,7 +580,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
+  m_TextStyleHashCode: 97690656
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -3016,7 +3016,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da8b3b304df658f48abea86964e38f36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenButtons: []
+  screenButtons:
+  - {fileID: 837409890006125834}
+  - {fileID: 452945155}
+  - {fileID: 620969972}
+  - {fileID: 320589162}
+  - {fileID: 428401059}
   simulationManager: {fileID: 11482226}
   videoPlayer: {fileID: 757786606}
   worldButtonPrefab: {fileID: 7096832405384579042, guid: 9bd981b9d4382aa4ba2bfac4928877a9,

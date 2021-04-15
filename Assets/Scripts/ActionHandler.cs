@@ -14,6 +14,7 @@ public class ActionHandler : MonoBehaviour
     private List<FloorButton> floorButtons = new List<FloorButton>();
     private List<WorldButton> worldButtons = new List<WorldButton>();
     private List<AreaButton> areaButtons = new List<AreaButton>();
+    
     private List<PlayerTimerAction> timers = new List<PlayerTimerAction>();
 
     [SerializeField]
@@ -42,7 +43,11 @@ public class ActionHandler : MonoBehaviour
             item.SetActive(currentTime);
 
         foreach (var item in timers)
-            if(item.CheckActionTime()) return;
+            if(item.CheckActionTime())
+            {
+                timers.Remove(item);
+                return;
+            }   
     }
     public void SetupActions()
     {
@@ -118,7 +123,7 @@ public class ActionHandler : MonoBehaviour
 
         for (int i = 0; i < timerActions.Length; i++)
         {
-            var timer = new PlayerTimerAction(timerActions[0], simulationManager);
+            var timer = new PlayerTimerAction(timerActions[i], simulationManager);
             timers.Add(timer);
         }
     }

@@ -15,6 +15,7 @@ public class PlayerInfoManager : MonoBehaviour
 
     public void OpenInfoPanel(Tool tool)
     {
+        Time.timeScale = 0;
         simulationManager.SetVideoPauseState(true);
         currentTool = tool;
         infoText.text = currentTool.infoText;
@@ -23,6 +24,7 @@ public class PlayerInfoManager : MonoBehaviour
 
     public void ClosePanel()
     {
+        Time.timeScale = 1;
         simulationManager.SetVideoPauseState(false);
         infoPanel.SetActive(false);
     }

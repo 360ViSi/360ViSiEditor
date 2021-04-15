@@ -26,6 +26,7 @@ public class PlayerQuestionManager : MonoBehaviour
 
     public void OpenQuestionPanel(Tool tool)
     {
+        Time.timeScale = 0;
         //Setup
         simulationManager.SetVideoPauseState(true);
 
@@ -102,6 +103,7 @@ public class PlayerQuestionManager : MonoBehaviour
 
     void SubmitAnswer(int answerId)
     {
+        Time.timeScale = 1;
         panel.SetActive(false);
         simulationManager.SetVideoPauseState(false);
 

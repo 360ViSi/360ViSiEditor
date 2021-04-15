@@ -41,18 +41,20 @@ public class StructureManager : MonoBehaviour
         }
     }
 
-    public void createNewVideoNode()
+    public VideoNode CreateNewVideoNode()
     {
         //Initialize new Video node from prefab and add it to the list
         //With Unique video ID (setVideoID handles testing)
 
         GameObject newVideoObject = Instantiate(videoNodePrefab, transform);
-        newVideoObject.GetComponent<VideoNode>().setVideoID(getFreeNodeID());
+        var newVideoNode = newVideoObject.GetComponent<VideoNode>();
+        newVideoNode.setVideoID(getFreeNodeID());
         videoGameObjects.Add(newVideoObject);
-        newVideoObject.GetComponent<VideoNode>().InspectorOpen();
+        newVideoNode.InspectorOpen();
+        return newVideoNode;
     }
 
-    public void CreateNewToolNode()
+    public ToolNode CreateNewToolNode()
     {
         ToolNode newToolNode = Instantiate(toolNodePrefab, transform).GetComponent<ToolNode>();
         toolNodes.Add(newToolNode);
@@ -61,6 +63,7 @@ public class StructureManager : MonoBehaviour
 
         newToolNode.NodeId = getFreeNodeID();
         newToolNode.StructureManager = this;
+        return newToolNode;
     }
 
     public GameObject getActionNodePrefab()
@@ -77,7 +80,7 @@ public class StructureManager : MonoBehaviour
         var newNodeId = 0;
         while (!isNodeIDFree(newNodeId))
             newNodeId++;
-            
+
         return newNodeId;
     }
 
