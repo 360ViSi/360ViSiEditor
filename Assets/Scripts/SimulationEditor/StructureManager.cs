@@ -202,8 +202,16 @@ public class StructureManager : MonoBehaviour
         foreach (var item in wrapper.videos)
             LoadVideoNode(item);
 
-        foreach (var item in wrapper.tools)
-            LoadToolNode(item);
+        if(wrapper.tools != null)
+            foreach (var item in wrapper.tools)
+            {
+                if (item == null)
+                {
+                    Debug.Log("tool == null");
+                    continue;
+                }
+                LoadToolNode(item);
+            }
 
         //Create connections
         foreach (var item in getVideoNodeList())

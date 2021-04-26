@@ -49,10 +49,11 @@ public class CopyPasteHandler : MonoBehaviour
             for (int i = 0; i < tool.OutPorts.Count - 2; i++)
                 newTool.CreateOutPort(false);
 
-            return;
             UndoRedoHandler.instance.SaveState();
+            return;
         }
 
+        //TODO shortcut for this?
         var video = (VideoNode)node;
         var newNode = structureManager.CreateNewVideoNode();
         newNode.setStartTime(video.getStartTime());

@@ -52,7 +52,7 @@ public class EditorVideoPlayer : MonoBehaviour
 
         UpdateVideoStatus();
 
-        if (videoPlayer.length == 0 || !videoPlayer.isPlaying)
+        if (videoPlayer.length == 0 || !videoPlayer.isPlaying || nodeInspector.CurrentVideoNode == null)
             return;
 
         // S TODO - has to be a better way to solve this, maybe with just checking for a stop?
