@@ -23,6 +23,8 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] Transform videoCamTransform = null;
     [SerializeField] EditorVideoPlayer editorVideoPlayer = null;
     [SerializeField] EditorVideoControls editorVideoControls = null;
+    [SerializeField] StructureManager structureManager = null;
+    [SerializeField] NodeSelectionHandler nodeSelectionHandler = null;
     [SerializeField] GameObject iconSelectionPanel = null;
     [SerializeField] GameObject questionCreatorPanel = null;
     [SerializeField] GameObject infoCreatorPanel = null;
@@ -46,6 +48,7 @@ public class NodeInspector : MonoBehaviour
     public ActionNode CurrentActionNode => currentActionNode;
     public ToolNode CurrentToolNode => currentToolNode;
     public ActionDraggables ActionDraggables => actionDraggables;
+    public NodeSelectionHandler NodeSelectionHandler => nodeSelectionHandler;
 
     private void Awake()
     {
@@ -53,15 +56,16 @@ public class NodeInspector : MonoBehaviour
         else if (instance != this) Destroy(gameObject);
 
         DestroyAllInspectorElements();
+        nodeSelectionHandler = new NodeSelectionHandler();
     }
-
-
 
     void DestroyAllInspectorElements()
     {
         for (int i = 0; i < transform.childCount; i++)
             Destroy(transform.GetChild(i).gameObject);
     }
+
+    #region Fields
 
     ///<summary>
     /// Creates and populates all the fields for the editor in-app-inspector
@@ -229,6 +233,34 @@ public class NodeInspector : MonoBehaviour
         CreateWorldMarker(currentActionNode, true);
     }
 
+    #endregion
+
+    internal void RefreshMultiSelection()
+    {
+        NullCurrentNodes();
+        DestroyAllInspectorElements();  
+
+        foreach (var item in NodeSelectionHandler.OldNodes)
+        {
+            Debug.Log("- " + item);
+            var selectable = structureManager.GetSelectable(item);
+            selectable.Outline(false);
+        }
+
+        foreach (var item in NodeSelectionHandler.SelectedNodes)
+        {
+            Debug.Log("+ " + item);
+            var selectable = structureManager.GetSelectable(item);
+            selectable.Outline(true);
+        }
+
+        NodeSelectionHandler.SaveOldList();
+
+        CreateElement("Items selected:", ElementKey.MultiSelectInfo, textElementPrefab, NodeSelectionHandler.SelectedNodes.Count.ToString());
+
+
+    }
+
     ///<summary>
     /// Spawns markers for all the actions in the current video
     ///</summary>
@@ -285,6 +317,7 @@ public class NodeInspector : MonoBehaviour
         currentWorldMarkers.Add(go);
     }
 
+    #region Updating Values
 
     public void UpdateValue(ElementKey key, string value)
     {
@@ -374,7 +407,7 @@ public class NodeInspector : MonoBehaviour
         editorVideoPlayer.RefreshTimeline();
         UndoRedoHandler.instance.SaveState();
     }
-
+    #endregion
     public void StartWorldMarkerPositioning()
     {
         if (editingAreaMarker)
@@ -511,5 +544,7 @@ public enum ElementKey
     VideoStartTime,
     VideoEndTime,
     ToolType,
-    Timer
+    Timer,
+    MultiSelectInfo
+
 }

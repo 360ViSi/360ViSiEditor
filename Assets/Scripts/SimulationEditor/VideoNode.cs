@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 [System.Serializable]
-public class VideoNode : MonoBehaviour, INodeCopyPaste
+public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
 {
     [SerializeField]
     private int defaultVideoID = -2;
@@ -172,10 +173,33 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste
 
         //delete this node only when it's not connected to anything
         Destroy(gameObject);
-        
+
         if (!fullclear)
             UndoRedoHandler.instance.SaveState();
     }
 
-    public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
+    void InspectorOpen() => NodeInspector.instance.CreateFields(this);
+
+    public void OnSelect(bool manualSelect)
+    {
+        //single selection
+        //happens on create of a new node or just when this is clicked without shift
+        if (!manualSelect || (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.RightShift)))
+        {
+            NodeInspector.instance.NodeSelectionHandler.SetSelectedNode(getVideoID());
+            InspectorOpen();
+            return;
+        }
+
+        NodeInspector.instance.NodeSelectionHandler.AddSelectedNode(getVideoID());
+        NodeInspector.instance.RefreshMultiSelection();
+    }
+
+    public int GetId() => getVideoID();
+
+    public void Outline(bool active)
+    {
+        GetComponent<Outline>().enabled = active;
+    }
+
 }

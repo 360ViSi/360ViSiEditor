@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class ToolNode : MonoBehaviour, INodeCopyPaste
+public class ToolNode : MonoBehaviour, INodeCopyPaste, ISelectable
 {
     [SerializeField] int nodeId = -2;
     ToolType toolType;
@@ -133,6 +134,26 @@ public class ToolNode : MonoBehaviour, INodeCopyPaste
     }
     public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 
+    public void OnSelect(bool manualSelect)
+    {
+        //single selection
+        //happens on create of a new node or just when this is clicked without shift
+        if (!manualSelect || (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.RightShift)))
+        {
+            NodeInspector.instance.NodeSelectionHandler.SetSelectedNode(NodeId);
+            InspectorOpen();
+            return;
+        }
+
+        NodeInspector.instance.NodeSelectionHandler.AddSelectedNode(NodeId);
+        NodeInspector.instance.RefreshMultiSelection();
+    }
+
+    public int GetId() => NodeId;
+
+    public void Outline(bool active){
+        GetComponent<Outline>().enabled = active;
+    }
 
     public void SetOutPortAmountButtonsActive(bool value)
     {

@@ -50,7 +50,7 @@ public class StructureManager : MonoBehaviour
         var newVideoNode = newVideoObject.GetComponent<VideoNode>();
         newVideoNode.setVideoID(getFreeNodeID());
         videoGameObjects.Add(newVideoObject);
-        newVideoNode.InspectorOpen();
+        newVideoNode.OnSelect(false);
         UndoRedoHandler.instance.SaveState();
     }
     public VideoNode CreateNewVideoNode()
@@ -62,7 +62,7 @@ public class StructureManager : MonoBehaviour
         var newVideoNode = newVideoObject.GetComponent<VideoNode>();
         newVideoNode.setVideoID(getFreeNodeID());
         videoGameObjects.Add(newVideoObject);
-        newVideoNode.InspectorOpen();
+        newVideoNode.OnSelect(false);
         UndoRedoHandler.instance.SaveState();
         return newVideoNode;
     }
@@ -162,6 +162,20 @@ public class StructureManager : MonoBehaviour
         return null;
     }
 
+    public ISelectable GetSelectable(int nodeId)
+    {
+        var video = getVideoNodeList().Where(e => e.getVideoID() == nodeId);
+        if (video.Count() > 0)
+            return video.First();
+
+        var tool = toolNodes.Where(e => e.NodeId == nodeId);
+        if (tool.Count() > 0)
+            return tool.First();
+
+        Debug.LogError($"ISelectable not found with id {nodeId}");
+        return null;
+    }
+
 
 
     public void SimulationToJson(string path)
@@ -186,6 +200,7 @@ public class StructureManager : MonoBehaviour
     public VideoJSONWrapper CreateSaveState()
     {
         return new VideoJSONWrapper(
+
                 getVideoNodeList(),
                 toolNodes,
                 startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID(),
@@ -202,7 +217,7 @@ public class StructureManager : MonoBehaviour
         foreach (var item in wrapper.videos)
             LoadVideoNode(item);
 
-        if(wrapper.tools != null)
+        if (wrapper.tools != null)
             foreach (var item in wrapper.tools)
             {
                 if (item == null)
