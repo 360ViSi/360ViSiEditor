@@ -5,19 +5,20 @@ using UnityEngine;
 public class NodeSelectionHandler
 {
     [SerializeField] List<int> selectedNodes; //ids for tools and videos
-    [SerializeField] List<int> oldList;
+    [SerializeField] List<int> oldNodes;
 
     public NodeSelectionHandler()
     {
         selectedNodes = new List<int>();
-        oldList = new List<int>();
+        oldNodes = new List<int>();
     }
 
     public List<int> SelectedNodes => selectedNodes;
-    public List<int> OldNodes => oldList;
+    public List<int> OldNodes => oldNodes;
 
     internal void SetSelectedNode(int id)
     {
+        Debug.Log("Single select");
         selectedNodes.Clear();
         AddSelectedNode(id);
     }
@@ -30,5 +31,5 @@ public class NodeSelectionHandler
             selectedNodes.Add(id);
     }
 
-    internal void SaveOldList() => oldList = selectedNodes;
+    internal void SaveOldList() => oldNodes = selectedNodes;
 }

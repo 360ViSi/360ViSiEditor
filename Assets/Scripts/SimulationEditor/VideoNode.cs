@@ -186,13 +186,18 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
         //happens on create of a new node or just when this is clicked without shift
         if (!manualSelect || (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.RightShift)))
         {
-            NodeInspector.instance.NodeSelectionHandler.SetSelectedNode(getVideoID());
             InspectorOpen();
+            NodeInspector.instance.NodeSelectionHandler.SetSelectedNode(getVideoID());
+            //NodeInspector.instance.RefreshSelection();
             return;
         }
+        if (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.RightShift))
+            NodeInspector.instance.NodeSelectionHandler.AddSelectedNode(getVideoID());
+        else
+            NodeInspector.instance.NodeSelectionHandler.SetSelectedNode(getVideoID());
 
-        NodeInspector.instance.NodeSelectionHandler.AddSelectedNode(getVideoID());
-        NodeInspector.instance.RefreshMultiSelection();
+
+        NodeInspector.instance.RefreshSelection();
     }
 
     public int GetId() => getVideoID();

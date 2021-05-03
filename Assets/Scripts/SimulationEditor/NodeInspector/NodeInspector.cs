@@ -72,13 +72,11 @@ public class NodeInspector : MonoBehaviour
     ///</summary>
     public void CreateFields(VideoNode node, bool isUpdate = false)
     {
-        NullCurrentNodes();
+        RefreshSelection();
         currentVideoNode = node;
         actionDraggables.CreateActionDraggables(node);
-        currentVideoNode.GetComponent<Outline>().enabled = true;
 
         videoCamTransform.localEulerAngles = currentVideoNode.getVideoStartRotation();
-        DestroyAllInspectorElements();
 
         //Put bg to video
         if (!isUpdate)
@@ -105,11 +103,9 @@ public class NodeInspector : MonoBehaviour
     {
         var oldVideoNode = currentVideoNode;
 
-        NullCurrentNodes();
-        DestroyAllInspectorElements();
+        RefreshSelection();
 
         currentActionNode = node;
-        currentActionNode.GetComponent<Outline>().enabled = true;
         currentVideoNode = node.GetComponentInParent<VideoNode>();
         actionDraggables.CreateActionDraggables(currentVideoNode);
 
@@ -134,11 +130,10 @@ public class NodeInspector : MonoBehaviour
     public void CreateFields(ToolNode node, bool isUpdate = false)
     {
         editorVideoPlayer.VideoPlayer.Stop();
-        NullCurrentNodes();
-        DestroyAllInspectorElements();
+        RefreshSelection();
+
         currentToolNode = node;
 
-        currentToolNode.GetComponent<Outline>().enabled = true;
 
         CreateElement("Tool", ElementKey.ToolType, dropdownElementPrefab, (int)node.ToolType);
         if (node.ToolType == ToolType.QuestionTask)
@@ -235,10 +230,10 @@ public class NodeInspector : MonoBehaviour
 
     #endregion
 
-    internal void RefreshMultiSelection()
+    internal void RefreshSelection()
     {
         NullCurrentNodes();
-        DestroyAllInspectorElements();  
+        DestroyAllInspectorElements();
 
         foreach (var item in NodeSelectionHandler.OldNodes)
         {
@@ -256,9 +251,8 @@ public class NodeInspector : MonoBehaviour
 
         NodeSelectionHandler.SaveOldList();
 
-        CreateElement("Items selected:", ElementKey.MultiSelectInfo, textElementPrefab, NodeSelectionHandler.SelectedNodes.Count.ToString());
-
-
+        if(NodeSelectionHandler.SelectedNodes.Count > 1)
+            CreateElement("Items selected:", ElementKey.MultiSelectInfo, textElementPrefab, NodeSelectionHandler.SelectedNodes.Count.ToString());
     }
 
     ///<summary>

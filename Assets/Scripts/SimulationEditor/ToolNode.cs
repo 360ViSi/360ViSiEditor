@@ -146,7 +146,7 @@ public class ToolNode : MonoBehaviour, INodeCopyPaste, ISelectable
         }
 
         NodeInspector.instance.NodeSelectionHandler.AddSelectedNode(NodeId);
-        NodeInspector.instance.RefreshMultiSelection();
+        NodeInspector.instance.RefreshSelection();
     }
 
     public int GetId() => NodeId;
