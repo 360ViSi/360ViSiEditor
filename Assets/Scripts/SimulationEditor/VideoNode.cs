@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using static Enums;
 
 [System.Serializable]
 public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
@@ -178,29 +179,24 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
             UndoRedoHandler.instance.SaveState();
     }
 
-    void InspectorOpen() => NodeInspector.instance.CreateFields(this);
-
     public void OnSelect(bool manualSelect)
     {
         //single selection
         //happens on create of a new node or just when this is clicked without shift
-        if (!manualSelect || (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.RightShift)))
+        var holdingShift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        if (!manualSelect || !holdingShift)
         {
-            InspectorOpen();
             NodeInspector.instance.NodeSelectionHandler.SetSelectedNode(getVideoID());
-            //NodeInspector.instance.RefreshSelection();
+            NodeInspector.instance.RefreshSelection();
             return;
         }
-        if (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.RightShift))
-            NodeInspector.instance.NodeSelectionHandler.AddSelectedNode(getVideoID());
-        else
-            NodeInspector.instance.NodeSelectionHandler.SetSelectedNode(getVideoID());
 
-
+        NodeInspector.instance.NodeSelectionHandler.AddRemoveSelectedNode(getVideoID());
         NodeInspector.instance.RefreshSelection();
     }
 
     public int GetId() => getVideoID();
+    public NodeType GetNodeType() => NodeType.Video;
 
     public void Outline(bool active)
     {

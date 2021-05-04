@@ -18,12 +18,11 @@ public class NodeSelectionHandler
 
     internal void SetSelectedNode(int id)
     {
-        Debug.Log("Single select");
         selectedNodes.Clear();
-        AddSelectedNode(id);
+        selectedNodes.Add(id);
     }
 
-    internal void AddSelectedNode(int id)
+    internal void AddRemoveSelectedNode(int id)
     {
         if (selectedNodes.Contains(id))
             selectedNodes.Remove(id);
@@ -31,5 +30,10 @@ public class NodeSelectionHandler
             selectedNodes.Add(id);
     }
 
-    internal void SaveOldList() => oldNodes = selectedNodes;
+    internal void SaveOldList()
+    {
+        oldNodes.Clear();
+        foreach (var item in selectedNodes)
+            oldNodes.Add(item);
+    }
 }

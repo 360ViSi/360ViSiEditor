@@ -1,13 +1,8 @@
-using System.Globalization;
-using System.Net;
-using System.Linq;
-using System.Collections;
-using System;
-using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Video;
 using System.Collections.Generic;
+using static Enums;
+using UnityEngine.UI;
 
 ///<summary>
 /// Controls and manages the functions of the IN-APP-INSPECTOR (not Unity inspector)
@@ -72,7 +67,7 @@ public class NodeInspector : MonoBehaviour
     ///</summary>
     public void CreateFields(VideoNode node, bool isUpdate = false)
     {
-        RefreshSelection();
+        //RefreshSelection();
         currentVideoNode = node;
         actionDraggables.CreateActionDraggables(node);
 
@@ -103,7 +98,17 @@ public class NodeInspector : MonoBehaviour
     {
         var oldVideoNode = currentVideoNode;
 
-        RefreshSelection();
+        NullCurrentNodes();
+        DestroyAllInspectorElements();
+
+        //if action is selected, both lists can be cleared, actions dont neeed to support multiselect ( I think? )
+        foreach (var item in NodeSelectionHandler.SelectedNodes)
+        {
+            var selectable = structureManager.GetSelectable(item);
+            selectable.Outline(false);
+        }
+        nodeSelectionHandler = new NodeSelectionHandler();
+        node.GetComponent<Outline>().enabled = true;
 
         currentActionNode = node;
         currentVideoNode = node.GetComponentInParent<VideoNode>();
@@ -130,7 +135,7 @@ public class NodeInspector : MonoBehaviour
     public void CreateFields(ToolNode node, bool isUpdate = false)
     {
         editorVideoPlayer.VideoPlayer.Stop();
-        RefreshSelection();
+        //RefreshSelection();
 
         currentToolNode = node;
 
@@ -237,22 +242,31 @@ public class NodeInspector : MonoBehaviour
 
         foreach (var item in NodeSelectionHandler.OldNodes)
         {
-            Debug.Log("- " + item);
             var selectable = structureManager.GetSelectable(item);
             selectable.Outline(false);
         }
 
         foreach (var item in NodeSelectionHandler.SelectedNodes)
         {
-            Debug.Log("+ " + item);
             var selectable = structureManager.GetSelectable(item);
             selectable.Outline(true);
         }
 
         NodeSelectionHandler.SaveOldList();
 
-        if(NodeSelectionHandler.SelectedNodes.Count > 1)
+        if (NodeSelectionHandler.SelectedNodes.Count > 1)
             CreateElement("Items selected:", ElementKey.MultiSelectInfo, textElementPrefab, NodeSelectionHandler.SelectedNodes.Count.ToString());
+        else if (NodeSelectionHandler.SelectedNodes.Count == 1)
+        {
+            var selectable = structureManager.GetSelectable(NodeSelectionHandler.SelectedNodes[0]);
+            NodeType selectableType = selectable.GetNodeType();
+
+            //hate it here
+            if (selectableType == NodeType.Video)
+                CreateFields((VideoNode)selectable);
+            else if (selectableType == NodeType.Tool)
+                CreateFields((ToolNode)selectable);
+        }
     }
 
     ///<summary>

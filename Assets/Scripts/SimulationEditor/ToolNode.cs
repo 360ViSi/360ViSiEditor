@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using static Enums;
 
 public class ToolNode : MonoBehaviour, INodeCopyPaste, ISelectable
 {
@@ -132,26 +133,28 @@ public class ToolNode : MonoBehaviour, INodeCopyPaste, ISelectable
         if(!fullClear)
             UndoRedoHandler.instance.SaveState();
     }
-    public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 
     public void OnSelect(bool manualSelect)
     {
-        //single selection
+//single selection
         //happens on create of a new node or just when this is clicked without shift
-        if (!manualSelect || (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.RightShift)))
+        var holdingShift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        if (!manualSelect || !holdingShift)
         {
             NodeInspector.instance.NodeSelectionHandler.SetSelectedNode(NodeId);
-            InspectorOpen();
+            NodeInspector.instance.RefreshSelection();
             return;
         }
 
-        NodeInspector.instance.NodeSelectionHandler.AddSelectedNode(NodeId);
+        NodeInspector.instance.NodeSelectionHandler.AddRemoveSelectedNode(NodeId);
         NodeInspector.instance.RefreshSelection();
     }
 
     public int GetId() => NodeId;
+    public NodeType GetNodeType() => NodeType.Tool;
 
-    public void Outline(bool active){
+    public void Outline(bool active)
+    {
         GetComponent<Outline>().enabled = active;
     }
 
