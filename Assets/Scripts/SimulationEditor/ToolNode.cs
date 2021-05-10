@@ -149,11 +149,12 @@ public class ToolNode : MonoBehaviour, INodeCopyPaste, ISelectable
         NodeInspector.instance.NodeSelectionHandler.AddRemoveSelectedNode(NodeId);
         NodeInspector.instance.RefreshSelection();
     }
+    public void DragSelect() => NodeInspector.instance.NodeSelectionHandler.AddRemoveSelectedNode(NodeId);
 
     public int GetId() => NodeId;
     public NodeType GetNodeType() => NodeType.Tool;
-    public Vector2 ScreenPosition() => GetComponent<RectTransform>().anchoredPosition;
-
+    public Vector3 WorldPosition() => transform.position;
+    public NodeMove GetNodeMove() => GetComponentInChildren<NodeMove>();
     public void Outline(bool active)
     {
         GetComponent<Outline>().enabled = active;

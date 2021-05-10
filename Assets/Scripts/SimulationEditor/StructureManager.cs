@@ -28,6 +28,7 @@ public class StructureManager : MonoBehaviour
     private List<ToolNode> toolNodes = new List<ToolNode>();
     private int generatedNodeID = 0;
     private ConnectionManager connectionManager;
+    Camera cam;
 
 
     // Start is called before the first frame update
@@ -39,6 +40,7 @@ public class StructureManager : MonoBehaviour
         {
             Debug.Log("There are no ConnectionManager as a child of " + name);
         }
+        cam = Camera.main;
     }
 
     public void ButtonCreateNewVideoNode()
@@ -178,35 +180,42 @@ public class StructureManager : MonoBehaviour
 
     public void SelectInScreenArea(Vector2 bottomLeft, Vector2 topRight)
     {
-        Debug.Log(bottomLeft);
-        Debug.Log(topRight);
         var selectablesInArea = new List<ISelectable>();
 
+        var holdingShift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        if(!holdingShift)
+            NodeInspector.instance.NodeSelectionHandler.Clear();
+
         foreach (var item in getVideoNodeList())
-            if (IsInArea(item.ScreenPosition(), bottomLeft, topRight))
+            if (IsInArea(item.WorldPosition(), bottomLeft, topRight))
                 selectablesInArea.Add(item);
 
         foreach (var item in toolNodes)
-            if (IsInArea(item.ScreenPosition(), bottomLeft, topRight))
+            if (IsInArea(item.WorldPosition(), bottomLeft, topRight))
                 selectablesInArea.Add(item);
-
-        Debug.Log(selectablesInArea.Count);
 
         for (int i = 0; i < selectablesInArea.Count; i++)
         {
             ISelectable item = selectablesInArea[i];
-            if (i == 0)
-                item.OnSelect(false);
-            else
-                item.OnSelect(true);
+            item.DragSelect();
         }
+
+        NodeInspector.instance.RefreshSelection();
+        UndoRedoHandler.instance.SaveState();
+    }
+
+    public void MoveSelected(Vector2 delta)
+    {
+        foreach (var item in NodeInspector.instance.NodeSelectionHandler.SelectedNodes)
+            GetSelectable(item).GetNodeMove().Move(delta);
     }
 
 
-    bool IsInArea(Vector2 position, Vector2 bottomLeft, Vector2 topRight)
+    bool IsInArea(Vector3 position, Vector2 bottomLeft, Vector2 topRight)
     {
-        if (position.x > bottomLeft.x && position.x < topRight.x)
-            if (position.y > bottomLeft.y && position.y < topRight.y)
+        var screenPos = cam.WorldToScreenPoint(position);
+        if (screenPos.x > bottomLeft.x && screenPos.x < topRight.x)
+            if (screenPos.y > bottomLeft.y && screenPos.y < topRight.y)
                 return true;
 
         return false;

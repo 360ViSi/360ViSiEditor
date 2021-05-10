@@ -118,8 +118,6 @@ public class EditorVideoPlayer : MonoBehaviour
     {
         if (nodeInspector.CurrentActionNode != null)
         {
-            //GetStartTimeFromAction();
-            //GetEndTimeFromAction();
             editorVideoControls.SetCurrentControlsToVideo(false);
         }
         else

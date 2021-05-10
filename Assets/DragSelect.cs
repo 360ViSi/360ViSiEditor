@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class DragSelect : MonoBehaviour
@@ -25,14 +26,9 @@ public class DragSelect : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
             StartDragSelection();
-        }
         if (Input.GetKeyUp(KeyCode.Mouse0))
-        {
             EndDragSelection();
-        }
-
 
         if (dragging)
             DragSelection();
@@ -40,12 +36,13 @@ public class DragSelect : MonoBehaviour
 
     private void DragSelection()
     {
+        if(dragging == false) return;
         //Update the visual selection image
         endPosition = Input.mousePosition;
 
         delta = new Vector2(
-            (endPosition.x - startPosition.x) * (canvasSize.x / (float)Screen.width),
-            (endPosition.y - startPosition.y) * (canvasSize.y / (float)Screen.height));
+            (endPosition.x - startPosition.x) * (canvasSize.x / Screen.width),
+            (endPosition.y - startPosition.y) * (canvasSize.y / Screen.height));
 
         selectionImage.rectTransform.sizeDelta = delta;
 
@@ -72,20 +69,27 @@ public class DragSelect : MonoBehaviour
 
     private void EndDragSelection()
     {
+        if(dragging == false) return;
         dragging = false;
         selectionImage.enabled = false;
 
         //Do the selection
         var bot = startPosition.y < endPosition.y ? startPosition.y : endPosition.y;
         var left = startPosition.x < endPosition.x ? startPosition.x : endPosition.x;
-        var top = bot + delta.y;
-        var right = left + delta.x;
+        var top = startPosition.y > endPosition.y ? startPosition.y : endPosition.y;
+        var right = startPosition.x > endPosition.x ? startPosition.x : endPosition.x;
 
-        structureManager.SelectInScreenArea(new Vector2(left, bot), new Vector2(right, top));        
+        var botLeft = new Vector2(left, bot);
+        var topRight = new Vector2(right, top);
+
+        if((botLeft - topRight).magnitude > 100)
+            structureManager.SelectInScreenArea(botLeft, topRight);        
     }
 
     private void StartDragSelection()
     {
+        if(EventSystem.current.IsPointerOverGameObject()) return;
+
         dragging = true;
         selectionImage.enabled = true;
         selectionImage.rectTransform.position = Input.mousePosition;

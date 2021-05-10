@@ -36,4 +36,10 @@ public class NodeSelectionHandler
         foreach (var item in selectedNodes)
             oldNodes.Add(item);
     }
+
+    internal void Clear()
+    {
+        SaveOldList();
+        selectedNodes.Clear();
+    }
 }

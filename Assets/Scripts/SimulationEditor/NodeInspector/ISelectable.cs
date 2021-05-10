@@ -4,7 +4,9 @@ public interface ISelectable
 {
     NodeType GetNodeType();
     void OnSelect(bool manualSelect);
-    Vector2 ScreenPosition();
+    void DragSelect();
+    Vector3 WorldPosition();
     int GetId();
     void Outline(bool active);
+    NodeMove GetNodeMove();
 }
