@@ -197,10 +197,12 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
 
     public int GetId() => getVideoID();
     public NodeType GetNodeType() => NodeType.Video;
+    public Vector2 ScreenPosition() => GetComponent<RectTransform>().anchoredPosition;
 
     public void Outline(bool active)
     {
         GetComponent<Outline>().enabled = active;
     }
 
+    
 }

@@ -243,13 +243,15 @@ public class NodeInspector : MonoBehaviour
         foreach (var item in NodeSelectionHandler.OldNodes)
         {
             var selectable = structureManager.GetSelectable(item);
-            selectable.Outline(false);
+            if(selectable != null)
+                selectable.Outline(false);
         }
 
         foreach (var item in NodeSelectionHandler.SelectedNodes)
         {
             var selectable = structureManager.GetSelectable(item);
-            selectable.Outline(true);
+            if(selectable != null)
+                selectable.Outline(true);
         }
 
         NodeSelectionHandler.SaveOldList();

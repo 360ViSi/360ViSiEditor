@@ -176,6 +176,41 @@ public class StructureManager : MonoBehaviour
         return null;
     }
 
+    public void SelectInScreenArea(Vector2 bottomLeft, Vector2 topRight)
+    {
+        Debug.Log(bottomLeft);
+        Debug.Log(topRight);
+        var selectablesInArea = new List<ISelectable>();
+
+        foreach (var item in getVideoNodeList())
+            if (IsInArea(item.ScreenPosition(), bottomLeft, topRight))
+                selectablesInArea.Add(item);
+
+        foreach (var item in toolNodes)
+            if (IsInArea(item.ScreenPosition(), bottomLeft, topRight))
+                selectablesInArea.Add(item);
+
+        Debug.Log(selectablesInArea.Count);
+
+        for (int i = 0; i < selectablesInArea.Count; i++)
+        {
+            ISelectable item = selectablesInArea[i];
+            if (i == 0)
+                item.OnSelect(false);
+            else
+                item.OnSelect(true);
+        }
+    }
+
+
+    bool IsInArea(Vector2 position, Vector2 bottomLeft, Vector2 topRight)
+    {
+        if (position.x > bottomLeft.x && position.x < topRight.x)
+            if (position.y > bottomLeft.y && position.y < topRight.y)
+                return true;
+
+        return false;
+    }
 
 
     public void SimulationToJson(string path)

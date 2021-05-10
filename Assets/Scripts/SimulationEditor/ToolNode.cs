@@ -130,13 +130,13 @@ public class ToolNode : MonoBehaviour, INodeCopyPaste, ISelectable
         structureManager.RemoveToolNode(this);
         Destroy(gameObject);
 
-        if(!fullClear)
+        if (!fullClear)
             UndoRedoHandler.instance.SaveState();
     }
 
     public void OnSelect(bool manualSelect)
     {
-//single selection
+        //single selection
         //happens on create of a new node or just when this is clicked without shift
         var holdingShift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         if (!manualSelect || !holdingShift)
@@ -152,6 +152,7 @@ public class ToolNode : MonoBehaviour, INodeCopyPaste, ISelectable
 
     public int GetId() => NodeId;
     public NodeType GetNodeType() => NodeType.Tool;
+    public Vector2 ScreenPosition() => GetComponent<RectTransform>().anchoredPosition;
 
     public void Outline(bool active)
     {

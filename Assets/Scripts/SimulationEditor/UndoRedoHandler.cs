@@ -60,6 +60,7 @@ public class UndoRedoHandler : MonoBehaviour
             redoStates.Push(newState);
 
         structureManager.LoadSaveState(loadState);
+        NodeInspector.instance.RefreshSelection();
     }
     void Redo()
     {
@@ -69,6 +70,7 @@ public class UndoRedoHandler : MonoBehaviour
 
         undoStates.Push(structureManager.CreateSaveState(), false);
         structureManager.LoadSaveState(state);
+        NodeInspector.instance.RefreshSelection();
     }
  
 }
