@@ -51,6 +51,7 @@ public class NodeMove : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
     internal void Move(Vector2 delta)
     {
+        involvedConnections = getInvolvedConnections();
         objectToMove.anchoredPosition += delta;
         {
             foreach (Connection connection in involvedConnections)
