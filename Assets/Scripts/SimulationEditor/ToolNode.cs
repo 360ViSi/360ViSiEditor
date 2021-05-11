@@ -6,9 +6,8 @@ using TMPro;
 using System;
 using static Enums;
 
-public class ToolNode : MonoBehaviour, INodeCopyPaste, ISelectable
+public class ToolNode : Node
 {
-    [SerializeField] int nodeId = -2;
     ToolType toolType;
     Question question;
     string infoText;
@@ -21,7 +20,6 @@ public class ToolNode : MonoBehaviour, INodeCopyPaste, ISelectable
     [SerializeField] Transform outPortLayout;
     [SerializeField] GameEvent redrawLinesEvent;
     [SerializeField] GameObject[] outPortAmountButtons;
-    public int NodeId { get => nodeId; set => nodeId = value; }
     public TMP_Text NodeName { get => nodeName; set => nodeName = value; }
     public NodePort InPort { get => inPort; set => inPort = value; }
     public List<NodePort> OutPorts { get => outPorts; set => outPorts = value; }
@@ -132,32 +130,6 @@ public class ToolNode : MonoBehaviour, INodeCopyPaste, ISelectable
 
         if (!fullClear)
             UndoRedoHandler.instance.SaveState();
-    }
-
-    public void OnSelect(bool manualSelect)
-    {
-        //single selection
-        //happens on create of a new node or just when this is clicked without shift
-        var holdingShift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-        if (!manualSelect || !holdingShift)
-        {
-            NodeInspector.instance.NodeSelectionHandler.SetSelectedNode(NodeId);
-            NodeInspector.instance.RefreshSelection();
-            return;
-        }
-
-        NodeInspector.instance.NodeSelectionHandler.AddRemoveSelectedNode(NodeId);
-        NodeInspector.instance.RefreshSelection();
-    }
-    public void DragSelect() => NodeInspector.instance.NodeSelectionHandler.AddRemoveSelectedNode(NodeId);
-
-    public int GetId() => NodeId;
-    public NodeType GetNodeType() => NodeType.Tool;
-    public Vector3 WorldPosition() => transform.position;
-    public NodeMove GetNodeMove() => GetComponentInChildren<NodeMove>();
-    public void Outline(bool active)
-    {
-        GetComponent<Outline>().enabled = active;
     }
 
     public void SetOutPortAmountButtonsActive(bool value)

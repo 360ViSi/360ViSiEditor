@@ -50,7 +50,7 @@ public class StructureManager : MonoBehaviour
 
         GameObject newVideoObject = Instantiate(videoNodePrefab, transform);
         var newVideoNode = newVideoObject.GetComponent<VideoNode>();
-        newVideoNode.setVideoID(getFreeNodeID());
+        newVideoNode.SetVideoID(getFreeNodeID());
         videoGameObjects.Add(newVideoObject);
         newVideoNode.OnSelect(false);
         UndoRedoHandler.instance.SaveState();
@@ -62,7 +62,7 @@ public class StructureManager : MonoBehaviour
 
         GameObject newVideoObject = Instantiate(videoNodePrefab, transform);
         var newVideoNode = newVideoObject.GetComponent<VideoNode>();
-        newVideoNode.setVideoID(getFreeNodeID());
+        newVideoNode.SetVideoID(getFreeNodeID());
         videoGameObjects.Add(newVideoObject);
         newVideoNode.OnSelect(false);
         UndoRedoHandler.instance.SaveState();
@@ -122,7 +122,7 @@ public class StructureManager : MonoBehaviour
         List<VideoNode> videoNodes = getVideoNodeList();
         foreach (VideoNode listedVideoNode in videoNodes)
         {
-            int listedVideoID = listedVideoNode.getVideoID();
+            int listedVideoID = listedVideoNode.GetVideoID();
             if (testVideoID == listedVideoID)
             {
                 return false;
@@ -151,11 +151,11 @@ public class StructureManager : MonoBehaviour
     public NodePort GetVideoInNodePortWithId(int videoID)
     {
         if (videoID == -1)
-            return endNode.GetComponent<VideoNode>().getNodePort();
+            return endNode.GetComponent<VideoNode>().GetNodePort();
 
-        var video = getVideoNodeList().Where(e => e.getVideoID() == videoID);
+        var video = getVideoNodeList().Where(e => e.GetVideoID() == videoID);
         if (video.Count() > 0)
-            return video.First().getNodePort();
+            return video.First().GetNodePort();
 
         var tool = toolNodes.Where(e => e.NodeId == videoID);
         if (tool.Count() > 0)
@@ -164,9 +164,9 @@ public class StructureManager : MonoBehaviour
         return null;
     }
 
-    public ISelectable GetSelectable(int nodeId)
+    public Node GetSelectable(int nodeId)
     {
-        var video = getVideoNodeList().Where(e => e.getVideoID() == nodeId);
+        var video = getVideoNodeList().Where(e => e.GetVideoID() == nodeId);
         if (video.Count() > 0)
             return video.First();
 
@@ -174,13 +174,13 @@ public class StructureManager : MonoBehaviour
         if (tool.Count() > 0)
             return tool.First();
 
-        Debug.LogError($"ISelectable not found with id {nodeId}");
+        Debug.LogError($"Node not found with id {nodeId}");
         return null;
     }
 
     public void SelectInScreenArea(Vector2 bottomLeft, Vector2 topRight)
     {
-        var selectablesInArea = new List<ISelectable>();
+        var selectablesInArea = new List<Node>();
 
         var holdingShift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         if(!holdingShift)
@@ -196,7 +196,7 @@ public class StructureManager : MonoBehaviour
 
         for (int i = 0; i < selectablesInArea.Count; i++)
         {
-            ISelectable item = selectablesInArea[i];
+            Node item = selectablesInArea[i];
             item.DragSelect();
         }
 
@@ -274,7 +274,7 @@ public class StructureManager : MonoBehaviour
 
         //Create connections
         foreach (var item in getVideoNodeList())
-            foreach (var action in item.getActionNodeList())
+            foreach (var action in item.GetActionNodeList())
             {
                 action.CreateLoadedConnection();
                 action.setMode();
@@ -327,7 +327,7 @@ public class StructureManager : MonoBehaviour
 
         //Create connections
         foreach (var item in getVideoNodeList())
-            foreach (var action in item.getActionNodeList())
+            foreach (var action in item.GetActionNodeList())
             {
                 action.CreateLoadedConnection();
                 action.setMode();
@@ -384,13 +384,13 @@ public class StructureManager : MonoBehaviour
     {
         var newVideoObject = Instantiate(videoNodePrefab, transform);
         var node = newVideoObject.GetComponent<VideoNode>();
-        node.setVideoID(videoJSONObject.nodeId);
-        node.setVideoFileName(videoJSONObject.videoFileName);
-        node.setLoop(videoJSONObject.loop);
-        node.setLoopTime(videoJSONObject.loopTime);
-        node.setStartTime(videoJSONObject.startTime);
-        node.setEndTime(videoJSONObject.endTime);
-        node.setVideoStartRotation(videoJSONObject.videoStartRotation);
+        node.SetVideoID(videoJSONObject.nodeId);
+        node.SetVideoFileName(videoJSONObject.videoFileName);
+        node.SetLoop(videoJSONObject.loop);
+        node.SetLoopTime(videoJSONObject.loopTime);
+        node.SetStartTime(videoJSONObject.startTime);
+        node.SetEndTime(videoJSONObject.endTime);
+        node.SetVideoStartRotation(videoJSONObject.videoStartRotation);
         newVideoObject.GetComponent<RectTransform>().anchoredPosition = videoJSONObject.nodePosition;
         videoGameObjects.Add(newVideoObject);
 
@@ -410,7 +410,7 @@ public class StructureManager : MonoBehaviour
     public void ClearStructure()
     {
         for (int i = videoGameObjects.Count - 1; i > -1; i--)
-            videoGameObjects[i].GetComponent<VideoNode>().deleteNode(true);
+            videoGameObjects[i].GetComponent<VideoNode>().DeleteNode(true);
         for (int i = toolNodes.Count - 1; i >= 0; i--)
             toolNodes[i].RemoveToolNode(true);
 

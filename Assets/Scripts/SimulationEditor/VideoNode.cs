@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,7 +6,7 @@ using TMPro;
 using static Enums;
 
 [System.Serializable]
-public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
+public class VideoNode : Node
 {
     [SerializeField]
     private int defaultVideoID = -2;
@@ -23,6 +24,7 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
     private float loopTime = 0; //loopTime is 0-1 of the video length
     private GameObject autoEndAction = null;
     private Vector3 videoStartRotation = Vector3.zero;
+    public override int NodeId { get => videoID; set => videoID = value; }
 
     void Awake()
     {
@@ -57,17 +59,17 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
         else
             actionGameObjects.Add(newActionGameObject);
 
-        repositionActionNodes();
+        RepositionActionNodes();
         var actionNode = newActionGameObject.GetComponent<ActionNode>();
-        actionNode.setActionText(actionText);
-        actionNode.setLoadedVideoID(nextVideoId);
-        actionNode.setStartTime(startTime);
-        actionNode.setEndTime(endTime);
-        actionNode.setActionType(actionType);
-        actionNode.setWorldPosition(worldPosition);
-        actionNode.setIconName(iconName);
-        actionNode.setAreaMarkerVertices(areaMarkerVertices);
-        actionNode.setActionTimer(timer);
+        actionNode.SetActionText(actionText);
+        actionNode.SetLoadedVideoID(nextVideoId);
+        actionNode.SetStartTime(startTime);
+        actionNode.SetEndTime(endTime);
+        actionNode.SetActionType(actionType);
+        actionNode.SetWorldPosition(worldPosition);
+        actionNode.SetIconName(iconName);
+        actionNode.SetAreaMarkerVertices(areaMarkerVertices);
+        actionNode.SetActionTimer(timer);
 
         if (isAutoEnd)
         {
@@ -76,36 +78,29 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
         }
     }
 
-    public void setVideoID(int newVideoID)
-    {
-        videoID = newVideoID;
-    }
+    public void SetVideoID(int newVideoID) => videoID = newVideoID;
+    public int GetVideoID() => videoID;
 
-    public int getVideoID()
-    {
-        return videoID;
-    }
-
-    public void setVideoFileName(string newVideoFileName)
+    public void SetVideoFileName(string newVideoFileName)
     {
         videoFileName = newVideoFileName;
         videoFilenameText.text = videoFileName;
     }
-    public string getVideoFileName() => videoFileName;
-    public NodePort getNodePort() => nodePort;
-    public bool getLoop() => loopingVideo;
-    public void setLoop(bool value) => loopingVideo = value;
-    public float getLoopTime() => loopTime;
-    public void setLoopTime(float value) => loopTime = value;
-    public float getEndTime() => endTime;
-    public void setEndTime(float value) => endTime = value;
-    public float getStartTime() => startTime;
-    public void setStartTime(float value) => startTime = value;
-    public Vector3 getVideoStartRotation() => videoStartRotation;
-    public void setVideoStartRotation(Vector3 value) => videoStartRotation = value;
+    public string GetVideoFileName() => videoFileName;
+    public NodePort GetNodePort() => nodePort;
+    public bool GetLoop() => loopingVideo;
+    public void SetLoop(bool value) => loopingVideo = value;
+    public float GetLoopTime() => loopTime;
+    public void SetLoopTime(float value) => loopTime = value;
+    public float GetEndTime() => endTime;
+    public void SetEndTime(float value) => endTime = value;
+    public float GetStartTime() => startTime;
+    public void SetStartTime(float value) => startTime = value;
+    public Vector3 GetVideoStartRotation() => videoStartRotation;
+    public void SetVideoStartRotation(Vector3 value) => videoStartRotation = value;
 
     #region Actions
-    public List<ActionNode> getActionNodeList()
+    public List<ActionNode> GetActionNodeList()
     {
         List<ActionNode> actionNodes = new List<ActionNode>();
         foreach (GameObject actionGameObject in actionGameObjects)
@@ -115,28 +110,28 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
         return actionNodes;
     }
 
-    public void removeActionNode(GameObject actionGameObject)
+    public void RemoveActionNode(GameObject actionGameObject)
     {
         if (actionGameObjects.Contains(actionGameObject))
             actionGameObjects.Remove(actionGameObject);
 
         Destroy(actionGameObject);
 
-        repositionActionNodes();
+        RepositionActionNodes();
         UndoRedoHandler.instance.SaveState();
     }
-    public void repositionActionNodes()
+    public void RepositionActionNodes()
     {
         for (int i = 0; i < actionGameObjects.Count; i++)
         {
             var actionNodeRectTransform = actionGameObjects[i].GetComponent<RectTransform>();
-            actionNodeRectTransform.anchoredPosition = calculateActionImagePosition(actionNodeRectTransform, i + 1);
+            actionNodeRectTransform.anchoredPosition = CalculateActionImagePosition(actionNodeRectTransform, i + 1);
             actionGameObjects[i].GetComponent<ActionNode>().getNodePort().redraw();
         }
 
     }
 
-    private Vector2 calculateActionNodePosition(RectTransform newNodeRectTransform)
+    private Vector2 CalculateActionNodePosition(RectTransform newNodeRectTransform)
     {
         //Calculates position for the next actionNode GameObject
         //Assumes that every action gameobject is in same size
@@ -147,7 +142,7 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
         return new Vector2(realDimensions.x / 2, -realDimensions.y * (actionGameObjects.Count - 0.5f));
     }
 
-    private Vector2 calculateActionImagePosition(RectTransform newNodeRectTransform, int position)
+    private Vector2 CalculateActionImagePosition(RectTransform newNodeRectTransform, int position)
     {
         //Calculates position for the next action GameObject
         //Assumes that every action gameobject is in same size
@@ -156,10 +151,9 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
         Vector2 realDimensions = new Vector2(newNodeRect.width * newNodeScale.x, newNodeRect.height * newNodeScale.y);
         return new Vector2(realDimensions.x / 2, -realDimensions.y * (position - 0.5f));
     }
-
     #endregion
 
-    public void deleteNode(bool fullclear = false)
+    public void DeleteNode(bool fullclear = false)
     {
         //delete connections to this video node & remove from simulation structure
         nodePort.disconnect();
@@ -178,33 +172,4 @@ public class VideoNode : MonoBehaviour, INodeCopyPaste, ISelectable
         if (!fullclear)
             UndoRedoHandler.instance.SaveState();
     }
-
-    public void OnSelect(bool manualSelect)
-    {
-        //single selection
-        //happens on create of a new node or just when this is clicked without shift
-        var holdingShift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-        if (!manualSelect || !holdingShift)
-        {
-            NodeInspector.instance.NodeSelectionHandler.SetSelectedNode(getVideoID());
-            NodeInspector.instance.RefreshSelection();
-            return;
-        }
-
-        NodeInspector.instance.NodeSelectionHandler.AddRemoveSelectedNode(getVideoID());
-        NodeInspector.instance.RefreshSelection();
-    }
-    public void DragSelect() => NodeInspector.instance.NodeSelectionHandler.AddRemoveSelectedNode(getVideoID());
-
-    public int GetId() => getVideoID();
-    public NodeType GetNodeType() => NodeType.Video;
-    public Vector3 WorldPosition() => transform.position;
-    public NodeMove GetNodeMove() => GetComponentInChildren<NodeMove>();
-
-    public void Outline(bool active)
-    {
-        GetComponent<Outline>().enabled = active;
-    }
-
-
 }

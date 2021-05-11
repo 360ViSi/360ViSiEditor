@@ -6,10 +6,8 @@ using System;
 
 public class CopyPasteHandler : MonoBehaviour
 {
-    [SerializeField] NodeInspector inspector;
     [SerializeField] StructureManager structureManager;
-    INodeCopyPaste clipboard;
-    bool isTool;
+    List<Node> clipboard = new List<Node>();
 
     // Update is called once per frame
     void Update()
@@ -33,19 +31,24 @@ public class CopyPasteHandler : MonoBehaviour
             if (copy != null)
                 Paste(copy);
         }
-
     }
 
-    private void Paste(INodeCopyPaste node)
+    private void Paste(List<Node> nodes)
     {
-        if (isTool)
+        foreach (var item in nodes)
+            Paste(item);
+    }
+
+    private void Paste(Node node)
+    {
+        if (node.NodeType == Enums.NodeType.Tool)
         {
             var tool = (ToolNode)node;
             var newTool = structureManager.CreateNewToolNode();
             newTool.Question = tool.Question;
             newTool.InfoText = tool.InfoText;
             newTool.ToolType = tool.ToolType;
-            
+
             for (int i = 0; i < tool.OutPorts.Count - 2; i++)
                 newTool.CreateOutPort(false);
 
@@ -56,14 +59,14 @@ public class CopyPasteHandler : MonoBehaviour
         //TODO shortcut for this?
         var video = (VideoNode)node;
         var newNode = structureManager.CreateNewVideoNode();
-        newNode.setStartTime(video.getStartTime());
-        newNode.setEndTime(video.getEndTime());
-        newNode.setLoop(video.getLoop());
-        newNode.setLoopTime(video.getLoopTime());
-        newNode.setVideoFileName(video.getVideoFileName());
-        newNode.setVideoStartRotation(video.getVideoStartRotation());
+        newNode.SetStartTime(video.GetStartTime());
+        newNode.SetEndTime(video.GetEndTime());
+        newNode.SetLoop(video.GetLoop());
+        newNode.SetLoopTime(video.GetLoopTime());
+        newNode.SetVideoFileName(video.GetVideoFileName());
+        newNode.SetVideoStartRotation(video.GetVideoStartRotation());
 
-        var actions = video.getActionNodeList();
+        var actions = video.GetActionNodeList();
         foreach (var item in actions)
         {
             newNode.CreateNewActionNode(
@@ -81,20 +84,13 @@ public class CopyPasteHandler : MonoBehaviour
         UndoRedoHandler.instance.SaveState();
     }
 
-    private INodeCopyPaste Copy()
+    //S TODO !!! this doenst work if multiple are selected !!! 
+    private List<Node> Copy()
     {
-        if (inspector.CurrentVideoNode != null)
-        {
-            isTool = false;
-            return (INodeCopyPaste)inspector.CurrentVideoNode;
-        }
-        if (inspector.CurrentToolNode != null)
-        {
-            isTool = true;
-            return (INodeCopyPaste)inspector.CurrentToolNode;
-        }
+        List<Node> nodes = new List<Node>();
+        foreach (var item in NodeInspector.instance.NodeSelectionHandler.SelectedNodes)
+            nodes.Add(structureManager.GetSelectable(item));
 
-        Debug.LogError("Nothing suitable selected");
-        return null;
+        return nodes;
     }
 }

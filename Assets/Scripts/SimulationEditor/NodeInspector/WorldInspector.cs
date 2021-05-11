@@ -40,5 +40,5 @@ public class WorldInspector : MonoBehaviour
         this.target = newTarget.transform;
     }
 
-    public void UpdateValue(string value) => NodeInspector.instance.CurrentActionNode.setActionText(value);
+    public void UpdateValue(string value) => NodeInspector.instance.CurrentActionNode.SetActionText(value);
 }

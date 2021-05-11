@@ -81,7 +81,7 @@ public class ActionNode : MonoBehaviour
             return;
         }
         VideoNode connectedVideoNode = connectedPort.GetComponentInParent<VideoNode>();
-        if (connectedVideoNode != null && connectedVideoNode.getVideoID() == -1)
+        if (connectedVideoNode != null && connectedVideoNode.GetVideoID() == -1)
         {
             // Changes the color regarding to connection status
             // Colors are predefined in Prefab (Unity Inspector)
@@ -95,7 +95,7 @@ public class ActionNode : MonoBehaviour
             }
             // get connection "to" node and its VideoNode
             //VideoNode connectedVideoNode = portConnections[0].getToNode().getParentVideoNode();
-            if (connectedVideoNode != null && connectedVideoNode.getVideoID() == -1)
+            if (connectedVideoNode != null && connectedVideoNode.GetVideoID() == -1)
             {
                 SetColor(endActionColor);
                 return;
@@ -118,7 +118,7 @@ public class ActionNode : MonoBehaviour
     {
         //Disable autoend for everything else if setting true
         if (value)
-            foreach (var item in GetComponentInParent<VideoNode>().getActionNodeList())
+            foreach (var item in GetComponentInParent<VideoNode>().GetActionNodeList())
                 item.setAutoEnd(false);
 
         autoEnd = value;
@@ -126,7 +126,7 @@ public class ActionNode : MonoBehaviour
 
     public bool getAutoEnd() => autoEnd;
 
-    public void setActionText(string newActionText)
+    public void SetActionText(string newActionText)
     {
         actionText.text = newActionText;
     }
@@ -161,7 +161,7 @@ public class ActionNode : MonoBehaviour
     ///<summary>
     /// Need to create connections when loading a structure from a file
     ///</summary>
-    public void setLoadedVideoID(int id)
+    public void SetLoadedVideoID(int id)
     {
         if (nodePort == null)
         {
@@ -186,23 +186,23 @@ public class ActionNode : MonoBehaviour
     {
         nodePort.disconnect();
         VideoNode videoNode = GetComponentInParent<VideoNode>();
-        videoNode.removeActionNode(gameObject);
+        videoNode.RemoveActionNode(gameObject);
     }
 
     public float getEndTime() => endTime;
-    public void setEndTime(float value) => endTime = value;
+    public void SetEndTime(float value) => endTime = value;
     public float getStartTime() => startTime;
-    public void setStartTime(float value) => startTime = value;
+    public void SetStartTime(float value) => startTime = value;
     public ActionType getActionType() => actionType;
-    public void setActionType(ActionType value) => actionType = value;
+    public void SetActionType(ActionType value) => actionType = value;
     public Vector3 getWorldPosition() => worldPosition;
-    public void setWorldPosition(Vector3 value) => worldPosition = value;
+    public void SetWorldPosition(Vector3 value) => worldPosition = value;
     public string getIconName() => iconName;
-    public void setIconName(string value) => iconName = value;
+    public void SetIconName(string value) => iconName = value;
     public Vector3[] getAreaMarkerVertices() => areaMarkerVertices;
-    public void setAreaMarkerVertices(Vector3[] value) => areaMarkerVertices = value;
+    public void SetAreaMarkerVertices(Vector3[] value) => areaMarkerVertices = value;
     public float getActionTimer() => actionTimer;
-    public void setActionTimer(float value) => actionTimer = value;
+    public void SetActionTimer(float value) => actionTimer = value;
     public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 
     ///<summary>

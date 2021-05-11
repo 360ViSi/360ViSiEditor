@@ -503,6 +503,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 843ec286cda7fe2bc8608bf2695ba246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nodeId: -2
+  nodeType: 0
   defaultVideoID: -2
   actionGameObjects: []
   videoID: -2

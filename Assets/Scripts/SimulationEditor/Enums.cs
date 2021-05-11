@@ -4,6 +4,7 @@ public class Enums
     {
         Video,
         Tool,
+        Group,
         Action
     }
 

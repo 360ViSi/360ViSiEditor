@@ -83,7 +83,7 @@ public class NodeMove : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         var delta = mouseMovement * screenToCanvasScale;
 
         //if not selected, move only this
-        if(!NodeInspector.instance.NodeSelectionHandler.SelectedNodes.Contains(GetComponentInParent<ISelectable>().GetId()))
+        if(!NodeInspector.instance.NodeSelectionHandler.SelectedNodes.Contains(GetComponentInParent<Node>().NodeId))
           Move(delta);
         else
           structureManager.MoveSelected(delta);
@@ -127,10 +127,10 @@ public class NodeMove : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
         // if VideoNode
         //add connections that are connected to this video node
-        nodeConnections.AddRange(connectionManager.getConnections(null, thisVideoNode.getNodePort()));
+        nodeConnections.AddRange(connectionManager.getConnections(null, thisVideoNode.GetNodePort()));
 
         //add connections that are connected from children actionNodes
-        List<ActionNode> actionNodes = thisVideoNode.getActionNodeList();
+        List<ActionNode> actionNodes = thisVideoNode.GetActionNodeList();
         foreach (ActionNode actionNode in actionNodes)
         {
             nodeConnections.AddRange(connectionManager.getConnections(actionNode.getNodePort(), null));
