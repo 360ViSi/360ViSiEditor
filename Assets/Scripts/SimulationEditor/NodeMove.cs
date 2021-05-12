@@ -83,10 +83,10 @@ public class NodeMove : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         var delta = mouseMovement * screenToCanvasScale;
 
         //if not selected, move only this
-        if(!NodeInspector.instance.NodeSelectionHandler.SelectedNodes.Contains(GetComponentInParent<Node>().NodeId))
-          Move(delta);
+        if (!NodeInspector.instance.NodeSelectionHandler.SelectedNodes.Contains(GetComponentInParent<Node>().NodeId))
+            Move(delta);
         else
-          structureManager.MoveSelected(delta);
+            structureManager.MoveSelected(delta);
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -102,44 +102,51 @@ public class NodeMove : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         List<Connection> nodeConnections = new List<Connection>();
 
         //connections to video node
-        VideoNode thisVideoNode = this.GetComponentInParent<VideoNode>();
-        ActionNode thisActionNode = this.GetComponentInParent<ActionNode>();
+        Node node = GetComponentInParent<Node>();
 
         //if ToolNode
-        if (thisVideoNode == null && thisActionNode == null)
+        switch (node.NodeType)
         {
-            ToolNode thisToolNode = GetComponentInParent<ToolNode>();
-            for (int i = 0; i < thisToolNode.OutPorts.Count; i++)
-            {
-                //if(thisToolNode.NextVideos[i] != -2)
-                nodeConnections.AddRange(connectionManager.getConnections(thisToolNode.OutPorts[i], null));
-            }
-            nodeConnections.AddRange(connectionManager.getConnections(null, thisToolNode.InPort));
-            return nodeConnections; //S ToolNode
+            case Enums.NodeType.Video:
+                var videoNode = (VideoNode)node;
+                //add connections that are connected to this video node
+                nodeConnections.AddRange(connectionManager.getConnections(null, videoNode.GetNodePort()));
+
+                //add connections that are connected from children actionNodes
+                List<ActionNode> actionNodes = videoNode.GetActionNodeList();
+                foreach (ActionNode actionNode in actionNodes)
+                    nodeConnections.AddRange(connectionManager.getConnections(actionNode.getNodePort(), null));
+                return nodeConnections;
+
+            case Enums.NodeType.Tool:
+                ToolNode thisToolNode = (ToolNode)node;
+                for (int i = 0; i < thisToolNode.OutPorts.Count; i++)
+                {
+                    //if(thisToolNode.NextVideos[i] != -2)
+                    nodeConnections.AddRange(connectionManager.getConnections(thisToolNode.OutPorts[i], null));
+                }
+                nodeConnections.AddRange(connectionManager.getConnections(null, thisToolNode.InPort));
+                return nodeConnections;
+
+            case Enums.NodeType.Group:
+                GroupNode groupNode = (GroupNode)node;
+                nodeConnections.AddRange(connectionManager.getConnections(groupNode.OutPort, null));
+                nodeConnections.AddRange(connectionManager.getConnections(null, groupNode.InPort));
+                return nodeConnections;
+
+            case Enums.NodeType.Action:
+                return null;
+
+            case Enums.NodeType.StartEnd:
+                NodePort startNodePort = GetComponentInParent<ActionNode>().getNodePort();
+                return connectionManager.getConnections(startNodePort, null);
         }
 
-        //if "Startnode" ?
-        if (thisVideoNode == null)
-        {
-            NodePort startNodePort = thisActionNode.getNodePort();
-            return connectionManager.getConnections(startNodePort, null);
-        }
-
-        // if VideoNode
-        //add connections that are connected to this video node
-        nodeConnections.AddRange(connectionManager.getConnections(null, thisVideoNode.GetNodePort()));
-
-        //add connections that are connected from children actionNodes
-        List<ActionNode> actionNodes = thisVideoNode.GetActionNodeList();
-        foreach (ActionNode actionNode in actionNodes)
-        {
-            nodeConnections.AddRange(connectionManager.getConnections(actionNode.getNodePort(), null));
-        }
-        return nodeConnections;
+        Debug.LogError("GetInvolvedConnections had an error, non-implemented switch case?");
+        return null;
     }
 
     // Vector math things
-
     private Vector3 bitWiseInverse(Vector3 vec)
     {
         return new Vector3(1.0f / vec.x, 1.0f / vec.y, 1.0f / vec.z);

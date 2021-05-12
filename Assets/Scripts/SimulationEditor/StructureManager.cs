@@ -29,6 +29,7 @@ public class StructureManager : MonoBehaviour
     private int generatedNodeID = 0;
     private ConnectionManager connectionManager;
     Camera cam;
+    [SerializeField] Transform mainNodeLayerTransform;
 
 
     // Start is called before the first frame update
@@ -48,7 +49,7 @@ public class StructureManager : MonoBehaviour
         //Initialize new Video node from prefab and add it to the list
         //With Unique video ID (setVideoID handles testing)
 
-        GameObject newVideoObject = Instantiate(videoNodePrefab, transform);
+        GameObject newVideoObject = Instantiate(videoNodePrefab, mainNodeLayerTransform);
         var newVideoNode = newVideoObject.GetComponent<VideoNode>();
         newVideoNode.SetVideoID(getFreeNodeID());
         videoGameObjects.Add(newVideoObject);
@@ -60,7 +61,7 @@ public class StructureManager : MonoBehaviour
         //Initialize new Video node from prefab and add it to the list
         //With Unique video ID (setVideoID handles testing)
 
-        GameObject newVideoObject = Instantiate(videoNodePrefab, transform);
+        GameObject newVideoObject = Instantiate(videoNodePrefab, mainNodeLayerTransform);
         var newVideoNode = newVideoObject.GetComponent<VideoNode>();
         newVideoNode.SetVideoID(getFreeNodeID());
         videoGameObjects.Add(newVideoObject);
@@ -70,7 +71,7 @@ public class StructureManager : MonoBehaviour
     }
     public void ButtonCreateNewToolNode()
     {
-        ToolNode newToolNode = Instantiate(toolNodePrefab, transform).GetComponent<ToolNode>();
+        ToolNode newToolNode = Instantiate(toolNodePrefab, mainNodeLayerTransform).GetComponent<ToolNode>();
         toolNodes.Add(newToolNode);
 
         var newVideoID = generatedNodeID;
@@ -81,7 +82,7 @@ public class StructureManager : MonoBehaviour
     }
     public ToolNode CreateNewToolNode()
     {
-        ToolNode newToolNode = Instantiate(toolNodePrefab, transform).GetComponent<ToolNode>();
+        ToolNode newToolNode = Instantiate(toolNodePrefab, mainNodeLayerTransform).GetComponent<ToolNode>();
         toolNodes.Add(newToolNode);
 
         var newVideoID = generatedNodeID;
@@ -164,7 +165,7 @@ public class StructureManager : MonoBehaviour
         return null;
     }
 
-    public Node GetSelectable(int nodeId)
+    public Node GetNode(int nodeId)
     {
         var video = getVideoNodeList().Where(e => e.GetVideoID() == nodeId);
         if (video.Count() > 0)
@@ -207,7 +208,7 @@ public class StructureManager : MonoBehaviour
     public void MoveSelected(Vector2 delta)
     {
         foreach (var item in NodeInspector.instance.NodeSelectionHandler.SelectedNodes)
-            GetSelectable(item).GetNodeMove().Move(delta);
+            GetNode(item).GetNodeMove().Move(delta);
     }
 
 
@@ -363,7 +364,7 @@ public class StructureManager : MonoBehaviour
 
     private void LoadToolNode(VideoJSONWrapper.ToolJSONObject item)
     {
-        var newToolObject = Instantiate(toolNodePrefab, transform);
+        var newToolObject = Instantiate(toolNodePrefab, mainNodeLayerTransform);
         var node = newToolObject.GetComponent<ToolNode>();
         node.NodeId = item.nodeId;
         node.NextVideos = item.nextNodes.ToList();
@@ -382,7 +383,7 @@ public class StructureManager : MonoBehaviour
 
     public void LoadVideoNode(VideoJSONWrapper.VideoJSONObject videoJSONObject)
     {
-        var newVideoObject = Instantiate(videoNodePrefab, transform);
+        var newVideoObject = Instantiate(videoNodePrefab, mainNodeLayerTransform);
         var node = newVideoObject.GetComponent<VideoNode>();
         node.SetVideoID(videoJSONObject.nodeId);
         node.SetVideoFileName(videoJSONObject.videoFileName);

@@ -104,7 +104,7 @@ public class NodeInspector : MonoBehaviour
         //if action is selected, both lists can be cleared, actions dont neeed to support multiselect ( I think? )
         foreach (var item in NodeSelectionHandler.SelectedNodes)
         {
-            var selectable = structureManager.GetSelectable(item);
+            var selectable = structureManager.GetNode(item);
             selectable.Outline(false);
         }
         nodeSelectionHandler = new NodeSelectionHandler();
@@ -242,14 +242,14 @@ public class NodeInspector : MonoBehaviour
 
         foreach (var item in NodeSelectionHandler.OldNodes)
         {
-            var selectable = structureManager.GetSelectable(item);
+            var selectable = structureManager.GetNode(item);
             if(selectable != null)
                 selectable.Outline(false);
         }
 
         foreach (var item in NodeSelectionHandler.SelectedNodes)
         {
-            var selectable = structureManager.GetSelectable(item);
+            var selectable = structureManager.GetNode(item);
             if(selectable != null)
                 selectable.Outline(true);
         }
@@ -260,7 +260,7 @@ public class NodeInspector : MonoBehaviour
             CreateElement("Items selected:", ElementKey.MultiSelectInfo, textElementPrefab, NodeSelectionHandler.SelectedNodes.Count.ToString());
         else if (NodeSelectionHandler.SelectedNodes.Count == 1)
         {
-            var selectable = structureManager.GetSelectable(NodeSelectionHandler.SelectedNodes[0]);
+            var selectable = structureManager.GetNode(NodeSelectionHandler.SelectedNodes[0]);
             NodeType selectableType = selectable.NodeType;
 
             //hate it here

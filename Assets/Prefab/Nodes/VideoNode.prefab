@@ -120,7 +120,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5482200187587917893}
-        m_MethodName: deleteNode
+        m_MethodName: DeleteNode
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

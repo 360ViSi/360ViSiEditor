@@ -89,7 +89,7 @@ public class CopyPasteHandler : MonoBehaviour
     {
         List<Node> nodes = new List<Node>();
         foreach (var item in NodeInspector.instance.NodeSelectionHandler.SelectedNodes)
-            nodes.Add(structureManager.GetSelectable(item));
+            nodes.Add(structureManager.GetNode(item));
 
         return nodes;
     }

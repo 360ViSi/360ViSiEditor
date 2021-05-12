@@ -131,7 +131,7 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
       }
 
       //Manage connections at the end of drag.
-
+      //S TODO - use the Enums
       GameObject dropNode = eventData.pointerEnter;
 
       try

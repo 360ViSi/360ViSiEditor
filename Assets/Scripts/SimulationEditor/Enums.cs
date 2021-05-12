@@ -5,7 +5,8 @@ public class Enums
         Video,
         Tool,
         Group,
-        Action
+        Action,
+        StartEnd
     }
 
 }
