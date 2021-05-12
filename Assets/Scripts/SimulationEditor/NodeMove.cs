@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -104,42 +105,48 @@ public class NodeMove : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         //connections to video node
         Node node = GetComponentInParent<Node>();
 
-        //if ToolNode
-        switch (node.NodeType)
+        try
         {
-            case Enums.NodeType.Video:
-                var videoNode = (VideoNode)node;
-                //add connections that are connected to this video node
-                nodeConnections.AddRange(connectionManager.getConnections(null, videoNode.GetNodePort()));
+            switch (node.NodeType)
+            {
+                case Enums.NodeType.Video:
+                    var videoNode = (VideoNode)node;
+                    //add connections that are connected to this video node
+                    nodeConnections.AddRange(connectionManager.getConnections(null, videoNode.GetNodePort()));
 
-                //add connections that are connected from children actionNodes
-                List<ActionNode> actionNodes = videoNode.GetActionNodeList();
-                foreach (ActionNode actionNode in actionNodes)
-                    nodeConnections.AddRange(connectionManager.getConnections(actionNode.getNodePort(), null));
-                return nodeConnections;
+                    //add connections that are connected from children actionNodes
+                    List<ActionNode> actionNodes = videoNode.GetActionNodeList();
+                    foreach (ActionNode actionNode in actionNodes)
+                        nodeConnections.AddRange(connectionManager.getConnections(actionNode.getNodePort(), null));
+                    return nodeConnections;
 
-            case Enums.NodeType.Tool:
-                ToolNode thisToolNode = (ToolNode)node;
-                for (int i = 0; i < thisToolNode.OutPorts.Count; i++)
-                {
-                    //if(thisToolNode.NextVideos[i] != -2)
-                    nodeConnections.AddRange(connectionManager.getConnections(thisToolNode.OutPorts[i], null));
-                }
-                nodeConnections.AddRange(connectionManager.getConnections(null, thisToolNode.InPort));
-                return nodeConnections;
+                case Enums.NodeType.Tool:
+                    ToolNode thisToolNode = (ToolNode)node;
+                    for (int i = 0; i < thisToolNode.OutPorts.Count; i++)
+                    {
+                        //if(thisToolNode.NextVideos[i] != -2)
+                        nodeConnections.AddRange(connectionManager.getConnections(thisToolNode.OutPorts[i], null));
+                    }
+                    nodeConnections.AddRange(connectionManager.getConnections(null, thisToolNode.InPort));
+                    return nodeConnections;
 
-            case Enums.NodeType.Group:
-                GroupNode groupNode = (GroupNode)node;
-                nodeConnections.AddRange(connectionManager.getConnections(groupNode.OutPort, null));
-                nodeConnections.AddRange(connectionManager.getConnections(null, groupNode.InPort));
-                return nodeConnections;
+                case Enums.NodeType.Group:
+                    GroupNode groupNode = (GroupNode)node;
+                    nodeConnections.AddRange(connectionManager.getConnections(groupNode.OutPort, null));
+                    nodeConnections.AddRange(connectionManager.getConnections(null, groupNode.InPort));
+                    return nodeConnections;
 
-            case Enums.NodeType.Action:
-                return null;
+                case Enums.NodeType.Action:
+                    return null;
 
-            case Enums.NodeType.StartEnd:
-                NodePort startNodePort = GetComponentInParent<ActionNode>().getNodePort();
-                return connectionManager.getConnections(startNodePort, null);
+                case Enums.NodeType.StartEnd:
+                    NodePort startNodePort = GetComponentInParent<ActionNode>().getNodePort();
+                    return connectionManager.getConnections(startNodePort, null);
+            }
+        }
+        catch (Exception e)
+        {
+            throw e;
         }
 
         Debug.LogError("GetInvolvedConnections had an error, non-implemented switch case?");

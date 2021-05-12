@@ -29,11 +29,5 @@ public class GroupNode : Node
         groupManager.RemoveNodeFromMainView(nodeId, groupId);
     }
 
-    public void OpenGroup()
-    {
-        groupManager.OpenGroup(groupId);
-
-    }
-
-    
+    public void OpenGroup() => groupManager.OpenGroup(groupId);
 }

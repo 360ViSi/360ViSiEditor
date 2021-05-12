@@ -11,6 +11,8 @@ public class GroupManager : MonoBehaviour
     [SerializeField] Transform nodeCanvasTransform;
     [SerializeField] List<GroupNode> groups = new List<GroupNode>();
 
+    public List<GroupNode> Groups { get => groups; }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -61,11 +63,12 @@ public class GroupManager : MonoBehaviour
         groups.Add(groupNode);
 
         var groupParent = Instantiate(groupParentPrefab, transform);
-        //S TODO create group id
-        groupNode.Initialize(1, this, groupParent, nodes);
+        
+        var freeNodeId = structureManager.GetFreeNodeID();
+        groupNode.Initialize(freeNodeId, this, groupParent, nodes);
 
         foreach (var item in nodes)
-            RemoveNodeFromMainView(item, 1);
+            RemoveNodeFromMainView(item, freeNodeId);
 
         nodeCanvasTransform.gameObject.SetActive(false);
     }
