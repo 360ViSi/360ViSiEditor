@@ -63,14 +63,14 @@ public class SimulationManager : MonoBehaviour
             EndGame();
 
         var videoPart = videoData.getVideoPart(nextNodeID);
-        //No video or tool with that id is found -> EndGame
         if (videoPart != null)
         {
             GoToVideo(nextNodeID, videoPart);
             return;
         }
 
-        if (videoPart == null && videoData.VideoStructure.tools == null)
+        //No video and no tools exist ->  EndGame
+        if (videoData.VideoStructure.tools == null)
         {
             Debug.LogError("no tools");
             EndGame();
@@ -80,6 +80,9 @@ public class SimulationManager : MonoBehaviour
         foreach (var item in videoData.VideoStructure.tools)
             if (item.nodeId == nextNodeID)
                 item.ProcessTool(GoToNode);
+                
+        //S TODO groups
+        //foreach group, enter group...
     }
 
     private void GoToVideo(int nextNodeID, VideoPart videoPart)
