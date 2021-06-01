@@ -174,30 +174,6 @@ public class EditorVideoPlayer : MonoBehaviour
         currentVideoEndTime = endTime;
         simulationTimeline.EndTime = endTime;
     }
-
-    // public void SetStartTimeToAction(float value)
-    // {
-    //     nodeInspector.CurrentActionNode.setStartTime(value);
-    //     simulationTimeline.ActionStartTime = value;
-    //     nodeInspector.CreateFields(nodeInspector.CurrentActionNode, true);
-    // }
-    // void GetStartTimeFromAction()
-    // {
-    //     var startTime = nodeInspector.CurrentActionNode.getStartTime();
-    //     simulationTimeline.ActionStartTime = startTime;
-    // }
-    // public void SetEndTimeToAction(float value)
-    // {
-    //     nodeInspector.CurrentActionNode.setEndTime(value);
-    //     simulationTimeline.ActionEndTime = value;
-    //     nodeInspector.CreateFields(nodeInspector.CurrentActionNode, true);
-    // }
-    // void GetEndTimeFromAction()
-    // {
-    //     var endTime = nodeInspector.CurrentActionNode.getEndTime();
-    //     simulationTimeline.ActionEndTime = endTime;
-    // }
-
     #endregion
 
     private VideoPlayer.EventHandler PrepareVideo(VideoPlayer player, bool pause)
