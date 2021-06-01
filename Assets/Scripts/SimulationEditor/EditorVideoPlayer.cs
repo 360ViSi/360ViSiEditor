@@ -52,7 +52,7 @@ public class EditorVideoPlayer : MonoBehaviour
 
         UpdateVideoStatus();
 
-        if (videoPlayer.length == 0 || !videoPlayer.isPlaying)
+        if (videoPlayer.length == 0 || !videoPlayer.isPlaying || nodeInspector.CurrentVideoNode == null)
             return;
 
         // S TODO - has to be a better way to solve this, maybe with just checking for a stop?
@@ -62,7 +62,7 @@ public class EditorVideoPlayer : MonoBehaviour
         if (videoPlayer.frame < (videoPlayer.frameCount * currentVideoEndTime - endThresholdFrames))
             return;
 
-        if (nodeInspector.CurrentVideoNode.getLoop() == false)
+        if (nodeInspector.CurrentVideoNode.GetLoop() == false)
         {
             videoPlayer.Stop();
             return;
@@ -105,7 +105,7 @@ public class EditorVideoPlayer : MonoBehaviour
     IEnumerator SetVideoStartTimeAndLengthOnVideoChange()
     {
         yield return new WaitForFixedUpdate();
-        videoPlayer.time = nodeInspector.CurrentVideoNode.getStartTime() * videoPlayer.length;
+        videoPlayer.time = nodeInspector.CurrentVideoNode.GetStartTime() * videoPlayer.length;
         currentvideoLength = videoPlayer.length;
     }
 
@@ -118,8 +118,6 @@ public class EditorVideoPlayer : MonoBehaviour
     {
         if (nodeInspector.CurrentActionNode != null)
         {
-            //GetStartTimeFromAction();
-            //GetEndTimeFromAction();
             editorVideoControls.SetCurrentControlsToVideo(false);
         }
         else
@@ -137,21 +135,21 @@ public class EditorVideoPlayer : MonoBehaviour
     ///</summary>
     public void SetLoopTimeToVideo(float value)
     {
-        nodeInspector.CurrentVideoNode.setLoopTime(value);
+        nodeInspector.CurrentVideoNode.SetLoopTime(value);
         currentVideoLoopTime = value;
         nodeInspector.CreateFields(nodeInspector.CurrentVideoNode, true);
     }
 
     void GetLoopTimeFromVideo()
     {
-        var loopTime = nodeInspector.CurrentVideoNode.getLoopTime();
+        var loopTime = nodeInspector.CurrentVideoNode.GetLoopTime();
         currentVideoLoopTime = loopTime;
         simulationTimeline.Looptime = loopTime;
     }
 
     public void SetStartTimeToVideo(float value)
     {
-        nodeInspector.CurrentVideoNode.setStartTime(value);
+        nodeInspector.CurrentVideoNode.SetStartTime(value);
         currentVideoStartTime = value;
         simulationTimeline.StartTime = value;
         nodeInspector.CreateFields(nodeInspector.CurrentVideoNode, true);
@@ -159,20 +157,20 @@ public class EditorVideoPlayer : MonoBehaviour
 
     void GetStartTimeFromVideo()
     {
-        var startTime = nodeInspector.CurrentVideoNode.getStartTime();
+        var startTime = nodeInspector.CurrentVideoNode.GetStartTime();
         currentVideoStartTime = startTime;
         simulationTimeline.StartTime = startTime;
     }
     public void SetEndTimeToVideo(float value)
     {
-        nodeInspector.CurrentVideoNode.setEndTime(value);
+        nodeInspector.CurrentVideoNode.SetEndTime(value);
         currentVideoEndTime = value;
         simulationTimeline.EndTime = value;
         nodeInspector.CreateFields(nodeInspector.CurrentVideoNode, true);
     }
     void GetEndTimeFromVideo()
     {
-        var endTime = nodeInspector.CurrentVideoNode.getEndTime();
+        var endTime = nodeInspector.CurrentVideoNode.GetEndTime();
         currentVideoEndTime = endTime;
         simulationTimeline.EndTime = endTime;
     }
@@ -218,13 +216,13 @@ public class EditorVideoPlayer : MonoBehaviour
         //S NOTE - Skip On Drop needs to be disabled in the videoplayer loop points are used
         //Having it enabled causes the videoplayer to go to frame 0 to wait for the skip 
         //to the actual loop point
-        if (realLoop && nodeInspector.CurrentVideoNode.getLoop())
+        if (realLoop && nodeInspector.CurrentVideoNode.GetLoop())
         {
-            StartCoroutine(LoopRoutine((float)(player.length * nodeInspector.CurrentVideoNode.getLoopTime())));
+            StartCoroutine(LoopRoutine((float)(player.length * nodeInspector.CurrentVideoNode.GetLoopTime())));
         }
         else if (realLoop)
         {
-            StartCoroutine(LoopRoutine((float)(player.length * nodeInspector.CurrentVideoNode.getStartTime())));
+            StartCoroutine(LoopRoutine((float)(player.length * nodeInspector.CurrentVideoNode.GetStartTime())));
         }
         else player.time = timeSlider.Value;
     }

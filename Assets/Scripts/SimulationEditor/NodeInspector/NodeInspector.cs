@@ -1,13 +1,8 @@
-using System.Globalization;
-using System.Net;
-using System.Linq;
-using System.Collections;
-using System;
-using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Video;
 using System.Collections.Generic;
+using static Enums;
+using UnityEngine.UI;
 
 ///<summary>
 /// Controls and manages the functions of the IN-APP-INSPECTOR (not Unity inspector)
@@ -23,6 +18,8 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] Transform videoCamTransform = null;
     [SerializeField] EditorVideoPlayer editorVideoPlayer = null;
     [SerializeField] EditorVideoControls editorVideoControls = null;
+    [SerializeField] StructureManager structureManager = null;
+    [SerializeField] NodeSelectionHandler nodeSelectionHandler = null;
     [SerializeField] GameObject iconSelectionPanel = null;
     [SerializeField] GameObject questionCreatorPanel = null;
     [SerializeField] GameObject infoCreatorPanel = null;
@@ -46,6 +43,7 @@ public class NodeInspector : MonoBehaviour
     public ActionNode CurrentActionNode => currentActionNode;
     public ToolNode CurrentToolNode => currentToolNode;
     public ActionDraggables ActionDraggables => actionDraggables;
+    public NodeSelectionHandler NodeSelectionHandler => nodeSelectionHandler;
 
     private void Awake()
     {
@@ -53,9 +51,8 @@ public class NodeInspector : MonoBehaviour
         else if (instance != this) Destroy(gameObject);
 
         DestroyAllInspectorElements();
+        nodeSelectionHandler = new NodeSelectionHandler();
     }
-
-    
 
     void DestroyAllInspectorElements()
     {
@@ -63,23 +60,23 @@ public class NodeInspector : MonoBehaviour
             Destroy(transform.GetChild(i).gameObject);
     }
 
+    #region Fields
+
     ///<summary>
     /// Creates and populates all the fields for the editor in-app-inspector
     ///</summary>
     public void CreateFields(VideoNode node, bool isUpdate = false)
     {
-        NullCurrentNodes();
+        //RefreshSelection();
         currentVideoNode = node;
         actionDraggables.CreateActionDraggables(node);
-        currentVideoNode.GetComponent<Outline>().enabled = true;
 
-        videoCamTransform.localEulerAngles = currentVideoNode.getVideoStartRotation();
-        DestroyAllInspectorElements();
+        videoCamTransform.localEulerAngles = currentVideoNode.GetVideoStartRotation();
 
         //Put bg to video
         if (!isUpdate)
         {
-            var canUseVideo = editorVideoPlayer.TryChangeVideo(node.getVideoFileName());
+            var canUseVideo = editorVideoPlayer.TryChangeVideo(node.GetVideoFileName());
             if (canUseVideo)
                 editorVideoPlayer.VideoPlayer.prepareCompleted += CreateVideoFields;
         }
@@ -88,7 +85,7 @@ public class NodeInspector : MonoBehaviour
         CreateElement("Video filename",
                       ElementKey.VideoFileName,
                       filenameElementPrefab,
-                      currentVideoNode.getVideoFileName());
+                      currentVideoNode.GetVideoFileName());
 
         if (isUpdate)
             CreateVideoFields(editorVideoPlayer.VideoPlayer);
@@ -104,17 +101,25 @@ public class NodeInspector : MonoBehaviour
         NullCurrentNodes();
         DestroyAllInspectorElements();
 
+        //if action is selected, both lists can be cleared, actions dont neeed to support multiselect ( I think? )
+        foreach (var item in NodeSelectionHandler.SelectedNodes)
+        {
+            var selectable = structureManager.GetNode(item);
+            selectable.Outline(false);
+        }
+        nodeSelectionHandler = new NodeSelectionHandler();
+        node.GetComponent<Outline>().enabled = true;
+
         currentActionNode = node;
-        currentActionNode.GetComponent<Outline>().enabled = true;
         currentVideoNode = node.GetComponentInParent<VideoNode>();
         actionDraggables.CreateActionDraggables(currentVideoNode);
 
-        videoCamTransform.localEulerAngles = currentVideoNode.getVideoStartRotation();
+        videoCamTransform.localEulerAngles = currentVideoNode.GetVideoStartRotation();
 
         //Clicking on action that isnt from the same video as the previous one (or none)
         if (isUpdate == false && (oldVideoNode == null || currentVideoNode != oldVideoNode))
         {
-            editorVideoPlayer.TryChangeVideo(currentVideoNode.getVideoFileName());
+            editorVideoPlayer.TryChangeVideo(currentVideoNode.GetVideoFileName());
             editorVideoPlayer.VideoPlayer.prepareCompleted += CreateActionFields;
         }
         else
@@ -130,11 +135,10 @@ public class NodeInspector : MonoBehaviour
     public void CreateFields(ToolNode node, bool isUpdate = false)
     {
         editorVideoPlayer.VideoPlayer.Stop();
-        NullCurrentNodes();
-        DestroyAllInspectorElements();
+        //RefreshSelection();
+
         currentToolNode = node;
 
-        currentToolNode.GetComponent<Outline>().enabled = true;
 
         CreateElement("Tool", ElementKey.ToolType, dropdownElementPrefab, (int)node.ToolType);
         if (node.ToolType == ToolType.QuestionTask)
@@ -161,21 +165,21 @@ public class NodeInspector : MonoBehaviour
         CreateElement("Loop video",
                       ElementKey.VideoLoop,
                       toggleElementPrefab,
-                      currentVideoNode.getLoop());
+                      currentVideoNode.GetLoop());
         CreateElement("Video loop time",
                       ElementKey.VideoLoopTime,
                       timeElementPrefab,
-                      currentVideoNode.getLoopTime(),
+                      currentVideoNode.GetLoopTime(),
                       0);
         CreateElement("Video start time",
                       ElementKey.VideoStartTime,
                       timeElementPrefab,
-                      currentVideoNode.getStartTime(),
+                      currentVideoNode.GetStartTime(),
                       0);
         CreateElement("Video end time",
                       ElementKey.VideoEndTime,
                       timeElementPrefab,
-                      currentVideoNode.getEndTime(),
+                      currentVideoNode.GetEndTime(),
                       1);
         CreateElement("Set current rotation as starting rotation",
         buttonElementPrefab, SetCurrentRotationAsStartRotation);
@@ -229,12 +233,50 @@ public class NodeInspector : MonoBehaviour
         CreateWorldMarker(currentActionNode, true);
     }
 
+    #endregion
+
+    internal void RefreshSelection()
+    {
+        NullCurrentNodes();
+        DestroyAllInspectorElements();
+
+        foreach (var item in NodeSelectionHandler.OldNodes)
+        {
+            var selectable = structureManager.GetNode(item);
+            if(selectable != null)
+                selectable.Outline(false);
+        }
+
+        foreach (var item in NodeSelectionHandler.SelectedNodes)
+        {
+            var selectable = structureManager.GetNode(item);
+            if(selectable != null)
+                selectable.Outline(true);
+        }
+
+        NodeSelectionHandler.SaveOldList();
+
+        if (NodeSelectionHandler.SelectedNodes.Count > 1)
+            CreateElement("Items selected:", ElementKey.MultiSelectInfo, textElementPrefab, NodeSelectionHandler.SelectedNodes.Count.ToString());
+        else if (NodeSelectionHandler.SelectedNodes.Count == 1)
+        {
+            var selectable = structureManager.GetNode(NodeSelectionHandler.SelectedNodes[0]);
+            NodeType selectableType = selectable.NodeType;
+
+            //hate it here
+            if (selectableType == NodeType.Video)
+                CreateFields((VideoNode)selectable);
+            else if (selectableType == NodeType.Tool)
+                CreateFields((ToolNode)selectable);
+        }
+    }
+
     ///<summary>
     /// Spawns markers for all the actions in the current video
     ///</summary>
     void CreateWorldMarkers()
     {
-        foreach (var item in currentVideoNode.getActionNodeList())
+        foreach (var item in currentVideoNode.GetActionNodeList())
             CreateWorldMarker(item);
     }
 
@@ -285,36 +327,39 @@ public class NodeInspector : MonoBehaviour
         currentWorldMarkers.Add(go);
     }
 
+    #region Updating Values
 
     public void UpdateValue(ElementKey key, string value)
     {
         if (key == ElementKey.VideoFileName)
         {
             editorVideoPlayer.TryChangeVideo(value);
-            currentVideoNode.setVideoFileName(value);
+            currentVideoNode.SetVideoFileName(value);
         }
         if (key == ElementKey.ActionName)
         {
-            currentActionNode.setActionText(value);
+            currentActionNode.SetActionText(value);
             CreateWorldMarker(currentActionNode, true);
         }
         if (key == ElementKey.Timer)
         {
             if (float.TryParse(value, out float result))
-                currentActionNode.setActionTimer(result);
+                currentActionNode.SetActionTimer(result);
             else Debug.LogError("Time is in the wrong format!");
         }
+        UndoRedoHandler.instance.SaveState();
+
     }
 
     public void UpdateValue(ElementKey key, bool value)
     {
         if (key == ElementKey.VideoLoop)
         {
-            currentVideoNode.setLoop(value);
+            currentVideoNode.SetLoop(value);
             //If video will loop, none of the actions can autoend
             if (value)
             {
-                foreach (var item in currentVideoNode.getActionNodeList())
+                foreach (var item in currentVideoNode.GetActionNodeList())
                     item.setAutoEnd(false);
             }
         }
@@ -326,18 +371,20 @@ public class NodeInspector : MonoBehaviour
             //And set video to NOT loop (would override autoend)
             if (value)
             {
-                foreach (var item in currentVideoNode.getActionNodeList())
+                foreach (var item in currentVideoNode.GetActionNodeList())
                 {
                     if (item != currentActionNode)
                         item.setAutoEnd(false);
                 }
 
-                currentVideoNode.setLoop(false);
+                currentVideoNode.SetLoop(false);
             }
             //changing autoend changes what other fields are shown so need to redraw
             CreateFields(currentActionNode, true);
         }
         editorVideoPlayer.RefreshTimeline();
+        UndoRedoHandler.instance.SaveState();
+
     }
 
     public void UpdateValue(ElementKey key, int value)
@@ -346,27 +393,31 @@ public class NodeInspector : MonoBehaviour
         {
             currentToolNode.ToolType = (ToolType)value;
             CreateFields(currentToolNode, true);
+            UndoRedoHandler.instance.SaveState();
+
             return;
         }
 
-        if (key == ElementKey.ActionType) currentActionNode.setActionType((ActionType)value);
+        if (key == ElementKey.ActionType) currentActionNode.SetActionType((ActionType)value);
         CreateFields(currentActionNode, true);
+        UndoRedoHandler.instance.SaveState();
+
     }
 
     public void UpdateValue(ElementKey key, float value)
     {
-        if (key == ElementKey.VideoStartTime) currentVideoNode.setStartTime(value);
-        if (key == ElementKey.VideoEndTime) currentVideoNode.setEndTime(value);
-        if (key == ElementKey.VideoLoopTime) currentVideoNode.setLoopTime(value);
+        if (key == ElementKey.VideoStartTime) currentVideoNode.SetStartTime(value);
+        if (key == ElementKey.VideoEndTime) currentVideoNode.SetEndTime(value);
+        if (key == ElementKey.VideoLoopTime) currentVideoNode.SetLoopTime(value);
 
-        if (key == ElementKey.ActionStartTime) currentActionNode.setStartTime(value);
-        if (key == ElementKey.ActionEndTime) currentActionNode.setEndTime(value);
+        if (key == ElementKey.ActionStartTime) currentActionNode.SetStartTime(value);
+        if (key == ElementKey.ActionEndTime) currentActionNode.SetEndTime(value);
 
         //These all SO FAR (5) need to refresh the timeline markers, so I'm just going to do it here for all of them
         editorVideoPlayer.RefreshTimeline();
-
+        UndoRedoHandler.instance.SaveState();
     }
-
+    #endregion
     public void StartWorldMarkerPositioning()
     {
         if (editingAreaMarker)
@@ -380,7 +431,7 @@ public class NodeInspector : MonoBehaviour
     public void StopAreaMarkerPositioning(Vector3[] vertices)
     {
         editorVideoControls.PlacingWorldSpaceMarker = false;
-        currentActionNode.setAreaMarkerVertices(vertices);
+        currentActionNode.SetAreaMarkerVertices(vertices);
         CreateFields(currentActionNode, true);
     }
 
@@ -396,7 +447,7 @@ public class NodeInspector : MonoBehaviour
     public void SetIcon(string iconName)
     {
         RemoveMarkers();
-        CurrentActionNode.setIconName(iconName);
+        CurrentActionNode.SetIconName(iconName);
         CreateWorldMarker(currentActionNode);
         actionDraggables.Refresh();
     }
@@ -404,7 +455,7 @@ public class NodeInspector : MonoBehaviour
 
     void OpenInfoCreator() => infoCreatorPanel.SetActive(true);
 
-    private void SetCurrentRotationAsStartRotation() => CurrentVideoNode.setVideoStartRotation(videoCamTransform.localEulerAngles);
+    private void SetCurrentRotationAsStartRotation() => CurrentVideoNode.SetVideoStartRotation(videoCamTransform.localEulerAngles);
 
     public float GetVideoLength() => (float)editorVideoPlayer.VideoPlayer.length;
 
@@ -503,5 +554,7 @@ public enum ElementKey
     VideoStartTime,
     VideoEndTime,
     ToolType,
-    Timer
+    Timer,
+    MultiSelectInfo
+
 }

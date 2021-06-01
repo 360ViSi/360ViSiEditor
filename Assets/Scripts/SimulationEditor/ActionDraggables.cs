@@ -23,7 +23,7 @@ public partial class ActionDraggables : MonoBehaviour
             Destroy(transform.GetChild(i).gameObject);
 
         //Make new ones, height is placed in reverse order, so they are spawned in the same order as under videonodes
-        List<ActionNode> list = videoNode.getActionNodeList();
+        List<ActionNode> list = videoNode.GetActionNodeList();
         if (list.Count == 0)
         {
             videoControlsRect.sizeDelta = new Vector2(0, 75);
@@ -65,13 +65,13 @@ public partial class ActionDraggables : MonoBehaviour
 
     void SetStartTime(ActionNode node, float value)
     {
-        node.setStartTime(value);
+        node.SetStartTime(value);
         NodeInspector.instance.CreateFields(node, true);
     }
 
     void SetEndTime(ActionNode node, float value)
     {
-        node.setEndTime(value);
+        node.SetEndTime(value);
         NodeInspector.instance.CreateFields(node, true);
     }
 

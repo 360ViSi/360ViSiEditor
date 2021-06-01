@@ -30,14 +30,14 @@ public class VideoJSONWrapper
     {
         public VideoJSONObject(VideoNode videoNode, List<ActionJSONObject> actionJSONObjects = null)
         {
-            nodeId = videoNode.getVideoID();
-            videoFileName = videoNode.getVideoFileName();
+            nodeId = videoNode.GetVideoID();
+            videoFileName = videoNode.GetVideoFileName();
             nodePosition = videoNode.GetComponent<RectTransform>().anchoredPosition;
-            loop = videoNode.getLoop();
-            loopTime = videoNode.getLoopTime();
-            startTime = videoNode.getStartTime();
-            endTime = videoNode.getEndTime();
-            videoStartRotation = videoNode.getVideoStartRotation();
+            loop = videoNode.GetLoop();
+            loopTime = videoNode.GetLoopTime();
+            startTime = videoNode.GetStartTime();
+            endTime = videoNode.GetEndTime();
+            videoStartRotation = videoNode.GetVideoStartRotation();
 
             if (actionJSONObjects != null)
                 actions = actionJSONObjects;
@@ -109,7 +109,7 @@ public class VideoJSONWrapper
 
         foreach (var item in videoNodes)
         {
-            var actions = ConvertActionNodeListToJSONFormat(item.getActionNodeList());
+            var actions = ConvertActionNodeListToJSONFormat(item.GetActionNodeList());
             output.Add(new VideoJSONObject(item, actions));
         }
 

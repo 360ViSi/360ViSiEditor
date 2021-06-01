@@ -86,7 +86,7 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
         var video = nodePort.GetComponentInParent<VideoNode>();
         var tool = nodePort.GetComponentInParent<ToolNode>();
 
-        if(video != null) return video.getVideoID();
+        if(video != null) return video.GetVideoID();
         else if(tool != null) return tool.NodeId; //S ToolNode
       }
       catch{}
@@ -131,7 +131,7 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
       }
 
       //Manage connections at the end of drag.
-
+      //S TODO - use the Enums
       GameObject dropNode = eventData.pointerEnter;
 
       try
@@ -141,7 +141,7 @@ public class NodePort : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHan
         var tool = dropNode.GetComponentInParent<ToolNode>();
         //S ToolNode
         if(video != null)
-          dropPort = dropNode.GetComponentInParent<VideoNode>().getNodePort();
+          dropPort = dropNode.GetComponentInParent<VideoNode>().GetNodePort();
         else if(tool != null) 
           dropPort = dropNode.GetComponentInParent<ToolNode>().InPort;
         else{

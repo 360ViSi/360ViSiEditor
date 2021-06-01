@@ -13,5 +13,6 @@ public class InfoCreator : MonoBehaviour
     public void EditInfo()
     {
         NodeInspector.instance.CurrentToolNode.InfoText = infoInput.text;
+        UndoRedoHandler.instance.SaveState();
     }
 }

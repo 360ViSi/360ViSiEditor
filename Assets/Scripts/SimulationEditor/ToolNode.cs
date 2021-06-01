@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System;
+using static Enums;
 
-public class ToolNode : MonoBehaviour
+public class ToolNode : Node
 {
-    [SerializeField] int nodeId = -2;
     ToolType toolType;
     Question question;
     string infoText;
@@ -19,7 +20,6 @@ public class ToolNode : MonoBehaviour
     [SerializeField] Transform outPortLayout;
     [SerializeField] GameEvent redrawLinesEvent;
     [SerializeField] GameObject[] outPortAmountButtons;
-    public int NodeId { get => nodeId; set => nodeId = value; }
     public TMP_Text NodeName { get => nodeName; set => nodeName = value; }
     public NodePort InPort { get => inPort; set => inPort = value; }
     public List<NodePort> OutPorts { get => outPorts; set => outPorts = value; }
@@ -45,10 +45,9 @@ public class ToolNode : MonoBehaviour
                     break;
             }
 
-
             SetOutPortAmountButtonsActive(
                 toolType == ToolType.Random
-                || toolType == ToolType.QuestionTask && question != null && question.multichoice);
+                || toolType == ToolType.QuestionTask && question != null && !question.multichoice);
         }
     }
 
@@ -119,7 +118,7 @@ public class ToolNode : MonoBehaviour
         redrawLinesEvent?.Raise();
     }
 
-    public void RemoveToolNode()
+    public void RemoveToolNode(bool fullClear = false)
     {
         foreach (var item in OutPorts)
             item.disconnect();
@@ -128,9 +127,10 @@ public class ToolNode : MonoBehaviour
 
         structureManager.RemoveToolNode(this);
         Destroy(gameObject);
-    }
-    public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
 
+        if (!fullClear)
+            UndoRedoHandler.instance.SaveState();
+    }
 
     public void SetOutPortAmountButtonsActive(bool value)
     {

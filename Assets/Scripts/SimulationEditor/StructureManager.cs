@@ -1,6 +1,3 @@
-using System.Data;
-using System.ComponentModel;
-using System.Threading;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,6 +25,9 @@ public class StructureManager : MonoBehaviour
     private List<ToolNode> toolNodes = new List<ToolNode>();
     private int generatedNodeID = 0;
     private ConnectionManager connectionManager;
+    private GroupManager groupManager;
+    Camera cam;
+    [SerializeField] Transform mainNodeLayerTransform;
 
 
     // Start is called before the first frame update
@@ -35,34 +35,60 @@ public class StructureManager : MonoBehaviour
     {
         // get ConnectionManager
         connectionManager = GetComponent<ConnectionManager>();
+        groupManager = GetComponent<GroupManager>();
         if (connectionManager == null)
         {
             Debug.Log("There are no ConnectionManager as a child of " + name);
         }
+        cam = Camera.main;
     }
 
+    public void ButtonCreateNewVideoNode()
+    {
+        //Initialize new Video node from prefab and add it to the list
+        //With Unique video ID (setVideoID handles testing)
+
+        GameObject newVideoObject = Instantiate(videoNodePrefab, mainNodeLayerTransform);
+        var newVideoNode = newVideoObject.GetComponent<VideoNode>();
+        newVideoNode.SetVideoID(GetFreeNodeID());
+        videoGameObjects.Add(newVideoObject);
+        newVideoNode.OnSelect(false);
+        UndoRedoHandler.instance.SaveState();
+    }
     public VideoNode CreateNewVideoNode()
     {
         //Initialize new Video node from prefab and add it to the list
         //With Unique video ID (setVideoID handles testing)
 
-        GameObject newVideoObject = Instantiate(videoNodePrefab, transform);
+        GameObject newVideoObject = Instantiate(videoNodePrefab, mainNodeLayerTransform);
         var newVideoNode = newVideoObject.GetComponent<VideoNode>();
-        newVideoNode.setVideoID(getFreeNodeID());
+        newVideoNode.SetVideoID(GetFreeNodeID());
         videoGameObjects.Add(newVideoObject);
-        newVideoNode.InspectorOpen();
+        newVideoNode.OnSelect(false);
+        UndoRedoHandler.instance.SaveState();
         return newVideoNode;
     }
-
-    public ToolNode CreateNewToolNode()
+    public void ButtonCreateNewToolNode()
     {
-        ToolNode newToolNode = Instantiate(toolNodePrefab, transform).GetComponent<ToolNode>();
+        ToolNode newToolNode = Instantiate(toolNodePrefab, mainNodeLayerTransform).GetComponent<ToolNode>();
         toolNodes.Add(newToolNode);
 
         var newVideoID = generatedNodeID;
 
-        newToolNode.NodeId = getFreeNodeID();
+        newToolNode.NodeId = GetFreeNodeID();
         newToolNode.StructureManager = this;
+        UndoRedoHandler.instance.SaveState();
+    }
+    public ToolNode CreateNewToolNode()
+    {
+        ToolNode newToolNode = Instantiate(toolNodePrefab, mainNodeLayerTransform).GetComponent<ToolNode>();
+        toolNodes.Add(newToolNode);
+
+        var newVideoID = generatedNodeID;
+
+        newToolNode.NodeId = GetFreeNodeID();
+        newToolNode.StructureManager = this;
+        UndoRedoHandler.instance.SaveState();
         return newToolNode;
     }
 
@@ -73,7 +99,7 @@ public class StructureManager : MonoBehaviour
     }
 
 
-    private int getFreeNodeID()
+    public int GetFreeNodeID()
     {
         //check that the video ID is unique
         //and asign it to video node
@@ -93,14 +119,12 @@ public class StructureManager : MonoBehaviour
         }
 
         //check through video nodes
-        List<VideoNode> videoNodes = getVideoNodeList();
+        List<VideoNode> videoNodes = GetVideoNodeList();
         foreach (VideoNode listedVideoNode in videoNodes)
         {
-            int listedVideoID = listedVideoNode.getVideoID();
+            int listedVideoID = listedVideoNode.GetVideoID();
             if (testVideoID == listedVideoID)
-            {
                 return false;
-            }
         }
         //check through tool nodes
         foreach (var item in toolNodes)
@@ -109,10 +133,16 @@ public class StructureManager : MonoBehaviour
                 return false;
         }
 
+        foreach (var item in groupManager.Groups)
+        {
+            if (testVideoID == item.NodeId)
+                return false;
+        }
+
         return true;
     }
 
-    public List<VideoNode> getVideoNodeList()
+    public List<VideoNode> GetVideoNodeList()
     {
         //"Converts" GameObject list to VideoNode List
         List<VideoNode> videoNodes = new List<VideoNode>();
@@ -125,11 +155,11 @@ public class StructureManager : MonoBehaviour
     public NodePort GetVideoInNodePortWithId(int videoID)
     {
         if (videoID == -1)
-            return endNode.GetComponent<VideoNode>().getNodePort();
+            return endNode.GetComponent<VideoNode>().GetNodePort();
 
-        var video = getVideoNodeList().Where(e => e.getVideoID() == videoID);
+        var video = GetVideoNodeList().Where(e => e.GetVideoID() == videoID);
         if (video.Count() > 0)
-            return video.First().getNodePort();
+            return video.First().GetNodePort();
 
         var tool = toolNodes.Where(e => e.NodeId == videoID);
         if (tool.Count() > 0)
@@ -138,12 +168,72 @@ public class StructureManager : MonoBehaviour
         return null;
     }
 
+    public Node GetNode(int nodeId)
+    {
+        var videos = GetVideoNodeList().Where(e => e.GetVideoID() == nodeId);
+        if (videos.Count() > 0)
+            return videos.First();
+
+        var tools = toolNodes.Where(e => e.NodeId == nodeId);
+        if (tools.Count() > 0)
+            return tools.First();
+
+        var groups = groupManager.Groups.Where(e => e.NodeId == nodeId);
+        if(groups.Count() > 0)
+            return groups.First();
+
+        Debug.LogError($"Node not found with id {nodeId}");
+        return null;
+    }
+
+    public void SelectInScreenArea(Vector2 bottomLeft, Vector2 topRight)
+    {
+        var selectablesInArea = new List<Node>();
+
+        var holdingShift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        if (!holdingShift)
+            NodeInspector.instance.NodeSelectionHandler.Clear();
+
+        foreach (var item in GetVideoNodeList())
+            if (IsInArea(item.WorldPosition(), bottomLeft, topRight))
+                selectablesInArea.Add(item);
+
+        foreach (var item in toolNodes)
+            if (IsInArea(item.WorldPosition(), bottomLeft, topRight))
+                selectablesInArea.Add(item);
+
+        for (int i = 0; i < selectablesInArea.Count; i++)
+        {
+            Node item = selectablesInArea[i];
+            item.DragSelect();
+        }
+
+        NodeInspector.instance.RefreshSelection();
+        UndoRedoHandler.instance.SaveState();
+    }
+
+    public void MoveSelected(Vector2 delta)
+    {
+        foreach (var item in NodeInspector.instance.NodeSelectionHandler.SelectedNodes)
+            GetNode(item).GetNodeMove().Move(delta);
+    }
+
+
+    bool IsInArea(Vector3 position, Vector2 bottomLeft, Vector2 topRight)
+    {
+        var screenPos = cam.WorldToScreenPoint(position);
+        if (screenPos.x > bottomLeft.x && screenPos.x < topRight.x)
+            if (screenPos.y > bottomLeft.y && screenPos.y < topRight.y)
+                return true;
+
+        return false;
+    }
 
 
     public void SimulationToJson(string path)
     {
         VideoJSONWrapper wrapper = new VideoJSONWrapper(
-            getVideoNodeList(),
+            GetVideoNodeList(),
             toolNodes,
             startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID(),
             startNode.GetComponent<RectTransform>().anchoredPosition,
@@ -157,6 +247,66 @@ public class StructureManager : MonoBehaviour
             File.Delete(path);
 
         File.WriteAllText(path, json);
+    }
+
+    public VideoJSONWrapper CreateSaveState()
+    {
+        return new VideoJSONWrapper(
+
+                GetVideoNodeList(),
+                toolNodes,
+                startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID(),
+                startNode.GetComponent<RectTransform>().anchoredPosition,
+                endNode.GetComponent<RectTransform>().anchoredPosition
+            );
+    }
+
+    public void LoadSaveState(VideoJSONWrapper wrapper)
+    {
+        ClearStructure();
+
+        //Create nodes
+        foreach (var item in wrapper.videos)
+            LoadVideoNode(item);
+
+        if (wrapper.tools != null)
+            foreach (var item in wrapper.tools)
+            {
+                if (item == null)
+                {
+                    Debug.Log("tool == null");
+                    continue;
+                }
+                LoadToolNode(item);
+            }
+
+        //Create connections
+        foreach (var item in GetVideoNodeList())
+            foreach (var action in item.GetActionNodeList())
+            {
+                action.CreateLoadedConnection();
+                action.setMode();
+            }
+        for (int i = 0; i < toolNodes.Count; i++)
+            for (int j = 0; j < toolNodes[i].OutPorts.Count; j++)
+                toolNodes[i].OutPorts[j].CreateConnection(toolNodes[i].NextVideos[j]);
+
+        connectionManager.redrawConnection(null, null);
+
+        var startNodePort = startNode.GetComponent<ActionNode>().getNodePort();
+
+        if (wrapper.startId == -2)
+        {
+            Debug.LogWarning("No video connected to the start");
+            return;
+        }
+
+        var firstVideoPort = GetVideoInNodePortWithId(wrapper.startId);
+        connectionManager.createConnection(startNodePort, firstVideoPort);
+        connectionManager.showConnectionLine(startNodePort, firstVideoPort, true);
+        startNode.GetComponent<RectTransform>().anchoredPosition = wrapper.startNodePosition;
+        endNode.GetComponent<RectTransform>().anchoredPosition = wrapper.endNodePosition;
+        StartCoroutine(ReDrawLinesAfterFrame());
     }
 
     public void JsonToSimulation()
@@ -184,8 +334,8 @@ public class StructureManager : MonoBehaviour
             LoadToolNode(item);
 
         //Create connections
-        foreach (var item in getVideoNodeList())
-            foreach (var action in item.getActionNodeList())
+        foreach (var item in GetVideoNodeList())
+            foreach (var action in item.GetActionNodeList())
             {
                 action.CreateLoadedConnection();
                 action.setMode();
@@ -210,6 +360,7 @@ public class StructureManager : MonoBehaviour
         startNode.GetComponent<RectTransform>().anchoredPosition = wrapper.startNodePosition;
         endNode.GetComponent<RectTransform>().anchoredPosition = wrapper.endNodePosition;
         StartCoroutine(ReDrawLinesAfterFrame());
+        UndoRedoHandler.instance.SaveState();
     }
 
     IEnumerator ReDrawLinesAfterFrame()
@@ -220,7 +371,7 @@ public class StructureManager : MonoBehaviour
 
     private void LoadToolNode(VideoJSONWrapper.ToolJSONObject item)
     {
-        var newToolObject = Instantiate(toolNodePrefab, transform);
+        var newToolObject = Instantiate(toolNodePrefab, mainNodeLayerTransform);
         var node = newToolObject.GetComponent<ToolNode>();
         node.NodeId = item.nodeId;
         node.NextVideos = item.nextNodes.ToList();
@@ -239,15 +390,15 @@ public class StructureManager : MonoBehaviour
 
     public void LoadVideoNode(VideoJSONWrapper.VideoJSONObject videoJSONObject)
     {
-        var newVideoObject = Instantiate(videoNodePrefab, transform);
+        var newVideoObject = Instantiate(videoNodePrefab, mainNodeLayerTransform);
         var node = newVideoObject.GetComponent<VideoNode>();
-        node.setVideoID(videoJSONObject.nodeId);
-        node.setVideoFileName(videoJSONObject.videoFileName);
-        node.setLoop(videoJSONObject.loop);
-        node.setLoopTime(videoJSONObject.loopTime);
-        node.setStartTime(videoJSONObject.startTime);
-        node.setEndTime(videoJSONObject.endTime);
-        node.setVideoStartRotation(videoJSONObject.videoStartRotation);
+        node.SetVideoID(videoJSONObject.nodeId);
+        node.SetVideoFileName(videoJSONObject.videoFileName);
+        node.SetLoop(videoJSONObject.loop);
+        node.SetLoopTime(videoJSONObject.loopTime);
+        node.SetStartTime(videoJSONObject.startTime);
+        node.SetEndTime(videoJSONObject.endTime);
+        node.SetVideoStartRotation(videoJSONObject.videoStartRotation);
         newVideoObject.GetComponent<RectTransform>().anchoredPosition = videoJSONObject.nodePosition;
         videoGameObjects.Add(newVideoObject);
 
@@ -267,7 +418,9 @@ public class StructureManager : MonoBehaviour
     public void ClearStructure()
     {
         for (int i = videoGameObjects.Count - 1; i > -1; i--)
-            videoGameObjects[i].GetComponent<VideoNode>().deleteNode();
+            videoGameObjects[i].GetComponent<VideoNode>().DeleteNode(true);
+        for (int i = toolNodes.Count - 1; i >= 0; i--)
+            toolNodes[i].RemoveToolNode(true);
 
         NodeInspector.instance.NullCurrentNodes();
     }
