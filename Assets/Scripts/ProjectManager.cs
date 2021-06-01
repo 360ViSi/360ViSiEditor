@@ -6,7 +6,7 @@ using SFB;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-///<summary>
+///<summary>nul
 /// Manager for project level top left buttons of the Editor (Open, Save, Clear)
 ///</summary>
 public class ProjectManager : MonoBehaviour

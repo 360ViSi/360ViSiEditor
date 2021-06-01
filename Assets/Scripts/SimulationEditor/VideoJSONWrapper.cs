@@ -53,6 +53,9 @@ public class VideoJSONWrapper
         public List<ActionJSONObject> actions;
     }
 
+    ///<summary>
+    /// Handles converting ActionNode to a JSON friendly version
+    ///</summary>
     [System.Serializable]
     public class ActionJSONObject
     {
@@ -82,6 +85,9 @@ public class VideoJSONWrapper
         public float timer = 0;
     }
 
+    ///<summary>
+    /// Handles converting ToolNode to a JSON friendly version
+    ///</summary>
     [System.Serializable]
     public class ToolJSONObject
     {
@@ -103,6 +109,7 @@ public class VideoJSONWrapper
     }
     #endregion
 
+    #region Helpers
     public List<VideoJSONObject> ConvertVideoNodeListToJSON(List<VideoNode> videoNodes)
     {
         var output = new List<VideoJSONObject>();
@@ -137,5 +144,6 @@ public class VideoJSONWrapper
 
         return output;
     }
+    #endregion
 }
 
