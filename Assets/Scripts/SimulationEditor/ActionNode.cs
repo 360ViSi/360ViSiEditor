@@ -204,12 +204,6 @@ public class ActionNode : MonoBehaviour
     public float getActionTimer() => actionTimer;
     public void SetActionTimer(float value) => actionTimer = value;
     public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
-
-    ///<summary>
-    /// When autoEnd actionNode is created, need to disable
-    /// the ability to remove that node (is automatic if loop is enabled)
-    ///</summary>
-    public void DisableRemoveButton() => removeButton.SetActive(false);
 }
 public enum ActionType
 {

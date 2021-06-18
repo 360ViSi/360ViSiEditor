@@ -19,6 +19,7 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] EditorVideoPlayer editorVideoPlayer = null;
     [SerializeField] EditorVideoControls editorVideoControls = null;
     [SerializeField] StructureManager structureManager = null;
+    [SerializeField] DragSelect dragSelect = null;
     [SerializeField] NodeSelectionHandler nodeSelectionHandler = null;
     [SerializeField] GameObject iconSelectionPanel = null;
     [SerializeField] GameObject questionCreatorPanel = null;
@@ -44,6 +45,7 @@ public class NodeInspector : MonoBehaviour
     public ToolNode CurrentToolNode => currentToolNode;
     public ActionDraggables ActionDraggables => actionDraggables;
     public NodeSelectionHandler NodeSelectionHandler => nodeSelectionHandler;
+    public DragSelect DragSelect => dragSelect;
 
     private void Awake()
     {

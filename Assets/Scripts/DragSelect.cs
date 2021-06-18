@@ -16,6 +16,8 @@ public class DragSelect : MonoBehaviour
     Vector2 delta;
     [SerializeField] StructureManager structureManager;
 
+    public bool AllowDrag { get; set; }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +27,8 @@ public class DragSelect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!AllowDrag) return;
+
         if (Input.GetKeyDown(KeyCode.Mouse0))
             StartDragSelection();
         if (Input.GetKeyUp(KeyCode.Mouse0))

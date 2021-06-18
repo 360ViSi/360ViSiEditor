@@ -58,12 +58,17 @@ public class EditorAreaButton : MonoBehaviour
 
         if (vertices == null || vertices.Length < 4) return;
 
+
+
         for (int i = 0; i < points.Length; i++)
             points[i].localPosition = vertices[i];
     }
 
     void ShowVertices(bool value)
     {
+        //if verts shown, can't drag select
+        nodeInspector.DragSelect.AllowDrag = !value;
+
         foreach (var item in points)
             item.gameObject.SetActive(value);
     }
