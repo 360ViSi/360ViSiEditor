@@ -99,6 +99,7 @@ public class VideoJSONWrapper
             toolTypeInt = (int)toolNode.ToolType;
             question = toolNode.Question;
             infoText = toolNode.InfoText;
+            spriteData = toolNode.SpriteData;
         }
         public int nodeId = -2;
         public int[] nextNodes = new int[0];
@@ -106,6 +107,7 @@ public class VideoJSONWrapper
         public int toolTypeInt;
         public Question question;
         public string infoText;
+        public string spriteData;
     }
     #endregion
 

@@ -379,6 +379,7 @@ public class StructureManager : MonoBehaviour
         node.ToolType = (ToolType)item.toolTypeInt;
         node.Question = item.question;
         node.InfoText = item.infoText;
+        node.SpriteData = item.spriteData;
         node.StructureManager = this;
 
         for (int i = 2; i < node.NextVideos.Count; i++)

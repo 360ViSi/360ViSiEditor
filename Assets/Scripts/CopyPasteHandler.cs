@@ -47,6 +47,7 @@ public class CopyPasteHandler : MonoBehaviour
             var newTool = structureManager.CreateNewToolNode();
             newTool.Question = tool.Question;
             newTool.InfoText = tool.InfoText;
+            newTool.SpriteData = tool.SpriteData;
             newTool.ToolType = tool.ToolType;
 
             for (int i = 0; i < tool.OutPorts.Count - 2; i++)

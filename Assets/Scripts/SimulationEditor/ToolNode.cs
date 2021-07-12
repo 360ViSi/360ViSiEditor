@@ -11,6 +11,7 @@ public class ToolNode : Node
     ToolType toolType;
     Question question;
     string infoText;
+    string spriteData;
     StructureManager structureManager;
     [SerializeField] List<int> nextVideos = new List<int>(); //ummmmmmm only used for loading?
     [SerializeField] NodePort inPort;
@@ -53,6 +54,7 @@ public class ToolNode : Node
 
     public Question Question { get => question; set => question = value; }
     public string InfoText { get => infoText; set => infoText = value; }
+    public string SpriteData { get => spriteData; set => spriteData = value; }
     public StructureManager StructureManager { get => structureManager; set => structureManager = value; }
 
     internal int[] GetNextVideos()

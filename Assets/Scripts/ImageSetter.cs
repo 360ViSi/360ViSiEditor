@@ -4,21 +4,23 @@ using UnityEngine;
 using SFB;
 using UnityEngine.UI;
 using System.IO;
+using System;
 
 public class ImageSetter : MonoBehaviour
 {
     private string folderPath;
     private string fileName;
+    private string spriteData;
+    public string SpriteData { get => spriteData; set => spriteData = value; }
     private string fullPath { get => folderPath + fileName; }
 
     private Image image;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         image = GetComponent<Image>();
+        
     }
-
     public void OpenImageFile(string path)
     {
         var extensions = new[] {
@@ -57,6 +59,17 @@ public class ImageSetter : MonoBehaviour
         return NewSprite;
     }
 
+    public void SetOldLoadedSprite(string spriteDataString, float PixelsPerUnit = 100.0f)
+    {
+        spriteData = spriteDataString;
+        byte[] spriteByte = Convert.FromBase64String(spriteDataString);
+        Texture2D LoadedTexture = new Texture2D(2,2); 
+        LoadedTexture.LoadImage(spriteByte);
+        Sprite NewSprite = Sprite.Create(LoadedTexture, new Rect(0, 0, LoadedTexture.width, LoadedTexture.height), new Vector2(0, 0), PixelsPerUnit);
+
+        image.sprite = NewSprite;
+    }
+
     public Texture2D LoadTexture(string FilePath)
     {
         // Load a PNG or JPG file from disk to a Texture2D
@@ -70,7 +83,10 @@ public class ImageSetter : MonoBehaviour
             FileData = File.ReadAllBytes(FilePath);
             Tex2D = new Texture2D(2, 2);                // Create new "empty" texture
             if (Tex2D.LoadImage(FileData))              // Load the imagedata into the texture (size is set automatically)
+            {              
+                spriteData = Convert.ToBase64String(FileData, 0, FileData.Length);
                 return Tex2D;                           // If data = readable -> return texture
+            }
         }
         Debug.LogWarning("Image not loaded");
         return null;                                    // Return null if load failed
