@@ -11,6 +11,7 @@ public class QuizCreator : MonoBehaviour
 {
     [SerializeField] Transform layoutTransform;
     [SerializeField] GameObject answerPrefab;
+    [SerializeField] TMP_InputField questionTitleInput;
     [SerializeField] TMP_InputField questionInput;
     List<TMP_InputField> answerInputs = new List<TMP_InputField>();
     List<TMP_InputField> outPortInputs = new List<TMP_InputField>();
@@ -20,6 +21,7 @@ public class QuizCreator : MonoBehaviour
     // Start is called before the first frame update
     void OnEnable()
     {
+        questionTitleInput.text = "";
         questionInput.text = "";
         for (int i = 0; i < layoutTransform.childCount; i++)
         {
@@ -46,9 +48,10 @@ public class QuizCreator : MonoBehaviour
     {
         var question = NodeInspector.instance.CurrentToolNode.Question;
 
-        if (question == null) question = new Question("", false, new List<string>() { }, new List<int>());
+        if (question == null) question = new Question("", "", false, new List<string>() { }, new List<int>());
 
         multichoiceToggle.isOn = question.multichoice;
+        questionTitleInput.text = question.questionTitleText;
         questionInput.text = question.questionText;
         for (int i = 0; i < question.answers.Count; i++)
         {
@@ -104,7 +107,7 @@ public class QuizCreator : MonoBehaviour
     {
         var answers = answerInputs.Select(e => e.text).ToList();
         var correctAnswers = outPortInputs.Select(e => int.Parse(e.text)).ToList();
-        var question = new Question(questionInput.text, multichoiceToggle.isOn, answers, correctAnswers);
+        var question = new Question(questionTitleInput.text, questionInput.text, multichoiceToggle.isOn, answers, correctAnswers);
         NodeInspector.instance.CurrentToolNode.Question = question;
         gameObject.SetActive(false);
         UndoRedoHandler.instance.SaveState();

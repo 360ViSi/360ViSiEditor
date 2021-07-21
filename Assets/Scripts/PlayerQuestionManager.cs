@@ -15,6 +15,7 @@ public class PlayerQuestionManager : MonoBehaviour
     [SerializeField] GameObject submitButton;
     [SerializeField] GameObject answerButtonPrefab;
     [SerializeField] Transform buttonLayoutTransform;
+    [SerializeField] TMPro.TMP_Text questionTitleText;
     [SerializeField] TMPro.TMP_Text questionText;
     Tool currentTool;
     List<int> answers = new List<int>();
@@ -33,6 +34,7 @@ public class PlayerQuestionManager : MonoBehaviour
         panel.SetActive(true);
         currentTool = tool;
         submitButton.SetActive(currentTool.question.multichoice);
+        questionTitleText.text = currentTool.question.questionTitleText;
         questionText.text = currentTool.question.questionText;
         answers.Clear();
 

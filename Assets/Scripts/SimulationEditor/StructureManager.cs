@@ -376,8 +376,8 @@ public class StructureManager : MonoBehaviour
         node.NodeId = item.nodeId;
         node.NextVideos = item.nextNodes.ToList();
         node.NodeName.text = "Randomizer";
-        node.ToolType = (ToolType)item.toolTypeInt;
         node.Question = item.question;
+        node.ToolType = (ToolType)item.toolTypeInt;
         node.InfoText = item.infoText;
         node.SpriteData = item.spriteData;
         node.StructureManager = this;

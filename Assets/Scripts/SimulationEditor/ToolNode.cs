@@ -39,6 +39,7 @@ public class ToolNode : Node
                     RemoveAllExcessOutPorts(2);
                     break;
                 case ToolType.QuestionTask:
+                    SetQuestionTitle();
                     RemoveAllExcessOutPorts(2);
                     break;
                 case ToolType.Info:
@@ -52,10 +53,27 @@ public class ToolNode : Node
         }
     }
 
-    public Question Question { get => question; set => question = value; }
+
+    public Question Question
+    {
+        get => question;
+        set
+        {
+            question = value;
+            SetQuestionTitle();
+        }
+    }
     public string InfoText { get => infoText; set => infoText = value; }
     public string SpriteData { get => spriteData; set => spriteData = value; }
     public StructureManager StructureManager { get => structureManager; set => structureManager = value; }
+
+    private void SetQuestionTitle()
+    {
+        if (question.questionTitleText != "")
+        {
+            nodeName.text = question.questionTitleText;
+        }
+    }
 
     internal int[] GetNextVideos()
     {
