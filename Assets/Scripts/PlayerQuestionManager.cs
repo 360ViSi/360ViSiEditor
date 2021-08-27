@@ -34,7 +34,7 @@ public class PlayerQuestionManager : MonoBehaviour
         panel.SetActive(true);
         currentTool = tool;
         submitButton.SetActive(currentTool.question.multichoice);
-        questionTitleText.text = currentTool.question.questionTitleText;
+        //questionTitleText.text = currentTool.question.questionTitleText;
         questionText.text = currentTool.question.questionText;
         answers.Clear();
 

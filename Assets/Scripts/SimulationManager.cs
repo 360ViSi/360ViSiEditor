@@ -30,6 +30,10 @@ public class SimulationManager : MonoBehaviour
     void Update()
     {
         //getCurrentVideoPart();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            EndGame();
+        }
     }
 
     public void SetVideoPauseState(bool value)
@@ -133,5 +137,16 @@ public class SimulationManager : MonoBehaviour
     {
         endPanel.SetActive(true);
         videoPlayer.Stop();
+    }
+
+    public void ResumeSimulation()
+    {
+        endPanel.SetActive(false);
+        videoPlayer.Play();
+    }
+
+    public void BackToEditor()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 }

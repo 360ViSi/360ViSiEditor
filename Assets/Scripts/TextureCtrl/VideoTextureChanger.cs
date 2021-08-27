@@ -64,6 +64,7 @@ public class VideoTextureChanger : MonoBehaviour
         Debug.Log("video is ready");
         videoPlayer.time = videoPlayer.length * currentVideoStartTime;
         videoPlayer.Play();
+        videoPlayer.controlledAudioTrackCount = 1;
     }
 
     public void ChangeVideo(string videoPath)
