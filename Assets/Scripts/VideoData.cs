@@ -223,6 +223,7 @@ public class Tool
     public int toolTypeInt;
     public Question question;
     public string infoText;
+    public string spriteData;
 
     internal void ProcessTool(Action<int> goToNode)
     {
