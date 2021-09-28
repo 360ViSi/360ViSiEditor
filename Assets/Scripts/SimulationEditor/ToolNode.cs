@@ -12,6 +12,8 @@ public class ToolNode : Node
     Question question;
     string infoText;
     string spriteData;
+    string video2Dpath;
+    bool imageVisible;
     StructureManager structureManager;
     [SerializeField] List<int> nextVideos = new List<int>(); //ummmmmmm only used for loading?
     [SerializeField] NodePort inPort;
@@ -65,6 +67,8 @@ public class ToolNode : Node
     }
     public string InfoText { get => infoText; set => infoText = value; }
     public string SpriteData { get => spriteData; set => spriteData = value; }
+    public bool ImageVisible { get => imageVisible; set => imageVisible = value; }
+    public string Video2Dpath { get => video2Dpath; set => video2Dpath = value; }
     public StructureManager StructureManager { get => structureManager; set => structureManager = value; }
 
     private void SetQuestionTitle()

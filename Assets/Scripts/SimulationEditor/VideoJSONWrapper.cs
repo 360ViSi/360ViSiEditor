@@ -100,6 +100,8 @@ public class VideoJSONWrapper
             question = toolNode.Question;
             infoText = toolNode.InfoText;
             spriteData = toolNode.SpriteData;
+            imageVisible = toolNode.ImageVisible;
+            video2Dpath = toolNode.Video2Dpath;
         }
         public int nodeId = -2;
         public int[] nextNodes = new int[0];
@@ -108,6 +110,8 @@ public class VideoJSONWrapper
         public Question question;
         public string infoText;
         public string spriteData;
+        public bool imageVisible;
+        public string video2Dpath;
     }
     #endregion
 

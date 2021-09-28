@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 using System.Collections;
 
 public class PlayerInfoManager : MonoBehaviour
@@ -9,6 +10,7 @@ public class PlayerInfoManager : MonoBehaviour
     [SerializeField] TMPro.TMP_Text infoText;
     [SerializeField] Image image;
     [SerializeField] GameObject videoTexture;
+    [SerializeField] VideoPlayer videoPlayer;
     [SerializeField] GameObject infoPanel;
     Tool currentTool;
     ImageSetter imageSetter;
@@ -28,10 +30,12 @@ public class PlayerInfoManager : MonoBehaviour
         if (currentTool.spriteData == "")
         {
             image.gameObject.SetActive(false);
-            Debug.LogWarning("no image");
+            videoTexture.SetActive(true);
+            videoPlayer.url = currentTool.video2Dpath;
         }
         else
         {
+            image.gameObject.SetActive(true);
             videoTexture.SetActive(false);
             StartCoroutine(SetSprite());
         }

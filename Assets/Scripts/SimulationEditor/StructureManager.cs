@@ -2,6 +2,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.IO;
 public class StructureManager : MonoBehaviour
 {
@@ -380,7 +381,10 @@ public class StructureManager : MonoBehaviour
         node.ToolType = (ToolType)item.toolTypeInt;
         node.InfoText = item.infoText;
         node.SpriteData = item.spriteData;
+        node.ImageVisible = item.imageVisible;
+        node.Video2Dpath = item.video2Dpath;
         node.StructureManager = this;
+        
 
         for (int i = 2; i < node.NextVideos.Count; i++)
             node.CreateOutPort(true);
