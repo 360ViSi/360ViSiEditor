@@ -8,8 +8,8 @@ public class PlayerInfoManager : MonoBehaviour
     public static PlayerInfoManager instance;
     [SerializeField] SimulationManager simulationManager;
     [SerializeField] TMPro.TMP_Text infoText;
-    [SerializeField] Image image;
-    [SerializeField] GameObject videoTexture;
+    [SerializeField] RawImage image;
+    [SerializeField] Texture videoTexture;
     [SerializeField] VideoPlayer videoPlayer;
     [SerializeField] GameObject infoPanel;
     Tool currentTool;
@@ -29,16 +29,14 @@ public class PlayerInfoManager : MonoBehaviour
         infoText.text = currentTool.infoText;
         if (currentTool.spriteData == "")
         {
-            image.gameObject.SetActive(false);
-            videoTexture.SetActive(true);
+            image.texture = videoTexture;
             videoPlayer.url = currentTool.video2Dpath;
         }
         else
         {
-            image.gameObject.SetActive(true);
-            videoTexture.SetActive(false);
             StartCoroutine(SetSprite());
         }
+
         infoPanel.SetActive(true);
     }
 

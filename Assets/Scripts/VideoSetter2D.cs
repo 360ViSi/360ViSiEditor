@@ -11,6 +11,8 @@ public class VideoSetter2D : MonoBehaviour
 { 
 private string folderPath;
 private string fileName;
+    [SerializeField] private RawImage image;
+    private InfoCreator infoCreator;
 
 public string FullPath { get => folderPath + fileName; }
 
@@ -19,6 +21,7 @@ private VideoPlayer videoPlayer;
 private void Awake()
 {
         videoPlayer = GetComponent<VideoPlayer>();
+        infoCreator = GetComponentInParent<InfoCreator>();
 
 }
 public void OpenImageFile(string path)
@@ -44,10 +47,12 @@ private void VideoToSimulation()
         Debug.LogError($"File not found at: {FullPath}");
         return;
     }
-
+        image.texture = infoCreator.videoTexture;
         videoPlayer.url = FullPath;
 
 }
+
+
 //public Sprite LoadNewSprite(string FilePath, float PixelsPerUnit = 100.0f)
 //{
 
