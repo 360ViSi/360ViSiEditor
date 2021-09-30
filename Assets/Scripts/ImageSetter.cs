@@ -54,21 +54,12 @@ public class ImageSetter : MonoBehaviour
         // Load a PNG or JPG image from disk to a Texture2D, assign this texture to a new sprite and return its reference
                 
         Texture2D SpriteTexture = LoadTexture(FilePath);
-        //Sprite NewSprite = Sprite.Create(SpriteTexture, new Rect(0, 0, SpriteTexture.width, SpriteTexture.height), new Vector2(0, 0), PixelsPerUnit);
-
-        //return NewSprite.texture;
+        
         return SpriteTexture;
     }
 
-    public void SetOldLoadedSprite(/*string spriteDataString, float PixelsPerUnit = 100.0f*/ string filePath)
+    public void SetOldLoadedSprite(string filePath)
     {
-        //spriteData = spriteDataString;
-        //byte[] spriteByte = Convert.FromBase64String(spriteDataString);
-        //Texture2D LoadedTexture = new Texture2D(2,2); 
-        //LoadedTexture.LoadImage(spriteByte);
-        //Sprite NewSprite = Sprite.Create(LoadedTexture, new Rect(0, 0, LoadedTexture.width, LoadedTexture.height), new Vector2(0, 0), PixelsPerUnit);
-
-        //image.texture = NewSprite.texture;
         spritePath = filePath;
         image.texture = LoadTexture(filePath);
     }
@@ -89,6 +80,10 @@ public class ImageSetter : MonoBehaviour
             {              
                 //spriteData = Convert.ToBase64String(FileData, 0, FileData.Length);
                 return Tex2D;                           // If data = readable -> return texture
+            }
+            else
+            {
+                Debug.LogWarning("Texture load failed");
             }
         }
         Debug.LogWarning("Image not loaded");

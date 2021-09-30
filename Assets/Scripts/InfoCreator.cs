@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using TMPro;
 
@@ -18,13 +17,14 @@ public class InfoCreator : MonoBehaviour
         infoInput.text = NodeInspector.instance.CurrentToolNode.InfoText;
         imageSetter = GetComponentInChildren<ImageSetter>();
         videoSetter2D = GetComponentInChildren<VideoSetter2D>();
-        if (imageSetter != null && imageSetter.SpritePath != null )
-        {
-            imageSetter.SetOldLoadedSprite(imageSetter.SpritePath);
-        }
-        else if (NodeInspector.instance.CurrentToolNode.SpritePath != null)
+
+        if (imageSetter != null && NodeInspector.instance.CurrentToolNode.SpritePath != "")
         {
             imageSetter.SetOldLoadedSprite(NodeInspector.instance.CurrentToolNode.SpritePath);
+        }
+        else if(NodeInspector.instance.CurrentToolNode.Video2Dpath != null)
+        {
+            StartCoroutine(SetupVideo());
         }
 
     }
@@ -32,35 +32,24 @@ public class InfoCreator : MonoBehaviour
     public void EditInfo()
     {
         NodeInspector.instance.CurrentToolNode.InfoText = infoInput.text;
-        if (imageSetter.image.texture != videoTexture /*&& GetComponentInChildren<ImageSetter>(true).isActiveAndEnabled*/)
-        {
-            //imageSetter.SetOldLoadedSprite(imageSetter.SpritePath);
-            //StartCoroutine(SetSprite());
+        if (imageSetter.image.texture != videoTexture)
+        {           
             NodeInspector.instance.CurrentToolNode.SpritePath = imageSetter.SpritePath;
-            NodeInspector.instance.CurrentToolNode.Video2Dpath = null;
-            //GetComponentInChildren<RawImage>(true).gameObject.SetActive(false);
-            //imageVisible = true;
-
-
+            NodeInspector.instance.CurrentToolNode.Video2Dpath = null;            
         }
-        if (imageSetter.image.texture == videoTexture /*&& GetComponentInChildren<RawImage>(true).isActiveAndEnabled*/)
+        if (imageSetter.image.texture == videoTexture)
         {
-            imageSetter.image.texture = videoTexture;
-            NodeInspector.instance.CurrentToolNode.Video2Dpath = videoSetter2D.FullPath;
-            NodeInspector.instance.CurrentToolNode.SpritePath = null;
-            //GetComponentInChildren<ImageSetter>(true).gameObject.SetActive(false);
-            //imageVisible = false;
+            NodeInspector.instance.CurrentToolNode.Video2Dpath = videoSetter2D.VideoPath;
+            NodeInspector.instance.CurrentToolNode.SpritePath = "";
+            imageSetter.SpritePath = "";
         }
         UndoRedoHandler.instance.SaveState();
     }
 
-    //private IEnumerator SetSprite()
-    //{
-    //    if (NodeInspector.instance.CurrentToolNode.SpriteData != null)
-    //    {
-    //        yield return new WaitForEndOfFrame();
-    //        imageSetter.SetOldLoadedSprite(NodeInspector.instance.CurrentToolNode.SpriteData);
-    //    }
-    //    yield return null;
-    //}
+    private IEnumerator SetupVideo()
+    {
+        yield return new WaitForEndOfFrame();
+        videoSetter2D.SetOldLoadedVideo(NodeInspector.instance.CurrentToolNode.Video2Dpath);
+
+    }
 }
