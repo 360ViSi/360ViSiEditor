@@ -380,7 +380,7 @@ public class StructureManager : MonoBehaviour
         node.Question = item.question;
         node.ToolType = (ToolType)item.toolTypeInt;
         node.InfoText = item.infoText;
-        node.SpriteData = item.spriteData;
+        node.SpritePath = item.spritePath;
         node.ImageVisible = item.imageVisible;
         node.Video2Dpath = item.video2Dpath;
         node.StructureManager = this;

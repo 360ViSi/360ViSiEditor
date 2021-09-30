@@ -99,7 +99,7 @@ public class VideoJSONWrapper
             toolTypeInt = (int)toolNode.ToolType;
             question = toolNode.Question;
             infoText = toolNode.InfoText;
-            spriteData = toolNode.SpriteData;
+            spritePath = toolNode.SpritePath;
             imageVisible = toolNode.ImageVisible;
             video2Dpath = toolNode.Video2Dpath;
         }
@@ -109,7 +109,7 @@ public class VideoJSONWrapper
         public int toolTypeInt;
         public Question question;
         public string infoText;
-        public string spriteData;
+        public string spritePath;
         public bool imageVisible;
         public string video2Dpath;
     }

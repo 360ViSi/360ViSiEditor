@@ -10,9 +10,9 @@ public class ImageSetter : MonoBehaviour
 {
     private string folderPath;
     private string fileName;
-    private string spriteData;
-    public string SpriteData { get => spriteData; set => spriteData = value; }
-    private string fullPath { get => folderPath + fileName; }
+    private string spritePath;
+    public string SpritePath { get => spritePath; set => spritePath = value; }
+    private string fullPath { get => folderPath + fileName; set => spritePath = value; }
 
     public RawImage image;
 
@@ -32,20 +32,20 @@ public class ImageSetter : MonoBehaviour
 
         folderPath = Utilities.FolderPathFromFilePath(path);
         fileName = Utilities.FileNameFromFilePath(path, true);
+        spritePath = fullPath;
 
         ImageToSimulation();
     }
 
     //Sets the image sprite
-    private void ImageToSimulation()
+    public void ImageToSimulation()
     {
         if (File.Exists(fullPath) == false)
         {
             Debug.LogError($"File not found at: {fullPath}");
             return;
         }
-
-        image.texture = LoadNewSprite(fullPath);
+        image.texture = LoadTexture(fullPath);
 
     }
     public Texture LoadNewSprite(string FilePath, float PixelsPerUnit = 100.0f)
@@ -54,20 +54,23 @@ public class ImageSetter : MonoBehaviour
         // Load a PNG or JPG image from disk to a Texture2D, assign this texture to a new sprite and return its reference
                 
         Texture2D SpriteTexture = LoadTexture(FilePath);
-        Sprite NewSprite = Sprite.Create(SpriteTexture, new Rect(0, 0, SpriteTexture.width, SpriteTexture.height), new Vector2(0, 0), PixelsPerUnit);
+        //Sprite NewSprite = Sprite.Create(SpriteTexture, new Rect(0, 0, SpriteTexture.width, SpriteTexture.height), new Vector2(0, 0), PixelsPerUnit);
 
-        return NewSprite.texture;
+        //return NewSprite.texture;
+        return SpriteTexture;
     }
 
-    public void SetOldLoadedSprite(string spriteDataString, float PixelsPerUnit = 100.0f)
+    public void SetOldLoadedSprite(/*string spriteDataString, float PixelsPerUnit = 100.0f*/ string filePath)
     {
-        spriteData = spriteDataString;
-        byte[] spriteByte = Convert.FromBase64String(spriteDataString);
-        Texture2D LoadedTexture = new Texture2D(2,2); 
-        LoadedTexture.LoadImage(spriteByte);
-        Sprite NewSprite = Sprite.Create(LoadedTexture, new Rect(0, 0, LoadedTexture.width, LoadedTexture.height), new Vector2(0, 0), PixelsPerUnit);
+        //spriteData = spriteDataString;
+        //byte[] spriteByte = Convert.FromBase64String(spriteDataString);
+        //Texture2D LoadedTexture = new Texture2D(2,2); 
+        //LoadedTexture.LoadImage(spriteByte);
+        //Sprite NewSprite = Sprite.Create(LoadedTexture, new Rect(0, 0, LoadedTexture.width, LoadedTexture.height), new Vector2(0, 0), PixelsPerUnit);
 
-        image.texture = NewSprite.texture;
+        //image.texture = NewSprite.texture;
+        spritePath = filePath;
+        image.texture = LoadTexture(filePath);
     }
 
     public Texture2D LoadTexture(string FilePath)
@@ -84,7 +87,7 @@ public class ImageSetter : MonoBehaviour
             Tex2D = new Texture2D(2, 2);                // Create new "empty" texture
             if (Tex2D.LoadImage(FileData))              // Load the imagedata into the texture (size is set automatically)
             {              
-                spriteData = Convert.ToBase64String(FileData, 0, FileData.Length);
+                //spriteData = Convert.ToBase64String(FileData, 0, FileData.Length);
                 return Tex2D;                           // If data = readable -> return texture
             }
         }

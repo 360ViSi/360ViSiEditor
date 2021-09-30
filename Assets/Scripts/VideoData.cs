@@ -223,7 +223,7 @@ public class Tool
     public int toolTypeInt;
     public Question question;
     public string infoText;
-    public string spriteData;
+    public string spritePath;
     public string video2Dpath;
 
     internal void ProcessTool(Action<int> goToNode)

@@ -11,7 +11,7 @@ public class ToolNode : Node
     ToolType toolType;
     Question question;
     string infoText;
-    string spriteData;
+    string spritePath;
     string video2Dpath;
     bool imageVisible;
     StructureManager structureManager;
@@ -66,7 +66,7 @@ public class ToolNode : Node
         }
     }
     public string InfoText { get => infoText; set => infoText = value; }
-    public string SpriteData { get => spriteData; set => spriteData = value; }
+    public string SpritePath { get => spritePath; set => spritePath = value; }
     public bool ImageVisible { get => imageVisible; set => imageVisible = value; }
     public string Video2Dpath { get => video2Dpath; set => video2Dpath = value; }
     public StructureManager StructureManager { get => structureManager; set => structureManager = value; }

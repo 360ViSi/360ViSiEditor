@@ -946,7 +946,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13887501f811e6140953794a3f6a8095, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 0}
+  image: {fileID: 194415537}
 --- !u!224 &320589158 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 837409889892953524, guid: a594d0027477c1dba8deb898bfb54860,

@@ -27,14 +27,15 @@ public class PlayerInfoManager : MonoBehaviour
         simulationManager.SetVideoPauseState(true);
         currentTool = tool;
         infoText.text = currentTool.infoText;
-        if (currentTool.spriteData == "")
+        if (currentTool.spritePath == "")
         {
             image.texture = videoTexture;
             videoPlayer.url = currentTool.video2Dpath;
         }
         else
         {
-            StartCoroutine(SetSprite());
+            //StartCoroutine(SetSprite());
+            imageSetter.SetOldLoadedSprite(currentTool.spritePath);
         }
 
         infoPanel.SetActive(true);
@@ -47,14 +48,14 @@ public class PlayerInfoManager : MonoBehaviour
         infoPanel.SetActive(false);
     }
 
-    private IEnumerator SetSprite()
-    {
-        if (currentTool.spriteData != null)
-        {
-            yield return new WaitForEndOfFrame();
-            imageSetter.SetOldLoadedSprite(currentTool.spriteData);
-        }
-        yield return null;
-    }
+    //private IEnumerator SetSprite()
+    //{
+    //    if (currentTool.spriteData != null)
+    //    {
+    //        yield return new WaitForEndOfFrame();
+    //        imageSetter.SetOldLoadedSprite(currentTool.spriteData);
+    //    }
+    //    yield return null;
+    //}
 
 }

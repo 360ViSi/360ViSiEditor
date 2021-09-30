@@ -18,27 +18,25 @@ public class InfoCreator : MonoBehaviour
         infoInput.text = NodeInspector.instance.CurrentToolNode.InfoText;
         imageSetter = GetComponentInChildren<ImageSetter>();
         videoSetter2D = GetComponentInChildren<VideoSetter2D>();
-        if (imageSetter != null /*&& imageVisible == true*/ && imageSetter.SpriteData != null)
+        if (imageSetter != null && imageSetter.SpritePath != null )
         {
-            //GetComponentInChildren<ImageSetter>(true).gameObject.SetActive(true);
-            //GetComponentInChildren<RawImage>(true).gameObject.SetActive(false);
-            StartCoroutine(SetSprite());
+            imageSetter.SetOldLoadedSprite(imageSetter.SpritePath);
         }
-        //else
-        //{
-        //    GetComponentInChildren<ImageSetter>(true).gameObject.SetActive(false);
-        //    GetComponentInChildren<RawImage>(true).gameObject.SetActive(true);
-        //}     
+        else if (NodeInspector.instance.CurrentToolNode.SpritePath != null)
+        {
+            imageSetter.SetOldLoadedSprite(NodeInspector.instance.CurrentToolNode.SpritePath);
+        }
+
     }
 
     public void EditInfo()
     {
         NodeInspector.instance.CurrentToolNode.InfoText = infoInput.text;
-        NodeInspector.instance.CurrentToolNode.ImageVisible = imageVisible;
         if (imageSetter.image.texture != videoTexture /*&& GetComponentInChildren<ImageSetter>(true).isActiveAndEnabled*/)
         {
-            StartCoroutine(SetSprite());
-            NodeInspector.instance.CurrentToolNode.SpriteData = imageSetter.SpriteData;
+            //imageSetter.SetOldLoadedSprite(imageSetter.SpritePath);
+            //StartCoroutine(SetSprite());
+            NodeInspector.instance.CurrentToolNode.SpritePath = imageSetter.SpritePath;
             NodeInspector.instance.CurrentToolNode.Video2Dpath = null;
             //GetComponentInChildren<RawImage>(true).gameObject.SetActive(false);
             //imageVisible = true;
@@ -49,20 +47,20 @@ public class InfoCreator : MonoBehaviour
         {
             imageSetter.image.texture = videoTexture;
             NodeInspector.instance.CurrentToolNode.Video2Dpath = videoSetter2D.FullPath;
-            NodeInspector.instance.CurrentToolNode.SpriteData = null;
+            NodeInspector.instance.CurrentToolNode.SpritePath = null;
             //GetComponentInChildren<ImageSetter>(true).gameObject.SetActive(false);
             //imageVisible = false;
         }
         UndoRedoHandler.instance.SaveState();
     }
 
-    private IEnumerator SetSprite()
-    {
-        if (NodeInspector.instance.CurrentToolNode.SpriteData != null)
-        {
-            yield return new WaitForEndOfFrame();
-            imageSetter.SetOldLoadedSprite(NodeInspector.instance.CurrentToolNode.SpriteData);
-        }
-        yield return null;
-    }
+    //private IEnumerator SetSprite()
+    //{
+    //    if (NodeInspector.instance.CurrentToolNode.SpriteData != null)
+    //    {
+    //        yield return new WaitForEndOfFrame();
+    //        imageSetter.SetOldLoadedSprite(NodeInspector.instance.CurrentToolNode.SpriteData);
+    //    }
+    //    yield return null;
+    //}
 }

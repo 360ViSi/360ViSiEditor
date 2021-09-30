@@ -47,7 +47,7 @@ public class CopyPasteHandler : MonoBehaviour
             var newTool = structureManager.CreateNewToolNode();
             newTool.Question = tool.Question;
             newTool.InfoText = tool.InfoText;
-            newTool.SpriteData = tool.SpriteData;
+            newTool.SpritePath = tool.SpritePath;
             newTool.ImageVisible = tool.ImageVisible;
             newTool.ToolType = tool.ToolType;
 
