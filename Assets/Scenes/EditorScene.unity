@@ -7494,6 +7494,11 @@ PrefabInstance:
       propertyPath: image
       value: 
       objectReference: {fileID: 168668902}
+    - target: {fileID: 7694323731291221586, guid: 437082709c6bc864795b45cdf369b0bc,
+        type: 3}
+      propertyPath: rawImageInstance
+      value: 
+      objectReference: {fileID: 168668902}
     - target: {fileID: 7974139678434548435, guid: 437082709c6bc864795b45cdf369b0bc,
         type: 3}
       propertyPath: m_AnchorMax.y

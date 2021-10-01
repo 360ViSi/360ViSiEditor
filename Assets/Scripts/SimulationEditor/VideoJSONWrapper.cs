@@ -100,7 +100,6 @@ public class VideoJSONWrapper
             question = toolNode.Question;
             infoText = toolNode.InfoText;
             spritePath = toolNode.SpritePath;
-            imageVisible = toolNode.ImageVisible;
             video2Dpath = toolNode.Video2Dpath;
         }
         public int nodeId = -2;

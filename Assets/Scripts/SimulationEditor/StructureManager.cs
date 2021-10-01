@@ -381,7 +381,6 @@ public class StructureManager : MonoBehaviour
         node.ToolType = (ToolType)item.toolTypeInt;
         node.InfoText = item.infoText;
         node.SpritePath = item.spritePath;
-        node.ImageVisible = item.imageVisible;
         node.Video2Dpath = item.video2Dpath;
         node.StructureManager = this;
         
