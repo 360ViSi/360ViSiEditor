@@ -34,7 +34,10 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] GameObject toggleElementPrefab = null;
     [SerializeField] GameObject dropdownElementPrefab = null;
     [SerializeField] GameObject buttonElementPrefab = null;
+
     [Header("World Elements")]
+//    [SerializeField] GameObject infoCreatorPanel = null;
+//    [SerializeField] ActionDraggables actionDraggables = null;
     [SerializeField] GameObject worldButtonPrefab = null;
     [SerializeField] GameObject floorButtonPrefab = null;
     [SerializeField] GameObject areaButtonPrefab = null;
