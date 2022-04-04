@@ -12,15 +12,18 @@ public class ImageSetter : MonoBehaviour
     private string fileName;
     private string spritePath;
     public string SpritePath { get => spritePath; set => spritePath = value; }
-    private string fullPath { get => folderPath + fileName; set => spritePath = value; }
+    private string FullPath { get => folderPath + fileName; set => spritePath = value; }
 
-    public RawImage image;
+    [SerializeField] private RawImage rawImageInstance;
+    public RawImage RawImageInstance { get => rawImageInstance; set => rawImageInstance = value; }
 
     private void Awake()
     {
-        image = GetComponent<RawImage>();
+        RawImageInstance = GetComponent<RawImage>();
         
     }
+
+    //Opens a file browser that filters files according to extension. Also sets the spritePath -variable
     public void OpenImageFile(string path)
     {
         var extensions = new[] {
@@ -32,42 +35,41 @@ public class ImageSetter : MonoBehaviour
 
         folderPath = Utilities.FolderPathFromFilePath(path);
         fileName = Utilities.FileNameFromFilePath(path, true);
-        spritePath = fullPath;
+        spritePath = FullPath;
 
         ImageToSimulation();
     }
 
-    //Sets the image sprite
+    //Sets the image texture from sprite
     public void ImageToSimulation()
     {
-        if (File.Exists(fullPath) == false)
+        if (File.Exists(FullPath) == false)
         {
-            Debug.LogError($"File not found at: {fullPath}");
+            Debug.LogError($"File not found at: {FullPath}");
             return;
         }
-        image.texture = LoadTexture(fullPath);
+        RawImageInstance.texture = LoadTexture(FullPath);
 
     }
+    // Loads a PNG or JPG image from disk to a Texture2D and returns its reference
     public Texture LoadNewSprite(string FilePath, float PixelsPerUnit = 100.0f)
-    {
-
-        // Load a PNG or JPG image from disk to a Texture2D, assign this texture to a new sprite and return its reference
-                
+    {                
         Texture2D SpriteTexture = LoadTexture(FilePath);
         
         return SpriteTexture;
     }
 
+    //Loads a sprite with spritePath -variable
     public void SetOldLoadedSprite(string filePath)
     {
         spritePath = filePath;
-        image.texture = LoadTexture(filePath);
+        RawImageInstance.texture = LoadTexture(filePath);
     }
 
+    // Load a PNG or JPG file from disk to a Texture2D
+    // Returns null if load fails
     public Texture2D LoadTexture(string FilePath)
     {
-        // Load a PNG or JPG file from disk to a Texture2D
-        // Returns null if load fails
 
         Texture2D Tex2D;
         byte[] FileData;
@@ -75,18 +77,17 @@ public class ImageSetter : MonoBehaviour
         if (File.Exists(FilePath))
         {
             FileData = File.ReadAllBytes(FilePath);
-            Tex2D = new Texture2D(2, 2);                // Create new "empty" texture
-            if (Tex2D.LoadImage(FileData))              // Load the imagedata into the texture (size is set automatically)
+            Tex2D = new Texture2D(2, 2);                            // Create new "empty" texture
+            if (Tex2D.LoadImage(FileData))                          // Load the imagedata into the texture (size is set automatically)
             {              
-                //spriteData = Convert.ToBase64String(FileData, 0, FileData.Length);
-                return Tex2D;                           // If data = readable -> return texture
+                return Tex2D;                                       // If data = readable -> return texture
             }
             else
             {
-                Debug.LogWarning("Texture load failed");
+                Debug.LogWarning("Texture load from file failed");
             }
         }
-        Debug.LogWarning("Image not loaded");
-        return null;                                    // Return null if load failed
+        Debug.LogWarning("Image not loaded. File not found");
+        return null;                                                // Return null if load failed
     }
 }

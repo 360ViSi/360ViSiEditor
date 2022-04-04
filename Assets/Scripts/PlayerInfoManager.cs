@@ -20,7 +20,7 @@ public class PlayerInfoManager : MonoBehaviour
         else if (instance != this) Destroy(gameObject);
         imageSetter = image.GetComponent<ImageSetter>();
     }
-
+    //Loads text and image/video from values provided by JSON-file
     public void OpenInfoPanel(Tool tool)
     {
         Time.timeScale = 0;
@@ -34,7 +34,6 @@ public class PlayerInfoManager : MonoBehaviour
         }
         else
         {
-            //StartCoroutine(SetSprite());
             imageSetter.SetOldLoadedSprite(currentTool.spritePath);
         }
 
@@ -47,15 +46,4 @@ public class PlayerInfoManager : MonoBehaviour
         simulationManager.SetVideoPauseState(false);
         infoPanel.SetActive(false);
     }
-
-    //private IEnumerator SetSprite()
-    //{
-    //    if (currentTool.spriteData != null)
-    //    {
-    //        yield return new WaitForEndOfFrame();
-    //        imageSetter.SetOldLoadedSprite(currentTool.spriteData);
-    //    }
-    //    yield return null;
-    //}
-
 }

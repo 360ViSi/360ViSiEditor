@@ -67,7 +67,6 @@ public class ToolNode : Node
     }
     public string InfoText { get => infoText; set => infoText = value; }
     public string SpritePath { get => spritePath; set => spritePath = value; }
-    public bool ImageVisible { get => imageVisible; set => imageVisible = value; }
     public string Video2Dpath { get => video2Dpath; set => video2Dpath = value; }
     public StructureManager StructureManager { get => structureManager; set => structureManager = value; }
 

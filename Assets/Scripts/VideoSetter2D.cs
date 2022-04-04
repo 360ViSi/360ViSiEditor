@@ -9,16 +9,16 @@ using System;
 
 public class VideoSetter2D : MonoBehaviour
 {
+    [SerializeField] private RawImage image;
     private string folderPath;
     private string fileName;
-    [SerializeField] private RawImage image;
+    private VideoPlayer videoPlayer;
     private InfoCreator infoCreator;
     private string videoPath;
     public string VideoPath { get => videoPath; set => videoPath = value; }
 
     public string FullPath { get => folderPath + fileName; set => videoPath = value; }
 
-    private VideoPlayer videoPlayer;
 
     private void Awake()
     {
@@ -26,6 +26,7 @@ public class VideoSetter2D : MonoBehaviour
         infoCreator = GetComponentInParent<InfoCreator>();
 
     }
+    //Opens a file browser that filters files according to extension. Also sets the videoPath -variable
     public void OpenImageFile(string path)
     {
         var extensions = new[] {
@@ -41,7 +42,7 @@ public class VideoSetter2D : MonoBehaviour
         VideoToSimulation();
     }
 
-    //Sets the image sprite
+    //Loads the videoTexture and video path
     private void VideoToSimulation()
     {
         if (File.Exists(FullPath) == false)
@@ -49,12 +50,13 @@ public class VideoSetter2D : MonoBehaviour
             Debug.LogError($"File not found at: {FullPath}");
             return;
         }
-        image.texture = infoCreator.videoTexture;
+        image.texture = infoCreator.VideoTexture;
         videoPlayer.url = FullPath;
     }
+    //Loads video texture and video path from videoPath-variable
     public void SetOldLoadedVideo(string videoURL)
     {
-        image.texture = infoCreator.videoTexture;
+        image.texture = infoCreator.VideoTexture;
         videoPath = videoURL;
         videoPlayer.url = videoPath;
     }
