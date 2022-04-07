@@ -98,7 +98,14 @@ public class PlayerQuestionManager : MonoBehaviour
         simulationManager.SetVideoPauseState(false);
 
         if (isCorrect)
+        {
+            foreach (var score in currentTool.question.answerScores)
+            {
+                simulationManager.Score += score;
+            }
             simulationManager.GoToNode(currentTool.nextNodes[0]);
+        }
+            
         else
             simulationManager.GoToNode(currentTool.nextNodes[1]);
     }
@@ -108,7 +115,13 @@ public class PlayerQuestionManager : MonoBehaviour
         Time.timeScale = 1;
         panel.SetActive(false);
         simulationManager.SetVideoPauseState(false);
-
+        if (answerId == 0)
+        {
+            foreach (var score in currentTool.question.answerScores)
+            {
+                simulationManager.Score += score;
+            }
+        }
         simulationManager.GoToNode(currentTool.nextNodes[currentTool.question.correctAnswers[answerId]]);
     }
 }

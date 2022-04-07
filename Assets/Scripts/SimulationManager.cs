@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Video;
+using TMPro;
 
 public class SimulationManager : MonoBehaviour
 {
@@ -13,12 +14,16 @@ public class SimulationManager : MonoBehaviour
     [SerializeField]
     VideoTextureChanger videoTextureChanger;
     [SerializeField] GameObject endPanel;
+    [SerializeField] TMP_Text scoreText;
     [SerializeField] VideoPlayer videoPlayer;
     [SerializeField] Transform videoCameraTransform;
     [SerializeField] ActionHandler actionHandler;
     //private parameters
     private int currentVideoID = -2;
     private VideoPart currentVideoPart;
+    private int score;
+
+    public int Score { get => score; set => score = value; }
 
     // Start is called before the first frame update
     void Start()
@@ -130,12 +135,14 @@ public class SimulationManager : MonoBehaviour
     public void ResetSimulation()
     {
         endPanel.SetActive(false);
+        score = 0;
         setStartVideo();
     }
 
     public void EndGame()
     {
         endPanel.SetActive(true);
+        scoreText.text = "Score: " + score;
         videoPlayer.Stop();
     }
 

@@ -4,13 +4,14 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Question
 {
-    public Question(string questionTitleText, string questionText,bool multichoice, List<string> answers, List<int> correctAnswers)
+    public Question(string questionTitleText, string questionText,bool multichoice, List<string> answers, List<int> correctAnswers, List<int> answerScores)
     {
         this.questionTitleText = questionTitleText;
         this.questionText = questionText;
         this.multichoice = multichoice;
         this.answers = answers;
         this.correctAnswers = correctAnswers;
+        this.answerScores = answerScores;
     }
 
     //Fields are public to avoid creating json wrapper for the class
@@ -19,4 +20,5 @@ public class Question
     public bool multichoice;
     public List<string> answers = new List<string>();
     public List<int> correctAnswers = new List<int>();
+    public List<int> answerScores = new List<int>();
 }

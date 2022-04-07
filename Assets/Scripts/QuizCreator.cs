@@ -15,6 +15,7 @@ public class QuizCreator : MonoBehaviour
     [SerializeField] TMP_InputField questionInput;
     List<TMP_InputField> answerInputs = new List<TMP_InputField>();
     List<TMP_InputField> outPortInputs = new List<TMP_InputField>();
+    List<TMP_InputField> scoreInputs = new List<TMP_InputField>();
     List<Toggle> correctToggles = new List<Toggle>();
     [SerializeField] Toggle multichoiceToggle;
 
@@ -31,6 +32,7 @@ public class QuizCreator : MonoBehaviour
         answerInputs.Clear();
         correctToggles.Clear();
         outPortInputs.Clear();
+        scoreInputs.Clear();
 
         LoadQuestionFromNodeToCreator();
     }
@@ -48,7 +50,7 @@ public class QuizCreator : MonoBehaviour
     {
         var question = NodeInspector.instance.CurrentToolNode.Question;
 
-        if (question == null) question = new Question("", "", false, new List<string>() { }, new List<int>());
+        if (question == null) question = new Question("", "", false, new List<string>() { }, new List<int>(), new List<int>());
 
         multichoiceToggle.isOn = question.multichoice;
         questionTitleInput.text = question.questionTitleText;
@@ -59,6 +61,14 @@ public class QuizCreator : MonoBehaviour
 
             answerInputs[i].text = question.answers[i];
 
+            if (question.answerScores != null)
+            {
+                scoreInputs[i].text = question.answerScores[i].ToString();
+            }
+            else
+            {
+                scoreInputs[i].text = "0";
+            }
 
             if (question.multichoice)
             {
@@ -88,6 +98,8 @@ public class QuizCreator : MonoBehaviour
         answerInputs.Add(inputFields[0]);
         inputFields[1].text = "0";
         outPortInputs.Add(inputFields[1]);
+        inputFields[2].text = "0";
+        scoreInputs.Add(inputFields[2]);
 
 
         var toggle = go.GetComponentInChildren<Toggle>();
@@ -99,6 +111,7 @@ public class QuizCreator : MonoBehaviour
         var answer = answerInputs[answerInputs.Count - 1];
         answerInputs.Remove(answer);
         outPortInputs.Remove(outPortInputs[outPortInputs.Count - 1]);
+        scoreInputs.Remove(scoreInputs[scoreInputs.Count - 1]);
         correctToggles.Remove(correctToggles[correctToggles.Count - 1]);
         Destroy(answer.transform.parent.gameObject);
     }
@@ -107,7 +120,8 @@ public class QuizCreator : MonoBehaviour
     {
         var answers = answerInputs.Select(e => e.text).ToList();
         var correctAnswers = outPortInputs.Select(e => int.Parse(e.text)).ToList();
-        var question = new Question(questionTitleInput.text, questionInput.text, multichoiceToggle.isOn, answers, correctAnswers);
+        var answerScores = scoreInputs.Select(e => int.Parse(e.text)).ToList();
+        var question = new Question(questionTitleInput.text, questionInput.text, multichoiceToggle.isOn, answers, correctAnswers, answerScores);
         NodeInspector.instance.CurrentToolNode.Question = question;
         gameObject.SetActive(false);
         UndoRedoHandler.instance.SaveState();
