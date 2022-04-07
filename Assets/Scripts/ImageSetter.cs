@@ -63,7 +63,12 @@ public class ImageSetter : MonoBehaviour
     public void SetOldLoadedSprite(string filePath)
     {
         spritePath = filePath;
-        RawImageInstance.texture = LoadTexture(filePath);
+        Texture2D texture = LoadTexture(filePath);
+
+        RawImageInstance.texture = texture;
+        Vector2 textureSize = new Vector2(texture.width, texture.height);
+        RawImageInstance.SetNativeSize();
+        //rawImageInstance.transform.localScale *= .5f;
     }
 
     // Load a PNG or JPG file from disk to a Texture2D
