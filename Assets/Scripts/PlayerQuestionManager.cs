@@ -115,12 +115,11 @@ public class PlayerQuestionManager : MonoBehaviour
         Time.timeScale = 1;
         panel.SetActive(false);
         simulationManager.SetVideoPauseState(false);
-        if (answerId == 0)
+        if (currentTool.question.answerScores[answerId] != 0)
         {
-            foreach (var score in currentTool.question.answerScores)
-            {
-                simulationManager.Score += score;
-            }
+
+            simulationManager.Score += currentTool.question.answerScores[answerId];
+            
         }
         simulationManager.GoToNode(currentTool.nextNodes[currentTool.question.correctAnswers[answerId]]);
     }
