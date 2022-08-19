@@ -34,7 +34,10 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] GameObject toggleElementPrefab = null;
     [SerializeField] GameObject dropdownElementPrefab = null;
     [SerializeField] GameObject buttonElementPrefab = null;
-
+    [SerializeField] Color32 videoNodeColor=new Color32(0,0,0,255);
+    [SerializeField] Color32 actionNodeColor=new Color32(100,0,0,255);
+    [SerializeField] Color32 toolNodeColor=new Color32(0,100,0,255);
+    
     [Header("World Elements")]
 //    [SerializeField] GameObject infoCreatorPanel = null;
 //    [SerializeField] ActionDraggables actionDraggables = null;
@@ -50,6 +53,8 @@ public class NodeInspector : MonoBehaviour
     public NodeSelectionHandler NodeSelectionHandler => nodeSelectionHandler;
     public DragSelect DragSelect => dragSelect;
 
+    private Image backgroundImage = null;
+
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -57,6 +62,8 @@ public class NodeInspector : MonoBehaviour
 
         DestroyAllInspectorElements();
         nodeSelectionHandler = new NodeSelectionHandler();
+
+        backgroundImage=gameObject.GetComponent<Image>();
     }
 
     void DestroyAllInspectorElements()
@@ -72,6 +79,7 @@ public class NodeInspector : MonoBehaviour
     ///</summary>
     public void CreateFields(VideoNode node, bool isUpdate = false)
     {
+        
         //RefreshSelection();
         currentVideoNode = node;
         actionDraggables.CreateActionDraggables(node);
@@ -94,6 +102,9 @@ public class NodeInspector : MonoBehaviour
 
         if (isUpdate)
             CreateVideoFields(editorVideoPlayer.VideoPlayer);
+        
+        //Change Color
+        backgroundImage.color = videoNodeColor;
     }
 
     ///<summary>
@@ -106,7 +117,7 @@ public class NodeInspector : MonoBehaviour
         NullCurrentNodes();
         DestroyAllInspectorElements();
 
-        //if action is selected, both lists can be cleared, actions dont neeed to support multiselect ( I think? )
+        //if action is selected, both lists can be cleared, actions dont need to support multiselect ( I think? )
         foreach (var item in NodeSelectionHandler.SelectedNodes)
         {
             var selectable = structureManager.GetNode(item);
@@ -132,6 +143,8 @@ public class NodeInspector : MonoBehaviour
             CreateActionFields(editorVideoPlayer.VideoPlayer);
             editorVideoPlayer.RefreshTimeline();
         }
+        //Change Color
+        backgroundImage.color = actionNodeColor;
     }
 
     ///<summary>
@@ -160,6 +173,8 @@ public class NodeInspector : MonoBehaviour
             else
                 CreateElement("Edit Info Text", buttonElementPrefab, OpenInfoCreator);
         }
+        //Change Color
+        backgroundImage.color = toolNodeColor;
     }
 
 
