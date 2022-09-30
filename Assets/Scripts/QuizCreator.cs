@@ -18,6 +18,8 @@ public class QuizCreator : MonoBehaviour
     List<TMP_InputField> scoreInputs = new List<TMP_InputField>();
     List<Toggle> correctToggles = new List<Toggle>();
     [SerializeField] Toggle multichoiceToggle;
+    [SerializeField] ImageSetter imageSetter;
+    [SerializeField] GameObject imagePanel;
 
     // Start is called before the first frame update
     void OnEnable()
@@ -48,13 +50,20 @@ public class QuizCreator : MonoBehaviour
 
     public void LoadQuestionFromNodeToCreator()
     {
-        var question = NodeInspector.instance.CurrentToolNode.Question;
+        var question = NodeInspector.instance.CurrentToolNode.Question; // Question is a tool node, should have a spritepath in json
 
-        if (question == null) question = new Question("", "", false, new List<string>() { }, new List<int>(), new List<int>());
+        if (question == null) question = new Question("", "", false, new List<string>() { }, new List<int>(), new List<int>(), "");
 
         multichoiceToggle.isOn = question.multichoice;
         questionTitleInput.text = question.questionTitleText;
         questionInput.text = question.questionText;
+        
+        if(!String.IsNullOrEmpty(question.spritePath))
+        {
+            imagePanel.SetActive(true);
+            imageSetter.SetOldLoadedSprite(question.spritePath);
+        }
+        
         for (int i = 0; i < question.answers.Count; i++)
         {
             AddAnswer();
@@ -121,7 +130,8 @@ public class QuizCreator : MonoBehaviour
         var answers = answerInputs.Select(e => e.text).ToList();
         var correctAnswers = outPortInputs.Select(e => int.Parse(e.text)).ToList();
         var answerScores = scoreInputs.Select(e => int.Parse(e.text)).ToList();
-        var question = new Question(questionTitleInput.text, questionInput.text, multichoiceToggle.isOn, answers, correctAnswers, answerScores);
+        var spritePath = imageSetter.SpritePath;
+        var question = new Question(questionTitleInput.text, questionInput.text, multichoiceToggle.isOn, answers, correctAnswers, answerScores, spritePath);
         NodeInspector.instance.CurrentToolNode.Question = question;
         gameObject.SetActive(false);
         UndoRedoHandler.instance.SaveState();

@@ -16,11 +16,11 @@ public class ImageSetter : MonoBehaviour
 
     [SerializeField] private RawImage rawImageInstance;
     public RawImage RawImageInstance { get => rawImageInstance; set => rawImageInstance = value; }
+    public string FileName { get => fileName; set => fileName = value; }
 
     private void Awake()
     {
         RawImageInstance = GetComponent<RawImage>();
-        
     }
 
     //Opens a file browser that filters files according to extension. Also sets the spritePath -variable
@@ -62,11 +62,14 @@ public class ImageSetter : MonoBehaviour
     //Loads a sprite with spritePath -variable
     public void SetOldLoadedSprite(string filePath)
     {
+        if(String.IsNullOrEmpty(filePath)) return;
+
         spritePath = filePath;
         Texture2D texture = LoadTexture(filePath);
 
         RawImageInstance.texture = texture;
-        Vector2 textureSize = new Vector2(texture.width, texture.height);
+        // Vector2 textureSize = new Vector2(texture.width, texture.height);
+        if(gameObject.name == "RawImageEditor") return;
         RawImageInstance.SetNativeSize();
         //rawImageInstance.transform.localScale *= .5f;
     }
@@ -94,5 +97,11 @@ public class ImageSetter : MonoBehaviour
         }
         Debug.LogWarning("Image not loaded. File not found");
         return null;                                                // Return null if load failed
+    }
+
+    public void Reset()
+    {
+        spritePath = "";
+        rawImageInstance.texture = null;
     }
 }

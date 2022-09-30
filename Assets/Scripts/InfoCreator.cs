@@ -54,6 +54,5 @@ public class InfoCreator : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         videoSetter2D.SetOldLoadedVideo(NodeInspector.instance.CurrentToolNode.Video2Dpath);
-
     }
 }
