@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.40784314, g: 0.25490198, b: 0.4392157, a: 1}
+  m_Color: {r: 0.5764706, g: 0.15294118, b: 0.56078434, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -371,6 +371,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee0fc839fcd88e470a6ef66de1e0abd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  topPanelInfo:
+    serializedVersion: 2
+    rgba: 4287571859
+  bottomPanelInfo:
+    serializedVersion: 2
+    rgba: 4292554184
   connectedColor: {r: 1, g: 0.6088505, b: 0.26415092, a: 1}
   notConnectedColor: {r: 0.122641504, g: 0.122641504, b: 0.122641504, a: 1}
   endActionColor: {r: 1, g: 0.10283645, b: 0, a: 1}
@@ -765,7 +771,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.40784314, g: 0.25490198, b: 0.4392157, a: 1}
+  m_Color: {r: 0.78431374, g: 0.1764706, b: 0.85882354, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:

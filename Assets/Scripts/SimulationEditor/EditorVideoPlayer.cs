@@ -84,7 +84,7 @@ public class EditorVideoPlayer : MonoBehaviour
         fullpath.Replace('\\', Path.DirectorySeparatorChar);
         if (!File.Exists(fullpath))
         {
-            Debug.LogError($"No file with path {fullpath} found");
+            //Debug.LogError($"No file with path {fullpath} found");
             return false;
         }
         videoPlayer.url = fullpath;

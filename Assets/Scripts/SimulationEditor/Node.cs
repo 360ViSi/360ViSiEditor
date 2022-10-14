@@ -32,4 +32,23 @@ public class Node : MonoBehaviour
     public Vector3 WorldPosition() => transform.position;
     public NodeMove GetNodeMove() => GetComponentInChildren<NodeMove>();
     public void Outline(bool active) => GetComponent<Outline>().enabled = active;
+
+    public void SetTopPanelColor(Color32 topPanelColor)
+    {
+        this.transform.Find("TopPanel").GetComponent<Image>().color=topPanelColor;
+    }
+    public void SetBottomPanelColor(Color32 bottomPanelColor)
+    {
+        this.transform.Find("BottomPanel").GetComponent<Image>().color=bottomPanelColor;
+    }
+
+    public Color32 GetTopPanelColor()
+    {
+        return this.transform.Find("TopPanel").GetComponent<Image>().color;
+    }
+
+    public Color32 GetBottomPanelColor()
+    {
+        return this.transform.Find("BottomPanel").GetComponent<Image>().color;
+    }
 }

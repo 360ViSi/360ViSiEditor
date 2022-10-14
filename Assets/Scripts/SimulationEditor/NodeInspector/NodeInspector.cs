@@ -34,9 +34,6 @@ public class NodeInspector : MonoBehaviour
     [SerializeField] GameObject toggleElementPrefab = null;
     [SerializeField] GameObject dropdownElementPrefab = null;
     [SerializeField] GameObject buttonElementPrefab = null;
-    [SerializeField] Color32 videoNodeColor=new Color32(0,0,0,255);
-    [SerializeField] Color32 actionNodeColor=new Color32(100,0,0,255);
-    [SerializeField] Color32 toolNodeColor=new Color32(0,100,0,255);
     
     [Header("World Elements")]
 //    [SerializeField] GameObject infoCreatorPanel = null;
@@ -54,6 +51,8 @@ public class NodeInspector : MonoBehaviour
     public DragSelect DragSelect => dragSelect;
 
     private Image backgroundImage = null;
+    private Image topPanelImage = null;
+    private Text topPanelText=null;
 
     private void Awake()
     {
@@ -64,6 +63,9 @@ public class NodeInspector : MonoBehaviour
         nodeSelectionHandler = new NodeSelectionHandler();
 
         backgroundImage=gameObject.GetComponent<Image>();
+        // this -> Parent -> prefab_TextPanel
+        topPanelImage= transform.Find("../prefab_TextPanel").GetComponent<Image>();
+        topPanelText= transform.Find("../prefab_TextPanel/Text_add").GetComponent<Text>();
     }
 
     void DestroyAllInspectorElements()
@@ -79,7 +81,7 @@ public class NodeInspector : MonoBehaviour
     ///</summary>
     public void CreateFields(VideoNode node, bool isUpdate = false)
     {
-        
+        DestroyAllInspectorElements();
         //RefreshSelection();
         currentVideoNode = node;
         actionDraggables.CreateActionDraggables(node);
@@ -104,7 +106,9 @@ public class NodeInspector : MonoBehaviour
             CreateVideoFields(editorVideoPlayer.VideoPlayer);
         
         //Change Color
-        backgroundImage.color = videoNodeColor;
+        backgroundImage.color = currentVideoNode.GetBottomPanelColor();
+        topPanelImage.color = currentVideoNode.GetTopPanelColor();
+        topPanelText.text="edit video";
     }
 
     ///<summary>
@@ -144,7 +148,9 @@ public class NodeInspector : MonoBehaviour
             editorVideoPlayer.RefreshTimeline();
         }
         //Change Color
-        backgroundImage.color = actionNodeColor;
+        backgroundImage.color = currentActionNode.GetBottomPanelColor();
+        topPanelImage.color = currentActionNode.GetTopPanelColor();
+        topPanelText.text="edit action";
     }
 
     ///<summary>
@@ -152,13 +158,15 @@ public class NodeInspector : MonoBehaviour
     ///</summary>
     public void CreateFields(ToolNode node, bool isUpdate = false)
     {
+        DestroyAllInspectorElements();
+
         editorVideoPlayer.VideoPlayer.Stop();
         //RefreshSelection();
 
         currentToolNode = node;
 
 
-        CreateElement("Tool", ElementKey.ToolType, dropdownElementPrefab, (int)node.ToolType);
+        CreateElement("Tools", ElementKey.ToolType, dropdownElementPrefab, (int)node.ToolType);
         if (node.ToolType == ToolType.QuestionTask)
         {
             if (node.Question == null)
@@ -174,7 +182,9 @@ public class NodeInspector : MonoBehaviour
                 CreateElement("Edit Info Text", buttonElementPrefab, OpenInfoCreator);
         }
         //Change Color
-        backgroundImage.color = toolNodeColor;
+        backgroundImage.color = currentToolNode.GetBottomPanelColor();
+        topPanelImage.color = currentToolNode.GetTopPanelColor();
+        topPanelText.text="edit " + currentToolNode.ToolType;
     }
 
 
@@ -289,6 +299,7 @@ public class NodeInspector : MonoBehaviour
             else if (selectableType == NodeType.Tool)
                 CreateFields((ToolNode)selectable);
         }
+        print("node selection refresh: "+NodeSelectionHandler.SelectedNodes.Count);
     }
 
     ///<summary>

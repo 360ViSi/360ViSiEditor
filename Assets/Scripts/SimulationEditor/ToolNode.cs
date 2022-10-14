@@ -23,6 +23,14 @@ public class ToolNode : Node
     [SerializeField] Transform outPortLayout;
     [SerializeField] GameEvent redrawLinesEvent;
     [SerializeField] GameObject[] outPortAmountButtons;
+    [Header("Tool node colors")]
+    [SerializeField] Color32 topPanelInfo = new Color32(0x0F, 0x9D, 0xAF,0xFF);
+    [SerializeField] Color32 bottomPanelInfo = new Color32(0x65, 0xC8, 0xD0,0xFF);
+    [SerializeField] Color32 topPanelQuestion = new Color32(0x00, 0x68, 0x37 ,0xFF);
+    [SerializeField] Color32 bottomPanelQuestion = new Color32(0x2E, 0x90, 0x3B,0xFF);
+    [SerializeField] Color32 topPanelRandom = new Color32(0x38, 0x1F, 0x46,0xFF);
+    [SerializeField] Color32 bottomPanelRandom = new Color32(0x38, 0x1F, 0x46,0xFF);
+
     public TMP_Text NodeName { get => nodeName; set => nodeName = value; }
     public NodePort InPort { get => inPort; set => inPort = value; }
     public List<NodePort> OutPorts { get => outPorts; set => outPorts = value; }
@@ -39,15 +47,23 @@ public class ToolNode : Node
             {
                 case ToolType.Random:
                     RemoveAllExcessOutPorts(2);
+                    SetTopPanelColor(topPanelRandom);
+                    SetBottomPanelColor(bottomPanelRandom);
                     break;
                 case ToolType.QuestionTask:
                     SetQuestionTitle();
                     RemoveAllExcessOutPorts(2);
+                    SetTopPanelColor(topPanelQuestion);
+                    SetBottomPanelColor(bottomPanelQuestion);
                     break;
                 case ToolType.Info:
                     RemoveAllExcessOutPorts(0);
+                    SetTopPanelColor(topPanelInfo);
+                    SetBottomPanelColor(bottomPanelInfo);
                     break;
             }
+            
+            
 
             SetOutPortAmountButtonsActive(
                 toolType == ToolType.Random
@@ -65,6 +81,7 @@ public class ToolNode : Node
             SetQuestionTitle();
         }
     }
+
     public string InfoText { get => infoText; set => infoText = value; }
     public string SpritePath { get => spritePath; set => spritePath = value; }
     public string Video2Dpath { get => video2Dpath; set => video2Dpath = value; }
@@ -75,7 +92,7 @@ public class ToolNode : Node
         if (question.questionTitleText != "")
         {
             nodeName.text = question.questionTitleText;
-        }
+        } 
     }
 
     internal int[] GetNextVideos()
@@ -160,6 +177,7 @@ public class ToolNode : Node
         for (int i = 0; i < outPortAmountButtons.Length; i++)
             outPortAmountButtons[i].SetActive(value);
     }
+
 }
 
 

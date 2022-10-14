@@ -42,6 +42,7 @@ public static class Utilities
     ///</summary>
     public static string[] FilePathToStringArray(string path)
     {
+        Debug.Log("FilePath: "+path);
         var pathArr = path.Split(Path.DirectorySeparatorChar);
         if (pathArr.Length == 1)
             pathArr = path.Split(Path.AltDirectorySeparatorChar);
@@ -54,6 +55,7 @@ public static class Utilities
 
     public static string FolderPathFromFilePath(string path)
     {
+        Debug.Log("FolderPath: "+path);
         var pathArr = FilePathToStringArray(path);
         var folderPath = "";
         for (int i = 0; i < pathArr.Length - 1; i++)
