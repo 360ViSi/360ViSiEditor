@@ -19,6 +19,16 @@ public class QuizCreator : MonoBehaviour
     List<Toggle> correctToggles = new List<Toggle>();
     [SerializeField] Toggle multichoiceToggle;
 
+    private Image topPanelImage;
+    private Image backgroundImage;
+
+    private void Awake()
+    {
+        //backgroundImage=gameObject.GetComponent<Image>();
+        // this -> Parent -> prefab_TextPanel
+        topPanelImage = this.transform.Find("TopPanel").GetComponent<Image>();
+        backgroundImage = this.transform.Find("Panel").GetComponent<Image>();
+    }
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -35,6 +45,7 @@ public class QuizCreator : MonoBehaviour
         scoreInputs.Clear();
 
         LoadQuestionFromNodeToCreator();
+        
     }
 
 
@@ -48,8 +59,9 @@ public class QuizCreator : MonoBehaviour
 
     public void LoadQuestionFromNodeToCreator()
     {
-        var question = NodeInspector.instance.CurrentToolNode.Question;
-
+        var currentNode=NodeInspector.instance.CurrentToolNode;
+        var question = currentNode.Question;
+        
         if (question == null) question = new Question("", "", false, new List<string>() { }, new List<int>(), new List<int>());
 
         multichoiceToggle.isOn = question.multichoice;
@@ -88,6 +100,9 @@ public class QuizCreator : MonoBehaviour
             }
         }
         HandleMultichoiceToggle(question.multichoice);
+        //change editor's colors
+        backgroundImage.color = currentNode.GetBottomPanelColor();
+        topPanelImage.color = currentNode.GetTopPanelColor();
     }
 
     public void AddAnswer()
