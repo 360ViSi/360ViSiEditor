@@ -64,11 +64,13 @@ public class ImageSetter : MonoBehaviour
     {
         spritePath = filePath;
         Texture2D texture = LoadTexture(filePath);
-
-        RawImageInstance.texture = texture;
-        Vector2 textureSize = new Vector2(texture.width, texture.height);
-        RawImageInstance.SetNativeSize();
-        //rawImageInstance.transform.localScale *= .5f;
+        if (texture!=null)
+        {
+            RawImageInstance.texture = texture;
+            Vector2 textureSize = new Vector2(texture.width, texture.height);
+            RawImageInstance.SetNativeSize();
+            //rawImageInstance.transform.localScale *= .5f;
+        }
     }
 
     // Load a PNG or JPG file from disk to a Texture2D
@@ -92,7 +94,7 @@ public class ImageSetter : MonoBehaviour
                 Debug.LogWarning("Texture load from file failed");
             }
         }
-        Debug.LogWarning("Image not loaded. File not found");
+        Debug.LogWarning("Image not loaded. File \""+FilePath+"\" not found");
         return null;                                                // Return null if load failed
     }
 }
