@@ -61,13 +61,10 @@ public class QuizCreator : MonoBehaviour
 
     public void LoadQuestionFromNodeToCreator()
     {
-        var question = NodeInspector.instance.CurrentToolNode.Question; // Question is a tool node, should have a spritepath in json
-
-        if (question == null) question = new Question("", "", false, new List<string>() { }, new List<int>(), new List<int>(), "");
         var currentNode=NodeInspector.instance.CurrentToolNode;
         var question = currentNode.Question;
-        
-        if (question == null) question = new Question("", "", false, new List<string>() { }, new List<int>(), new List<int>());
+
+        if (question == null) question = new Question("", "", false, new List<string>() { }, new List<int>(), new List<int>(), "");
 
         multichoiceToggle.isOn = question.multichoice;
         questionTitleInput.text = question.questionTitleText;

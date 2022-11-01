@@ -3,7 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine.UI;
 
-public class InfoCreator_OLD : MonoBehaviour
+public class InfoCreator : MonoBehaviour
 {
     [SerializeField] TMP_InputField infoInput;
     private ImageSetter imageSetter;

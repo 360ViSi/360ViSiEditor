@@ -88,7 +88,7 @@ public class StructureManager : MonoBehaviour
         newToolNode.NodeId = GetFreeNodeID();
         newToolNode.StructureManager = this;
         //Null Question throws NullPointerException
-        newToolNode.Question = new Question("", "", false, new List<string>() { }, new List<int>(), new List<int>());;
+        newToolNode.Question = new Question("", "", false, new List<string>() { }, new List<int>(), new List<int>(),"");
         UndoRedoHandler.instance.SaveState();
         return newToolNode;
     }
