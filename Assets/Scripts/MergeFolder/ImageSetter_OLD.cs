@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using System.IO;
 using System;
 
-public class ImageSetter : MonoBehaviour
+public class ImageSetter_OLD : MonoBehaviour
 {
     private string folderPath;
     private string fileName;

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using TMPro;
 
-public class InfoCreator : MonoBehaviour
+public class InfoCreator_OLD : MonoBehaviour
 {
     [SerializeField] TMP_InputField infoInput;
     private ImageSetter imageSetter;

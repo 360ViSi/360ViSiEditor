@@ -7,7 +7,7 @@ using TMPro;
 using System.Linq;
 using System;
 
-public class QuizCreator : MonoBehaviour
+public class QuizCreator_OLD : MonoBehaviour
 {
     [SerializeField] Transform layoutTransform;
     [SerializeField] GameObject answerPrefab;
