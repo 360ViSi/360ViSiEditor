@@ -21,3 +21,6 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 8d5210121414f934bbf1d0a4ce894162, type: 3}
   - iconName: speak
     sprite: {fileID: 21300000, guid: 11234a8744e56c846bc4822ced9c5c34, type: 3}
+  - iconName: higlight
+    sprite: {fileID: 8020143640844766479, guid: 83edeb32c4651545b94a75172f0305df,
+      type: 3}

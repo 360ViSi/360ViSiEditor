@@ -46,15 +46,7 @@ public class StructureManager : MonoBehaviour
 
     public void ButtonCreateNewVideoNode()
     {
-        //Initialize new Video node from prefab and add it to the list
-        //With Unique video ID (setVideoID handles testing)
-
-        GameObject newVideoObject = Instantiate(videoNodePrefab, mainNodeLayerTransform);
-        var newVideoNode = newVideoObject.GetComponent<VideoNode>();
-        newVideoNode.SetVideoID(GetFreeNodeID());
-        videoGameObjects.Add(newVideoObject);
-        newVideoNode.OnSelect(false);
-        UndoRedoHandler.instance.SaveState();
+        VideoNode newVideoNode = CreateNewVideoNode();
     }
     public VideoNode CreateNewVideoNode()
     {
@@ -69,17 +61,23 @@ public class StructureManager : MonoBehaviour
         UndoRedoHandler.instance.SaveState();
         return newVideoNode;
     }
-    public void ButtonCreateNewToolNode()
+
+    public void ButtonCreateNewQuestion()
     {
-        ToolNode newToolNode = Instantiate(toolNodePrefab, mainNodeLayerTransform).GetComponent<ToolNode>();
-        toolNodes.Add(newToolNode);
-
-        var newVideoID = generatedNodeID;
-
-        newToolNode.NodeId = GetFreeNodeID();
-        newToolNode.StructureManager = this;
-        UndoRedoHandler.instance.SaveState();
+        ToolNode newToolNode= CreateNewToolNode();
+        newToolNode.ToolType = ToolType.QuestionTask;
     }
+    public void ButtonCreateNewInfo()
+    {
+        ToolNode newToolNode= CreateNewToolNode();
+        newToolNode.ToolType = ToolType.Info;
+    }
+    public void ButtonCreateNewRandom()
+    {
+        ToolNode newToolNode= CreateNewToolNode();
+        newToolNode.ToolType = ToolType.Random;
+    }
+
     public ToolNode CreateNewToolNode()
     {
         ToolNode newToolNode = Instantiate(toolNodePrefab, mainNodeLayerTransform).GetComponent<ToolNode>();
@@ -89,6 +87,8 @@ public class StructureManager : MonoBehaviour
 
         newToolNode.NodeId = GetFreeNodeID();
         newToolNode.StructureManager = this;
+        //Null Question throws NullPointerException
+        newToolNode.Question = new Question("", "", false, new List<string>() { }, new List<int>(), new List<int>());;
         UndoRedoHandler.instance.SaveState();
         return newToolNode;
     }

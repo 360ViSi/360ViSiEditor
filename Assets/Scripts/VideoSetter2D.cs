@@ -30,7 +30,7 @@ public class VideoSetter2D : MonoBehaviour
     public void OpenImageFile(string path)
     {
         var extensions = new[] {
-        new ExtensionFilter("Video Files", "mp4" )
+        new ExtensionFilter("Video Files", "mp4", "webm" )
         };
 
         if (path == "")

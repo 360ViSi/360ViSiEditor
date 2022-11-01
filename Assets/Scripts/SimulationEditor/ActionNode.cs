@@ -9,15 +9,15 @@ using TMPro;
 [System.Serializable]
 public class ActionNode : MonoBehaviour
 {
-    [SerializeField]
-    private Color connectedColor;
-    [SerializeField]
-    private Color notConnectedColor;
-    [SerializeField]
-    private Color endActionColor;
-    [SerializeField]
-    private Color toolColor;
+    [Header("Action node colors")]    
+    [SerializeField] Color32 topPanelInfo = new Color32(0x93, 0x27, 0x8F,0xFF);
+    [SerializeField] Color32 bottomPanelInfo = new Color32(0xC8, 0x2D, 0xDB,0xFF);
+    [SerializeField] private Color connectedColor;
+    [SerializeField] private Color notConnectedColor;
+    [SerializeField] private Color endActionColor;
+    [SerializeField] private Color toolColor;
 
+    
     private NodePort nodePort;
     private ConnectionManager connectionManager;
     private TextMeshProUGUI actionText;
@@ -204,6 +204,25 @@ public class ActionNode : MonoBehaviour
     public float getActionTimer() => actionTimer;
     public void SetActionTimer(float value) => actionTimer = value;
     public void InspectorOpen() => NodeInspector.instance.CreateFields(this);
+
+    public void SetTopPanelColor(Color32 topPanelColor)
+    {
+        this.transform.Find("TopPanel").GetComponent<Image>().color=topPanelColor;
+    }
+    public void SetBottomPanelColor(Color32 bottomPanelColor)
+    {
+        this.transform.Find("BottomPanel").GetComponent<Image>().color=bottomPanelColor;
+    }
+
+    public Color32 GetTopPanelColor()
+    {
+        return this.transform.Find("TopPanel").GetComponent<Image>().color;
+    }
+
+    public Color32 GetBottomPanelColor()
+    {
+        return this.transform.Find("BottomPanel").GetComponent<Image>().color;
+    }
 }
 public enum ActionType
 {

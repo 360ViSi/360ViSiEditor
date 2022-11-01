@@ -7,7 +7,7 @@ using TMPro;
 using System.Linq;
 using System;
 
-public class QuizCreator_OLD : MonoBehaviour
+public class QuizCreator : MonoBehaviour
 {
     [SerializeField] Transform layoutTransform;
     [SerializeField] GameObject answerPrefab;
@@ -21,6 +21,16 @@ public class QuizCreator_OLD : MonoBehaviour
     [SerializeField] ImageSetter imageSetter;
     [SerializeField] GameObject imagePanel;
 
+    private Image topPanelImage;
+    private Image backgroundImage;
+
+    private void Awake()
+    {
+        //backgroundImage=gameObject.GetComponent<Image>();
+        // this -> Parent -> prefab_TextPanel
+        topPanelImage = this.transform.Find("TopPanel").GetComponent<Image>();
+        backgroundImage = this.transform.Find("Panel").GetComponent<Image>();
+    }
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -37,6 +47,7 @@ public class QuizCreator_OLD : MonoBehaviour
         scoreInputs.Clear();
 
         LoadQuestionFromNodeToCreator();
+        
     }
 
 
@@ -53,6 +64,10 @@ public class QuizCreator_OLD : MonoBehaviour
         var question = NodeInspector.instance.CurrentToolNode.Question; // Question is a tool node, should have a spritepath in json
 
         if (question == null) question = new Question("", "", false, new List<string>() { }, new List<int>(), new List<int>(), "");
+        var currentNode=NodeInspector.instance.CurrentToolNode;
+        var question = currentNode.Question;
+        
+        if (question == null) question = new Question("", "", false, new List<string>() { }, new List<int>(), new List<int>());
 
         multichoiceToggle.isOn = question.multichoice;
         questionTitleInput.text = question.questionTitleText;
@@ -97,6 +112,9 @@ public class QuizCreator_OLD : MonoBehaviour
             }
         }
         HandleMultichoiceToggle(question.multichoice);
+        //change editor's colors
+        backgroundImage.color = currentNode.GetBottomPanelColor();
+        topPanelImage.color = currentNode.GetTopPanelColor();
     }
 
     public void AddAnswer()

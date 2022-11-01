@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using System.IO;
 using System;
 
-public class ImageSetter_OLD : MonoBehaviour
+public class ImageSetter : MonoBehaviour
 {
     private string folderPath;
     private string fileName;
@@ -72,6 +72,13 @@ public class ImageSetter_OLD : MonoBehaviour
         if(gameObject.name == "RawImageEditor") return;
         RawImageInstance.SetNativeSize();
         //rawImageInstance.transform.localScale *= .5f;
+        if (texture!=null)
+        {
+            RawImageInstance.texture = texture;
+            Vector2 textureSize = new Vector2(texture.width, texture.height);
+            RawImageInstance.SetNativeSize();
+            //rawImageInstance.transform.localScale *= .5f;
+        }
     }
 
     // Load a PNG or JPG file from disk to a Texture2D
@@ -95,7 +102,7 @@ public class ImageSetter_OLD : MonoBehaviour
                 Debug.LogWarning("Texture load from file failed");
             }
         }
-        Debug.LogWarning("Image not loaded. File not found");
+        Debug.LogWarning("Image not loaded. File \""+FilePath+"\" not found");
         return null;                                                // Return null if load failed
     }
 

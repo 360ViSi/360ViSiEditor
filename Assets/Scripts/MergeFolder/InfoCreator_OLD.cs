@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using TMPro;
+using UnityEngine.UI;
 
 public class InfoCreator_OLD : MonoBehaviour
 {
@@ -10,25 +11,34 @@ public class InfoCreator_OLD : MonoBehaviour
     [SerializeField] private Texture videoTexture;
     public Texture VideoTexture { get => videoTexture; set => videoTexture = value; }
 
+    private Image topPanelImage;
+    private Image backgroundImage;
+
     private void Awake()
     {
         imageSetter = GetComponentInChildren<ImageSetter>();
         videoSetter2D = GetComponentInChildren<VideoSetter2D>();
+
+        topPanelImage = this.transform.Find("TopPanel").GetComponent<Image>();
+        backgroundImage = this.transform.Find("Panel").GetComponent<Image>();
         
     }
     //Sets image or video and text active depending on what was saved to JSON
     private void OnEnable()
     {
-        infoInput.text = NodeInspector.instance.CurrentToolNode.InfoText;
+        var currentNode=NodeInspector.instance.CurrentToolNode;
+        infoInput.text = currentNode.InfoText;
 
-        if (imageSetter != null && NodeInspector.instance.CurrentToolNode.SpritePath != "")
+        if (imageSetter != null && currentNode.SpritePath != "")
         {
-            imageSetter.SetOldLoadedSprite(NodeInspector.instance.CurrentToolNode.SpritePath);
+            imageSetter.SetOldLoadedSprite(currentNode.SpritePath);
         }
-        else if(NodeInspector.instance.CurrentToolNode.Video2Dpath != null)
+        else if(currentNode.Video2Dpath != null)
         {
             StartCoroutine(SetupVideo());
         }
+        backgroundImage.color = currentNode.GetBottomPanelColor();
+        topPanelImage.color = currentNode.GetTopPanelColor();
 
     }
     //Saves image or video path and text to JSON and to UndoRedoHandler

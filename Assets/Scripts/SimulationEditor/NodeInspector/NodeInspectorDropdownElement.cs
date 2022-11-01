@@ -7,6 +7,7 @@ public class NodeInspectorDropdownElement : NodeInspectorElement
     [SerializeField] TMP_Dropdown elementValue;
     public override void InitializeElement(string header, ElementKey key, int value)
     {
+        Debug.Log("Initialize Dropdown menu");
         elementKey = key;
         elementName.text = header;
 
