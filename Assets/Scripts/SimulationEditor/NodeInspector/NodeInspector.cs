@@ -170,16 +170,16 @@ public class NodeInspector : MonoBehaviour
         if (node.ToolType == ToolType.QuestionTask)
         {
             if (node.Question == null)
-                CreateElement("Create Question", buttonElementPrefab, OpenQuestionCreator);
+                CreateElement("Edit", buttonElementPrefab, OpenQuestionCreator);
             else
-                CreateElement("Edit Question", buttonElementPrefab, OpenQuestionCreator);
+                CreateElement("Edit", buttonElementPrefab, OpenQuestionCreator);
         }
         else if (node.ToolType == ToolType.Info)
         {
             if (string.IsNullOrEmpty(node.InfoText))
-                CreateElement("Create Info Text", buttonElementPrefab, OpenInfoCreator);
+                CreateElement("Edit", buttonElementPrefab, OpenInfoCreator);
             else
-                CreateElement("Edit Info Text", buttonElementPrefab, OpenInfoCreator);
+                CreateElement("Edit", buttonElementPrefab, OpenInfoCreator);
         }
         //Change Color
         backgroundImage.color = currentToolNode.GetBottomPanelColor();

@@ -234,6 +234,7 @@ public class StructureManager : MonoBehaviour
     public void SimulationToJson(string path)
     {
         VideoJSONWrapper wrapper = new VideoJSONWrapper(
+            Path.GetFileName(Path.GetDirectoryName(ProjectManager.instance.FullPath)),
             GetVideoNodeList(),
             toolNodes,
             startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID(),
@@ -253,7 +254,7 @@ public class StructureManager : MonoBehaviour
     public VideoJSONWrapper CreateSaveState()
     {
         return new VideoJSONWrapper(
-
+                Path.GetFileName(Path.GetDirectoryName(ProjectManager.instance.FullPath)),
                 GetVideoNodeList(),
                 toolNodes,
                 startNode.GetComponent<ActionNode>().getNodePort().getNextVideoID(),

@@ -50,6 +50,8 @@ public class QuizCreator : MonoBehaviour
         
     }
 
+    
+
 
     private void Update()
     {
@@ -145,7 +147,8 @@ public class QuizCreator : MonoBehaviour
         var answers = answerInputs.Select(e => e.text).ToList();
         var correctAnswers = outPortInputs.Select(e => int.Parse(e.text)).ToList();
         var answerScores = scoreInputs.Select(e => int.Parse(e.text)).ToList();
-        var spritePath = imageSetter.SpritePath;
+        //var spritePath = imageSetter.SpritePath;
+        var spritePath = "";
         var question = new Question(questionTitleInput.text, questionInput.text, multichoiceToggle.isOn, answers, correctAnswers, answerScores, spritePath);
         NodeInspector.instance.CurrentToolNode.Question = question;
         gameObject.SetActive(false);

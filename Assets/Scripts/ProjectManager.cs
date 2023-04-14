@@ -5,6 +5,7 @@ using System.IO;
 using SFB;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Diagnostics;
 
 ///<summary>nul
 /// Manager for project level top left buttons of the Editor (Open, Save, Clear)
@@ -16,7 +17,7 @@ public class ProjectManager : MonoBehaviour
     [SerializeField] YesNoDialog yesNoDialog;
     [SerializeField] SO_String playerProjectPath;
     string fileName = "new project";
-    string folderPath = @"C:\Unity\"; //S NOTE change this to reflect my documents?
+    string folderPath = ""; //S NOTE change this to reflect my documents?
     string json = ".json";
     bool wasSaved = false;
 
@@ -30,6 +31,8 @@ public class ProjectManager : MonoBehaviour
     {
         if (instance == null) instance = this;
         else if (this != instance) Destroy(gameObject);
+
+        folderPath = Path.Combine(Application.streamingAssetsPath, @"visi_player_local\tours\");
     }
 
     private void Start()
@@ -98,6 +101,9 @@ public class ProjectManager : MonoBehaviour
     {
         SaveProject();
         playerProjectPath.data = FullPath;
-        SceneManager.LoadScene("PlayerScene");
+        //SceneManager.LoadScene("PlayerScene");
+        //Process.Start("D:\\360ViSi\\visi_player_local\\Start Simulation (Windows).exe");
+        print(Application.streamingAssetsPath);
+        Process.Start(Path.Combine(Application.streamingAssetsPath, "visi_player_local\\Start Simulation (Windows).exe"));
     }
 }
